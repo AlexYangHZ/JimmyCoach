@@ -115,18 +115,23 @@ async def mindmap_page(section_id: str):
         return HTMLResponse('<p class="error">该知识点暂无脑图数据</p>')
 
     html = _render_tree(tree)
+    download_btn = """
+<div style="text-align:right;margin-bottom:8px;">
+    <button onclick="downloadMindmap()" style="padding:6px 16px;background:#fff;color:#764ba2;border:2px solid #764ba2;border-radius:16px;cursor:pointer;font-size:0.85rem;font-weight:600;">
+        📥 保存脑图为图片
+    </button>
+</div>
+"""
     css = """
 <style>
-.mindmap-container {
-    background: #fafbfc; border-radius: 16px; padding: 24px;
-    text-align: center; overflow-x: auto;
-}
+.mindmap-wrap { background: #fafbfc; border-radius: 16px; padding: 16px 24px 24px; text-align: center; }
+.mindmap-container { display: inline-block; text-align: center; padding: 20px; }
 .mindmap-root {
     display: inline-flex; flex-direction: column; align-items: center;
     gap: 20px; min-width: 600px;
 }
 .mindmap-center {
-    background: var(--primary); color: white; padding: 14px 28px;
+    background: #4a90d9; color: white; padding: 14px 28px;
     border-radius: 24px; font-size: 1.2rem; font-weight: 700;
     box-shadow: 0 4px 12px rgba(74,144,217,0.3);
 }
@@ -137,30 +142,54 @@ async def mindmap_page(section_id: str):
     display: flex; flex-direction: column; align-items: center;
     gap: 8px; min-width: 140px;
 }
-.mindmap-line {
-    width: 2px; height: 24px; background: #c8d6e5;
-}
+.mindmap-line { width: 2px; height: 24px; background: #c8d6e5; }
 .mindmap-branch-label {
     background: #eef2f7; padding: 8px 14px; border-radius: 12px;
-    font-weight: 600; font-size: 0.9rem; cursor: pointer;
-    border: 2px solid transparent; transition: all 0.2s;
-}
-.mindmap-branch-label:hover {
-    border-color: var(--primary); background: #e3edf7;
+    font-weight: 600; font-size: 0.9rem;
+    border: 2px solid transparent;
+    white-space: nowrap;
 }
 .mindmap-leaves {
     display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
-    max-width: 200px;
+    max-width: 220px;
 }
 .mindmap-leaf {
     background: white; padding: 4px 10px; border-radius: 8px;
-    font-size: 0.78rem; color: var(--text-light);
-    border: 1px solid #e8ecf0;
+    font-size: 0.8rem; color: #7f8c8d;
+    border: 1px solid #e8ecf0; white-space: nowrap;
 }
-.mindmap-leaf:hover { border-color: var(--primary); color: var(--text); }
 </style>
+<script>
+function downloadMindmap() {
+    var wrap = document.querySelector('.mindmap-wrap');
+    // Use canvas to capture the DOM element as image
+    var svgData = '<svg xmlns="http://www.w3.org/2000/svg" width="' + wrap.offsetWidth + '" height="' + wrap.offsetHeight + '">' +
+        '<foreignObject width="100%" height="100%">' +
+        '<div xmlns="http://www.w3.org/1999/xhtml">' + wrap.innerHTML + '</div>' +
+        '</foreignObject></svg>';
+    var img = new Image();
+    var blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    img.onload = function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = wrap.offsetWidth * 2;
+        canvas.height = wrap.offsetHeight * 2;
+        var ctx = canvas.getContext('2d');
+        ctx.scale(2, 2);
+        ctx.fillStyle = '#fafbfc';
+        ctx.fillRect(0, 0, wrap.offsetWidth, wrap.offsetHeight);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        var link = document.createElement('a');
+        link.download = 'mindmap.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    };
+    img.src = url;
+}
+</script>
 """
-    return HTMLResponse(css + html)
+    return HTMLResponse(download_btn + '<div class="mindmap-wrap">' + css + '<div class="mindmap-container">' + html + '</div></div>')
 
 
 def _render_tree(node, is_root=True) -> str:
