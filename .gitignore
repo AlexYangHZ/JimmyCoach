@@ -1,0 +1,5 @@
+.env
+jimmycoach.db
+__pycache__/
+.superpowers/
+*.pyc
