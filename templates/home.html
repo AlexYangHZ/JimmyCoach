@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Jimmy教练 — 首页{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <section class="hero">
+        <h1>你好，Jimmy！👋</h1>
+        <p class="subtitle">今天想学习什么？</p>
+        {% if suggested_topic %}
+        <a href="/learn/{{ suggested_topic.subject }}/{{ suggested_topic.grade }}/{{ suggested_topic.id }}"
+           class="btn-primary">
+            📚 继续上次：{{ suggested_topic.title }}
+        </a>
+        {% endif %}
+    </section>
+
+    <section class="subject-grid">
+        {% for subject in subjects %}
+        <a href="/subjects/{{ subject.id }}/{{ subject.grade }}" class="subject-card">
+            <div class="subject-icon">{{ subject.icon }}</div>
+            <h2>{{ subject.name }}</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ subject.progress_pct }}%"></div>
+            </div>
+            <p class="progress-text">{{ subject.completed }} / {{ subject.total }} 个知识点</p>
+        </a>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

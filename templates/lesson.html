@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ topic.title }} — Jimmy教练{% endblock %}
+
+{% block content %}
+<div class="lesson-container">
+    <div class="breadcrumb">
+        <a href="/">首页</a> → <a href="/subjects/{{ subject }}/{{ grade }}">{{ subject_name }}</a> → {{ topic.title }}
+    </div>
+
+    <div id="lesson-content" class="lesson-content"
+         hx-post="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}/generate"
+         hx-trigger="load"
+         hx-swap="innerHTML">
+        <div class="loading">
+            <p>🤔 小教练正在准备这节课的内容...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <div id="exercises-area" class="exercises-section">
+        <h2>📝 练习时间</h2>
+        <div id="exercise-container"
+             hx-get="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}/exercises"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <p>加载练习题中...</p>
+        </div>
+    </div>
+
+    <div id="chat-panel" class="chat-panel">
+        <div class="chat-header" onclick="document.getElementById('chat-messages').classList.toggle('expanded')">
+            💬 有疑问？问我！
+        </div>
+        <div id="chat-messages" class="chat-messages"
+             hx-get="/chat/history?topic={{ topic.id }}"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+        </div>
+        <form class="chat-input-form"
+              hx-post="/chat/send"
+              hx-target="#chat-messages"
+              hx-swap="beforeend"
+              hx-on::after-request="this.reset()">
+            <input type="hidden" name="topic_id" value="{{ topic.id }}">
+            <input type="hidden" name="subject" value="{{ subject }}">
+            <input type="hidden" name="grade" value="{{ grade }}">
+            <input type="text" name="message" placeholder="输入你的问题..." required autocomplete="off"
+                   class="chat-input">
+            <button type="submit" class="btn-send">发送</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

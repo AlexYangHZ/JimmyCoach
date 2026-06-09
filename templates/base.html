@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}JimmyCoach{% endblock %}</title>
+    <script src="/static/htmx.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-inner">
+            <a href="/" class="logo">🎓 Jimmy教练</a>
+            <nav>
+                <a href="/subjects/math/6">数学</a>
+                <a href="/subjects/chinese/6">语文</a>
+                <a href="/subjects/english/6">英语</a>
+                <a href="/subjects/science/6">科学</a>
+                <a href="/chat">💬 自由提问</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="app-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="app-footer">
+        <p>Jimmy的学习伙伴 🤖</p>
+    </footer>
+</body>
+</html>
