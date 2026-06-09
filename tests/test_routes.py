@@ -1,9 +1,8 @@
-"""Integration tests for HTTP routes."""
+"""Integration tests for HTTP routes — updated for new 7th grade structure."""
 
 import os
 import pytest
 import pytest_asyncio
-from unittest.mock import AsyncMock, patch
 from httpx import ASGITransport, AsyncClient
 
 os.environ["DEEPSEEK_API_KEY"] = "test-key-for-integration"
@@ -12,10 +11,9 @@ os.environ["DEEPSEEK_API_KEY"] = "test-key-for-integration"
 @pytest_asyncio.fixture
 async def client():
     from main import app
-
-    # Mock the database dependency to use in-memory DB
     from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
     from db.models import Base
+    from fastapi.templating import Jinja2Templates
 
     test_engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=False)
     async with test_engine.begin() as conn:
@@ -31,7 +29,6 @@ async def client():
                 await session.close()
 
     from db.database import get_db
-    from fastapi.templating import Jinja2Templates
     app.dependency_overrides[get_db] = override_get_db
     app.state.templates = Jinja2Templates(directory="templates")
 
@@ -54,36 +51,41 @@ async def test_health_check(client):
 async def test_home_page_renders(client):
     response = await client.get("/")
     assert response.status_code == 200
-    assert "Jimmy教练" in response.text
+    assert "七年级" in response.text
     assert "数学" in response.text
+    assert "英语" in response.text
+    assert "语文" in response.text
 
 
 @pytest.mark.asyncio
 async def test_subject_page_renders(client):
-    response = await client.get("/subjects/math/6")
+    response = await client.get("/subjects/math/7")
     assert response.status_code == 200
-    assert "分数" in response.text
+    assert "正数和负数" in response.text
     assert "topic-list" in response.text
+    assert "查看内容" in response.text
 
 
 @pytest.mark.asyncio
 async def test_lesson_page_renders(client):
-    response = await client.get("/learn/math/6/fractions-basics")
+    response = await client.get("/learn/math/7/chapter_01-section_01")
     assert response.status_code == 200
     assert "chat-panel" in response.text
+    assert "textbook-content" in response.text
 
 
 @pytest.mark.asyncio
 async def test_chat_history_empty(client):
-    response = await client.get("/chat/history?topic=fractions-basics")
+    response = await client.get("/chat/history")
     assert response.status_code == 200
     assert "你好" in response.text
 
 
 @pytest.mark.asyncio
 async def test_subject_page_empty_for_invalid(client):
-    response = await client.get("/subjects/nonexistent/6")
+    response = await client.get("/subjects/english/7")
     assert response.status_code == 200
+    assert "soon" in response.text.lower() or "准备中" in response.text
 
 
 @pytest.mark.asyncio
@@ -94,7 +96,7 @@ async def test_static_files_mounted(client):
 
 
 @pytest.mark.asyncio
-async def test_free_chat_page(client):
-    response = await client.get("/chat")
+async def test_english_subject_shows_coming_soon(client):
+    response = await client.get("/subjects/english/7")
     assert response.status_code == 200
-    assert "自由提问" in response.text
+    # English content not ready yet

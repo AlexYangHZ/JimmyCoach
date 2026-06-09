@@ -314,6 +314,24 @@ a:hover { text-decoration: underline; }
 /* === Error === */
 .error { color: var(--danger); padding: 20px; text-align: center; }
 
+/* === Subject Card === */
+.subject-desc { font-size: 0.85rem; color: var(--text-light); margin: 8px 0; }
+.badge-ready { background: #e8f5e9; color: var(--success); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
+.badge-pending { background: #fff8e1; color: var(--warning); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
+.subject-soon { opacity: 0.7; }
+.coming-soon { text-align: center; padding: 60px 20px; color: var(--text-light); }
+.coming-soon p { margin: 8px 0; }
+
+/* === Textbook Content === */
+.textbook-content { margin-top: 20px; line-height: 2; }
+.textbook-content h2 { color: var(--primary); margin: 24px 0 12px; font-size: 1.3rem; }
+.textbook-content h3 { color: var(--text); margin: 16px 0 8px; font-size: 1.1rem; }
+.textbook-content p { margin-bottom: 10px; text-indent: 0; }
+.textbook-content br + br { display: none; }
+
+/* === RAG Source === */
+.rag-source { font-size: 0.75rem; color: var(--text-light); margin-top: 4px; padding: 2px 8px; background: #f0f4f8; border-radius: 6px; display: inline-block; }
+
 /* === Footer === */
 .app-footer {
     text-align: center;

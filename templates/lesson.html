@@ -7,16 +7,15 @@
         <a href="/">首页</a> → <a href="/subjects/{{ subject }}/{{ grade }}">{{ subject_name }}</a> → {{ topic.title }}
     </div>
 
-    <div id="lesson-content" class="lesson-content"
-         hx-post="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}/generate"
-         hx-trigger="load"
-         hx-swap="innerHTML">
-        <div class="loading">
-            <p>🤔 小教练正在准备这节课的内容...</p>
-            <div class="spinner"></div>
+    <!-- Textbook content — loaded from markdown -->
+    <div class="lesson-content">
+        <h2>{{ topic.code }} {{ topic.title }}</h2>
+        <div class="textbook-content">
+            {{ content_html | safe }}
         </div>
     </div>
 
+    <!-- Exercises area (from curriculum YAML if available) -->
     <div id="exercises-area" class="exercises-section">
         <h2>📝 练习时间</h2>
         <div id="exercise-container"
@@ -27,12 +26,13 @@
         </div>
     </div>
 
+    <!-- Chat panel — RAG-based, subject-specific -->
     <div id="chat-panel" class="chat-panel">
-        <div class="chat-header" onclick="document.getElementById('chat-messages').classList.toggle('expanded')">
-            💬 有疑问？问我！
+        <div class="chat-header">
+            💬 关于{{ subject_name }}的问题？基于教材内容回答
         </div>
         <div id="chat-messages" class="chat-messages"
-             hx-get="/chat/history?topic={{ topic.id }}"
+             hx-get="/chat/history"
              hx-trigger="load"
              hx-swap="innerHTML">
         </div>
@@ -44,7 +44,7 @@
             <input type="hidden" name="topic_id" value="{{ topic.id }}">
             <input type="hidden" name="subject" value="{{ subject }}">
             <input type="hidden" name="grade" value="{{ grade }}">
-            <input type="text" name="message" placeholder="输入你的问题..." required autocomplete="off"
+            <input type="text" name="message" placeholder="问一个关于{{ subject_name }}的问题..." required autocomplete="off"
                    class="chat-input">
             <button type="submit" class="btn-send">发送</button>
         </form>

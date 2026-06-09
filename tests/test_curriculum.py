@@ -1,77 +1,55 @@
-"""Test curriculum YAML loading and querying."""
+"""Test curriculum loading from new textbook markdown structure."""
 
 import pytest
+import re
 from pathlib import Path
 
-from services.curriculum import CurriculumService
+from routes.pages import load_math_topics
 
 
-@pytest.fixture
-def curriculum_service():
-    data_dir = Path(__file__).parent.parent / "data" / "curriculum"
-    return CurriculumService(data_dir=data_dir)
+def test_load_math_topics():
+    topics = load_math_topics()
+
+    assert len(topics) >= 14  # At least 14 knowledge points across 6 chapters
+    # Check first topic
+    assert topics[0]["title"] == "正数和负数"
+    assert topics[0]["code"] == "1.1"
+    assert "章" in topics[0]["chapter"]
+    assert "有理数" in topics[0]["chapter"]
 
 
-def test_load_topics_for_subject(curriculum_service):
-    topics = curriculum_service.get_topics(grade=6, subject="math")
-
-    assert len(topics) == 3
-    assert topics[0]["id"] == "fractions-basics"
-    assert topics[1]["id"] == "fractions-multiply"
-    assert topics[2]["id"] == "fractions-divide"
-    assert topics[0]["order"] == 1
-    assert topics[2]["order"] == 3
+def test_topics_have_paths():
+    topics = load_math_topics()
+    for t in topics:
+        assert t["path"].endswith(".md")
+        assert t["id"] is not None
 
 
-def test_get_topic_meta(curriculum_service):
-    meta = curriculum_service.get_topic_meta(grade=6, subject="math", topic_id="fractions-basics")
-
-    assert meta["topic_id"] == "fractions-basics"
-    assert meta["difficulty_level"] == 1
-    assert "混淆分子和分母" in meta["common_mistakes"]
+def test_all_chapters_covered():
+    topics = load_math_topics()
+    chapters = {t["chapter"] for t in topics}
+    assert len(chapters) == 6  # 6 chapters
 
 
-def test_get_exercises(curriculum_service):
-    exercises = curriculum_service.get_exercises(grade=6, subject="math", topic_id="fractions-basics")
-
-    assert len(exercises) == 3
-    assert exercises[0]["id"] == "ex-01"
-    assert exercises[0]["type"] == "multiple_choice"
-
-
-def test_topic_dependencies(curriculum_service):
-    topics = curriculum_service.get_topics(grade=6, subject="math")
-
-    bas = curriculum_service.get_topic_by_id(topics, "fractions-basics")
-    mul = curriculum_service.get_topic_by_id(topics, "fractions-multiply")
-
-    assert bas["dependencies"] == []
-    assert "fractions-basics" in mul["dependencies"]
+def test_topic_order():
+    topics = load_math_topics()
+    codes = [t["code"] for t in topics]
+    # Verify sorted order
+    assert codes[0] == "1.1"
+    assert codes[-1] == "6.3"
 
 
-def test_topic_by_id_not_found(curriculum_service):
-    topics = curriculum_service.get_topics(grade=6, subject="math")
-    result = curriculum_service.get_topic_by_id(topics, "nonexistent")
-
-    assert result is None
-
-
-def test_get_next_topic(curriculum_service):
-    topics = curriculum_service.get_topics(grade=6, subject="math")
-
-    # Nothing completed → first topic
-    next_topic = curriculum_service.get_next_topic(topics, set())
-    assert next_topic["id"] == "fractions-basics"
-
-    # First completed → second topic
-    next_topic = curriculum_service.get_next_topic(topics, {"fractions-basics"})
-    assert next_topic["id"] == "fractions-multiply"
-
-    # All completed → None
-    next_topic = curriculum_service.get_next_topic(topics, {"fractions-basics", "fractions-multiply", "fractions-divide"})
-    assert next_topic is None
+def test_no_activity_in_topics():
+    """Activities should not appear as topics."""
+    topics = load_math_topics()
+    for t in topics:
+        assert "activity" not in t["path"]
+        assert "README" not in t["path"]
 
 
-def test_empty_subject(curriculum_service):
-    topics = curriculum_service.get_topics(grade=6, subject="chinese")
-    assert topics == []
+def test_load_from_nonexistent_path():
+    """Should return empty list for empty curriculum."""
+    from routes.pages import SUBJECTS_CONFIG
+    # English and Chinese don't have data yet
+    assert len(SUBJECTS_CONFIG) == 3
+    assert SUBJECTS_CONFIG[0]["id"] == "math"

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ subject_name }} — Jimmy教练{% endblock %}
+{% block title %}{{ subject_name }} {{ grade }}年级 — Jimmy教练{% endblock %}
 
 {% block content %}
 <div class="subject-container">
@@ -7,37 +7,28 @@
         <a href="/">← 返回首页</a>
     </div>
 
-    <h1>{{ subject_icon }} {{ subject_name }} · {{ grade }}年级</h1>
+    <h1>{{ subject_icon }} {{ subject_name }} · {{ grade }}年级上册</h1>
 
-    <div class="topic-list">
-        {% for topic in topics %}
-        <div class="topic-item status-{{ topic.status }}">
-            <div class="topic-number">{{ topic.order }}</div>
-            <div class="topic-info">
-                <h3>{{ topic.title }}</h3>
-                <div class="topic-meta">
-                    <span>⏱️ {{ topic.estimated_minutes }}分钟</span>
-                    {% if topic.status == "mastered" %}
-                        <span class="badge badge-done">✅ 已掌握</span>
-                    {% elif topic.status == "in_progress" %}
-                        <span class="badge badge-active">🔵 学习中</span>
-                        <a href="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}" class="btn-start">继续学习</a>
-                    {% elif topic.available %}
-                        <a href="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}" class="btn-start">开始学习</a>
-                    {% else %}
-                        <span class="badge badge-locked">🔒 需先完成前置知识点</span>
-                    {% endif %}
-                </div>
-               {% if topic.key_points %}
-                <div class="key-points">
-                    {% for kp in topic.key_points %}
-                    <span class="kp-tag">{{ kp }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
+    {% if not_ready %}
+        <div class="coming-soon">
+            <p>📚 该科目内容正在准备中...</p>
+            <p>PDF教材已就绪，等待提取处理。</p>
         </div>
-        {% endfor %}
-    </div>
+    {% else %}
+        <div class="topic-list">
+            {% for topic in topics %}
+            <div class="topic-item status-{{ topic.status }}">
+                <div class="topic-number">{{ topic.code }}</div>
+                <div class="topic-info">
+                    <h3>{{ topic.title }}</h3>
+                    <div class="topic-meta">
+                        <span>{{ topic.chapter }}</span>
+                        <a href="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}" class="btn-start">📖 查看内容</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
