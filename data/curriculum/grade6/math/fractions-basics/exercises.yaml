@@ -1,0 +1,24 @@
+topic_id: fractions-basics
+exercises:
+  - id: ex-01
+    type: multiple_choice
+    question: "下面哪个图形表示 3/4？"
+    options:
+      - "一个圆分成3份，取1份"
+      - "一个圆分成4份，取3份"
+      - "一个圆分成4份，取1份"
+      - "一个圆分成3份，取3份"
+    correct: "一个圆分成4份，取3份"
+    hint: "分母表示分成几份，分子表示取几份"
+
+  - id: ex-02
+    type: fill_blank
+    question: "把一根绳子平均分成5段，每段是这根绳子的___/___。"
+    correct: "1/5"
+    hint: "平均分成5段，每段就是1份，总共5份"
+
+  - id: ex-03
+    type: true_false
+    question: "3/5的分子是5，分母是3。对吗？"
+    correct: "错误"
+    hint: "分数线上面是分子，下面是分母"
