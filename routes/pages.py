@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.database import get_db
 from services.progress import ProgressService
+from data.mindmaps.math_grade7 import get_mindmap
 
 router = APIRouter()
 
@@ -104,3 +105,100 @@ async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
             "section": sec, "pdf_url": pdf_url, "session_id": session_id,
             "subject_name": "数学",
         })
+
+
+@router.get("/mindmap/{section_id}", response_class=HTMLResponse)
+async def mindmap_page(section_id: str):
+    """Return interactive mind map HTML for a section."""
+    tree = get_mindmap(section_id)
+    if not tree:
+        return HTMLResponse('<p class="error">该知识点暂无脑图数据</p>')
+
+    html = _render_tree(tree)
+    css = """
+<style>
+.mindmap-container {
+    background: #fafbfc; border-radius: 16px; padding: 24px;
+    text-align: center; overflow-x: auto;
+}
+.mindmap-root {
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 20px; min-width: 600px;
+}
+.mindmap-center {
+    background: var(--primary); color: white; padding: 14px 28px;
+    border-radius: 24px; font-size: 1.2rem; font-weight: 700;
+    box-shadow: 0 4px 12px rgba(74,144,217,0.3);
+}
+.mindmap-branches {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+}
+.mindmap-branch {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; min-width: 140px;
+}
+.mindmap-line {
+    width: 2px; height: 24px; background: #c8d6e5;
+}
+.mindmap-branch-label {
+    background: #eef2f7; padding: 8px 14px; border-radius: 12px;
+    font-weight: 600; font-size: 0.9rem; cursor: pointer;
+    border: 2px solid transparent; transition: all 0.2s;
+}
+.mindmap-branch-label:hover {
+    border-color: var(--primary); background: #e3edf7;
+}
+.mindmap-leaves {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    max-width: 200px;
+}
+.mindmap-leaf {
+    background: white; padding: 4px 10px; border-radius: 8px;
+    font-size: 0.78rem; color: var(--text-light);
+    border: 1px solid #e8ecf0;
+}
+.mindmap-leaf:hover { border-color: var(--primary); color: var(--text); }
+</style>
+"""
+    return HTMLResponse(css + html)
+
+
+def _render_tree(node, is_root=True) -> str:
+    """Render a tree node as interactive HTML."""
+    if is_root:
+        children_html = ""
+        if node.get("children"):
+            branches = []
+            for child in node["children"]:
+                branches.append(_render_tree(child, is_root=False))
+            children_html = (
+                '<div class="mindmap-branches">'
+                + "".join(branches)
+                + "</div>"
+            )
+        return (
+            '<div class="mindmap-container">'
+            '<div class="mindmap-root">'
+            f'<div class="mindmap-center">📐 {node["label"]}</div>'
+            + (f'<div class="mindmap-line"></div>' if node.get("children") else "") +
+            children_html +
+            '</div></div>'
+        )
+    else:
+        # Branch node
+        leaves_html = ""
+        if node.get("children"):
+            leaves = []
+            for leaf in node["children"]:
+                leaves.append(
+                    f'<span class="mindmap-leaf">• {leaf["label"]}</span>'
+                )
+            leaves_html = '<div class="mindmap-leaves">' + "".join(leaves) + "</div>"
+
+        return (
+            '<div class="mindmap-branch">'
+            f'<div class="mindmap-line"></div>'
+            f'<div class="mindmap-branch-label">{node["label"]}</div>'
+            + (f'<div class="mindmap-line"></div>' + leaves_html if node.get("children") else "") +
+            '</div>'
+        )

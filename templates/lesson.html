@@ -11,6 +11,16 @@
         <span class="section-badge">{{ section.chapter }}</span>
         <h2>{{ section.code }} {{ section.title }}</h2>
         <span class="page-count">📄 {{ section.pages }}页</span>
+        <button class="btn-mindmap" onclick="toggleMindmap()" title="查看知识脑图">
+            🧠 知识脑图
+        </button>
+    </div>
+
+    <!-- Mind Map (hidden by default) -->
+    <div id="mindmap-area" class="mindmap-area" style="display:none;"
+         hx-get="/mindmap/{{ section.id }}"
+         hx-trigger="revealed"
+         hx-swap="innerHTML">
     </div>
 
     <!-- PDF Viewer -->
@@ -24,7 +34,12 @@
 
     <!-- Exercises Section -->
     <div id="exercises-area" class="exercises-section">
-        <h2>📝 练习题</h2>
+        <div class="exercises-header">
+            <h2>📝 练习题</h2>
+            <a href="/exercises/{{ section.id }}/download" class="btn-download" target="_blank">
+                📥 下载Word版（可打印）
+            </a>
+        </div>
         <div id="exercise-container"
              hx-get="/exercises/{{ section.id }}"
              hx-trigger="load"
@@ -33,4 +48,16 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleMindmap() {
+    var area = document.getElementById('mindmap-area');
+    if (area.style.display === 'none') {
+        area.style.display = 'block';
+        area.dispatchEvent(new Event('revealed'));
+    } else {
+        area.style.display = 'none';
+    }
+}
+</script>
 {% endblock %}

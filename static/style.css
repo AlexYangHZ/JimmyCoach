@@ -339,6 +339,64 @@ a:hover { text-decoration: underline; }
     border-radius: 12px; font-size: 0.8rem; font-weight: 600;
 }
 .page-count { font-size: 0.85rem; color: var(--text-light); }
+.btn-mindmap {
+    margin-left: auto; padding: 6px 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2); color: white;
+    border: none; border-radius: 16px; cursor: pointer;
+    font-size: 0.9rem; font-weight: 600;
+    transition: transform 0.15s;
+}
+.btn-mindmap:hover { transform: scale(1.05); }
+
+/* === Mind Map === */
+.mindmap-area { margin: 16px 0 24px; }
+.mindmap-container {
+    background: #fafbfc; border-radius: 16px; padding: 24px;
+    text-align: center; overflow-x: auto;
+}
+.mindmap-root {
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 20px; min-width: 600px;
+}
+.mindmap-center {
+    background: var(--primary); color: white; padding: 14px 28px;
+    border-radius: 24px; font-size: 1.2rem; font-weight: 700;
+    box-shadow: 0 4px 12px rgba(74,144,217,0.3);
+}
+.mindmap-branches {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;
+}
+.mindmap-branch {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 6px; min-width: 150px;
+}
+.mindmap-line { width: 2px; height: 20px; background: #c8d6e5; }
+.mindmap-branch-label {
+    background: #eef2f7; padding: 8px 16px; border-radius: 12px;
+    font-weight: 600; font-size: 0.9rem;
+    border: 2px solid transparent; transition: all 0.2s;
+    white-space: nowrap;
+}
+.mindmap-branch-label:hover { border-color: var(--primary); }
+.mindmap-leaves {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    max-width: 220px;
+}
+.mindmap-leaf {
+    background: white; padding: 4px 10px; border-radius: 8px;
+    font-size: 0.8rem; color: var(--text-light);
+    border: 1px solid #e8ecf0; white-space: nowrap;
+}
+
+/* === Exercises Header === */
+.exercises-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+.btn-download {
+    padding: 6px 16px; background: #fff; color: var(--primary);
+    border: 2px solid var(--primary); border-radius: 20px;
+    font-size: 0.85rem; font-weight: 600; text-decoration: none;
+    transition: all 0.2s;
+}
+.btn-download:hover { background: #eef6ff; text-decoration: none; }
 
 /* === PDF Viewer === */
 .pdf-viewer { margin: 16px 0 32px; }

@@ -1,13 +1,14 @@
-"""Exercise routes — serve pre-generated exercises with answer reveal."""
+"""Exercise routes — serve pre-generated exercises with answer reveal + Word download."""
 
 import json
+import io
 from pathlib import Path
 
-from fastapi import APIRouter, Form, Depends
-from fastapi.responses import HTMLResponse
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from db.database import get_db
+from fastapi import APIRouter
+from fastapi.responses import HTMLResponse, StreamingResponse
+from docx import Document
+from docx.shared import Pt, Inches, Cm, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from services.ai_tutor import AITutorService
 from services.progress import ProgressService
 from config import settings
@@ -109,3 +110,98 @@ function checkFill(qid, answer) {
 </script>
 """
     return HTMLResponse(html + js)
+
+
+@router.get("/exercises/{section_id}/download")
+async def download_exercises(section_id: str):
+    """Generate and download a Word document of exercises for printing."""
+    ex_list = EXERCISES.get(section_id, EXERCISES["default"])
+    if not ex_list or ex_list == EXERCISES["default"]:
+        # Try to find section name
+        from routes.pages import MATH_SECTIONS
+        sec_name = section_id
+        for s in MATH_SECTIONS:
+            if s["id"] == section_id:
+                sec_name = f"{s['code']} {s['title']}"
+                break
+        # Still return a basic doc
+        ex_list = [{"type": "choice", "question": "请先学习教材，练习题正在准备中",
+                     "choices": ["好的"], "answer": 0, "explanation": ""}]
+
+    doc = Document()
+
+    # Page setup
+    style = doc.styles['Normal']
+    style.font.name = '宋体'
+    style.font.size = Pt(11)
+    style.paragraph_format.line_spacing = 1.5
+
+    # Title
+    title = doc.add_heading('数学七年级上册 · 练习题', level=1)
+    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    # Subtitle
+    from routes.pages import MATH_SECTIONS
+    sec_name = section_id
+    for s in MATH_SECTIONS:
+        if s["id"] == section_id:
+            sec_name = f"{s['chapter']} — {s['code']} {s['title']}"
+            break
+    subtitle = doc.add_paragraph(sec_name)
+    subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    subtitle.runs[0].font.size = Pt(12)
+    subtitle.runs[0].font.color.rgb = RGBColor(100, 100, 100)
+
+    doc.add_paragraph('姓名：______________    日期：______________    得分：______________')
+    doc.add_paragraph('')
+
+    # Exercises
+    for i, ex in enumerate(ex_list):
+        q_num = f"第{i+1}题"
+        q_type_map = {"choice": "【选择题】", "fill": "【填空题】"}
+        q_type = q_type_map.get(ex["type"], "【题目】")
+
+        p = doc.add_paragraph()
+        run = p.add_run(f"{q_num} {q_type} {ex['question']}")
+        run.bold = True
+        run.font.size = Pt(11)
+
+        if ex["type"] == "choice" and "choices" in ex:
+            for j, choice in enumerate(ex["choices"]):
+                doc.add_paragraph(f"    {chr(65+j)}. {choice}", style='List Bullet')
+
+        # Answer space
+        doc.add_paragraph('')
+        doc.add_paragraph('答：___________________________________________________________')
+        doc.add_paragraph('')
+
+    # Answer Key page
+    doc.add_page_break()
+    ans_title = doc.add_heading('参考答案', level=2)
+    ans_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    for i, ex in enumerate(ex_list):
+        p = doc.add_paragraph()
+        run = p.add_run(f"第{i+1}题答案：{ex.get('answer', '（见解析）')}")
+        run.font.size = Pt(10)
+
+        if ex.get("explanation"):
+            exp_p = doc.add_paragraph()
+            exp_run = exp_p.add_run(f"    解析：{ex['explanation']}")
+            exp_run.font.size = Pt(9)
+            exp_run.font.color.rgb = RGBColor(100, 100, 100)
+
+    # Save to bytes
+    buffer = io.BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+
+    # Safe ASCII filename for HTTP header
+    from urllib.parse import quote
+    safe_name = f"math_grade7_exercises_{section_id}.docx"
+
+    return StreamingResponse(
+        buffer,
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f"attachment; filename={safe_name}"},
+    )
