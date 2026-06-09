@@ -10,17 +10,24 @@
 
     <section class="subject-grid">
         {% for subject in subjects %}
-        <a href="/subjects/{{ subject.id }}/{{ subject.grade }}"
-           class="subject-card {% if not subject.ready %}subject-soon{% endif %}">
-            <div class="subject-icon">{{ subject.icon }}</div>
-            <h2>{{ subject.name }} · {{ subject.semester }}</h2>
-            <p class="subject-desc">{{ subject.description }}</p>
-            {% if subject.ready %}
-                <span class="badge badge-ready">✅ {{ subject.topic_count }} 个知识点已就绪</span>
-            {% else %}
-                <span class="badge badge-pending">⏳ 即将上线</span>
+        <div class="subject-card-wrap">
+            <a href="/subjects/{{ subject.id }}/{{ subject.grade }}"
+               class="subject-card {% if not subject.ready %}subject-soon{% endif %}">
+                <div class="subject-icon">{{ subject.icon }}</div>
+                <h2>{{ subject.name }} · {{ subject.semester }}</h2>
+                <p class="subject-desc">{{ subject.description }}</p>
+                {% if subject.ready %}
+                    <span class="badge badge-ready">✅ {{ subject.topic_count }} 个知识点</span>
+                {% else %}
+                    <span class="badge badge-pending">⏳ 即将上线</span>
+                {% endif %}
+            </a>
+            {% if subject.pdf_url %}
+            <a href="{{ subject.pdf_url }}" target="_blank" class="pdf-link">
+                📄 查看教材PDF原文
+            </a>
             {% endif %}
-        </a>
+        </div>
         {% endfor %}
     </section>
 </div>

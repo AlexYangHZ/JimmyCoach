@@ -20,6 +20,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.app_name, lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/textbook", StaticFiles(directory="data/textbooks"), name="textbook")
 
 app.include_router(pages.router)
 app.include_router(chat.router)

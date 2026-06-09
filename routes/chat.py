@@ -68,15 +68,20 @@ async def chat_send(
 
     # === RAG: Retrieve relevant content ===
     context_chunks = []
-    if subject in SUBJECT_RETRIEVERS and SUBJECT_RETRIEVERS[subject]:
-        try:
-            retriever = SUBJECT_RETRIEVERS[subject]()
-            results = retriever.search(message, top_k=3)
-            if results:
-                context_chunks = [r["text"][:600] for r in results]
-                print(f"RAG: Found {len(results)} relevant chunks for '{message[:30]}...'")
-        except Exception as e:
-            print(f"RAG retrieval error: {e}")
+    rag_source_chapter = ""
+    rag_source_section = ""
+    if subject in SUBJECT_RETRIEVERS:
+        retriever_fn = SUBJECT_RETRIEVERS.get(subject)
+        if retriever_fn:
+            try:
+                retriever = retriever_fn()
+                results = retriever.search(message, top_k=3)
+                if results:
+                    context_chunks = [r["text"][:600] for r in results]
+                    rag_source_chapter = results[0]["chapter"]
+                    rag_source_section = results[0]["section"]
+            except Exception:
+                pass
 
     # Build context
     if context_chunks:
@@ -107,21 +112,13 @@ async def chat_send(
 
     # Show source info
     source_info = ""
-    if context_chunks:
-        first = getattr(results[0] if 'results' in dir() else None, None, None)
-        if hasattr(first, '__getitem__'):
-            source_info = f'<div class="rag-source">📖 参考：{results[0]["chapter"]} · {results[0]["section"]}</div>'
+    if rag_source_chapter:
+        source_info = f'<div class="rag-source">📖 参考：{rag_source_chapter} · {rag_source_section}</div>'
 
     return HTMLResponse(
-        f'<div class="chat-msg msg-user">'
-        f'<span class="msg-avatar">🧑</span>'
-        f'<span class="msg-content">{message}</span>'
-        f'</div>'
-        f'<div class="chat-msg msg-assistant">'
-        f'<span class="msg-avatar">🤖</span>'
-        f'<span class="msg-content">{reply}</span>'
+        f'<div class="chat-float-msg user"><strong>🧑 你：</strong>{message}</div>'
+        f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{reply}</div>'
         f'{source_info}'
-        f'</div>'
     )
 
 
@@ -134,21 +131,17 @@ async def chat_history(
     progress_svc = ProgressService(db)
     last_session = await progress_svc.get_last_session()
     if not last_session:
-        return HTMLResponse('<div class="chat-empty"><p>👋 你好！我是你的数学辅导老师，关于七年级上册数学的任何问题都可以问我。</p></div>')
+        return HTMLResponse('<div class="chat-float-msg assistant">👋 你好！我是小教练，关于七年级上册数学的任何问题都可以问我。</div>')
 
     history = await progress_svc.get_chat_history(last_session.id)
     if not history:
-        return HTMLResponse('<div class="chat-empty"><p>👋 你好！有任何关于数学的问题都可以问我。</p></div>')
+        return HTMLResponse('<div class="chat-float-msg assistant">👋 你好！有任何关于数学的问题都可以问我。</div>')
 
     html_parts = []
     for msg in history[-20:]:
-        role_class = "msg-assistant" if msg["role"] == "assistant" else "msg-user"
-        avatar = "🤖" if msg["role"] == "assistant" else "🧑"
-        html_parts.append(
-            f'<div class="chat-msg {role_class}">'
-            f'<span class="msg-avatar">{avatar}</span>'
-            f'<span class="msg-content">{msg["content"]}</span>'
-            f'</div>'
-        )
+        if msg["role"] == "user":
+            html_parts.append(f'<div class="chat-float-msg user"><strong>🧑 你：</strong>{msg["content"]}</div>')
+        else:
+            html_parts.append(f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{msg["content"]}</div>')
 
     return HTMLResponse("".join(html_parts))

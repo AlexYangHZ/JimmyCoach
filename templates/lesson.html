@@ -1,53 +1,36 @@
 {% extends "base.html" %}
-{% block title %}{{ topic.title }} — Jimmy教练{% endblock %}
+{% block title %}{{ section.title }} — Jimmy教练{% endblock %}
 
 {% block content %}
 <div class="lesson-container">
     <div class="breadcrumb">
-        <a href="/">首页</a> → <a href="/subjects/{{ subject }}/{{ grade }}">{{ subject_name }}</a> → {{ topic.title }}
+        <a href="/">首页</a> → <a href="/subjects/{{ subject }}/{{ grade }}">{{ subject_name }}</a> → {{ section.title }}
     </div>
 
-    <!-- Textbook content — loaded from markdown -->
-    <div class="lesson-content">
-        <h2>{{ topic.code }} {{ topic.title }}</h2>
-        <div class="textbook-content">
-            {{ content_html | safe }}
-        </div>
+    <div class="lesson-header">
+        <span class="section-badge">{{ section.chapter }}</span>
+        <h2>{{ section.code }} {{ section.title }}</h2>
+        <span class="page-count">📄 {{ section.pages }}页</span>
     </div>
 
-    <!-- Exercises area (from curriculum YAML if available) -->
+    <!-- PDF Viewer -->
+    <div class="pdf-viewer">
+        <iframe src="{{ pdf_url }}#toolbar=1&navpanes=0"
+                width="100%" height="700px"
+                style="border: 1px solid #ddd; border-radius: 8px;">
+        </iframe>
+        <a href="{{ pdf_url }}" target="_blank" class="pdf-open-new">🔗 在新窗口打开PDF</a>
+    </div>
+
+    <!-- Exercises Section -->
     <div id="exercises-area" class="exercises-section">
-        <h2>📝 练习时间</h2>
+        <h2>📝 练习题</h2>
         <div id="exercise-container"
-             hx-get="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}/exercises"
+             hx-get="/exercises/{{ section.id }}"
              hx-trigger="load"
              hx-swap="innerHTML">
-            <p>加载练习题中...</p>
+            <div class="loading"><p>加载练习题中...</p><div class="spinner"></div></div>
         </div>
-    </div>
-
-    <!-- Chat panel — RAG-based, subject-specific -->
-    <div id="chat-panel" class="chat-panel">
-        <div class="chat-header">
-            💬 关于{{ subject_name }}的问题？基于教材内容回答
-        </div>
-        <div id="chat-messages" class="chat-messages"
-             hx-get="/chat/history"
-             hx-trigger="load"
-             hx-swap="innerHTML">
-        </div>
-        <form class="chat-input-form"
-              hx-post="/chat/send"
-              hx-target="#chat-messages"
-              hx-swap="beforeend"
-              hx-on::after-request="this.reset()">
-            <input type="hidden" name="topic_id" value="{{ topic.id }}">
-            <input type="hidden" name="subject" value="{{ subject }}">
-            <input type="hidden" name="grade" value="{{ grade }}">
-            <input type="text" name="message" placeholder="问一个关于{{ subject_name }}的问题..." required autocomplete="off"
-                   class="chat-input">
-            <button type="submit" class="btn-send">发送</button>
-        </form>
     </div>
 </div>
 {% endblock %}

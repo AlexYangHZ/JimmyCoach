@@ -322,15 +322,91 @@ a:hover { text-decoration: underline; }
 .coming-soon { text-align: center; padding: 60px 20px; color: var(--text-light); }
 .coming-soon p { margin: 8px 0; }
 
-/* === Textbook Content === */
-.textbook-content { margin-top: 20px; line-height: 2; }
-.textbook-content h2 { color: var(--primary); margin: 24px 0 12px; font-size: 1.3rem; }
-.textbook-content h3 { color: var(--text); margin: 16px 0 8px; font-size: 1.1rem; }
-.textbook-content p { margin-bottom: 10px; text-indent: 0; }
-.textbook-content br + br { display: none; }
+/* === Subject Card Wrap === */
+.subject-card-wrap { display: flex; flex-direction: column; gap: 4px; }
+.pdf-link {
+    display: block; text-align: center; padding: 8px;
+    background: #f8f9fa; border-radius: 0 0 var(--radius) var(--radius);
+    color: var(--primary); font-size: 0.85rem; font-weight: 500;
+}
+.pdf-link:hover { background: #eef2f7; text-decoration: none; }
+
+/* === Lesson Header === */
+.lesson-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.lesson-header h2 { font-size: 1.4rem; }
+.section-badge {
+    padding: 3px 10px; background: var(--primary); color: white;
+    border-radius: 12px; font-size: 0.8rem; font-weight: 600;
+}
+.page-count { font-size: 0.85rem; color: var(--text-light); }
+
+/* === PDF Viewer === */
+.pdf-viewer { margin: 16px 0 32px; }
+.pdf-open-new { display: inline-block; margin-top: 8px; font-size: 0.85rem; color: var(--primary); }
+
+/* === Exercises (answer-on-click) === */
+.exercise-item {
+    background: var(--card-bg); border-radius: var(--radius); padding: 16px 20px;
+    margin-bottom: 10px; box-shadow: var(--shadow);
+}
+.exercise-item .q-title { font-weight: 600; margin-bottom: 8px; }
+.exercise-item .q-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.exercise-item .q-choice {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 16px;
+    cursor: pointer; font-size: 0.9rem; transition: all 0.15s;
+}
+.exercise-item .q-choice:hover { border-color: var(--primary); background: #eef6ff; }
+.exercise-item .q-choice.selected { background: var(--primary); color: white; border-color: var(--primary); }
+.exercise-item .q-choice.correct { background: var(--success); color: white; border-color: var(--success); }
+.exercise-item .q-choice.wrong { background: var(--danger); color: white; border-color: var(--danger); }
+.exercise-item .q-answer { display: none; margin-top: 10px; padding: 10px 14px; background: #e8f5e9; border-radius: 8px; font-size: 0.9rem; }
+.exercise-item .q-answer.show { display: block; }
+.btn-show-answer { margin-top: 8px; padding: 4px 14px; background: none; border: 1px solid var(--primary); color: var(--primary); border-radius: 14px; cursor: pointer; font-size: 0.85rem; }
+.btn-show-answer:hover { background: #eef6ff; }
+
+/* === Floating Chat === */
+.chat-float {
+    position: fixed; bottom: 20px; right: 20px; width: 380px; max-height: 520px;
+    background: var(--card-bg); border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    display: flex; flex-direction: column; z-index: 999;
+    transition: all 0.3s ease;
+}
+.chat-float.collapsed .chat-float-body { display: none; }
+.chat-float.collapsed { max-height: none; width: auto; }
+.chat-float-header {
+    padding: 12px 16px; background: var(--primary); color: white;
+    border-radius: 16px 16px 0 0; cursor: pointer; font-weight: 600;
+    display: flex; justify-content: space-between; align-items: center;
+    user-select: none;
+}
+.chat-float.collapsed .chat-float-header { border-radius: 16px; }
+.chat-float-body { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+.chat-float-messages {
+    flex: 1; overflow-y: auto; padding: 12px; max-height: 320px;
+    display: flex; flex-direction: column; gap: 8px;
+}
+.chat-float-form {
+    display: flex; gap: 6px; padding: 8px 12px; border-top: 1px solid var(--border);
+}
+.chat-float-form textarea {
+    flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 12px;
+    font-size: 0.9rem; resize: none; font-family: inherit;
+}
+.chat-float-form textarea:focus { outline: none; border-color: var(--primary); }
+.chat-float-form button {
+    padding: 8px 16px; background: var(--primary); color: white; border: none;
+    border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+    align-self: flex-end;
+}
+.chat-float-form button:hover { background: var(--primary-dark); }
+
+.chat-float-msg { font-size: 0.88rem; line-height: 1.5; }
+.chat-float-msg.user { text-align: right; color: var(--primary); }
+.chat-float-msg.assistant { color: var(--text); }
 
 /* === RAG Source === */
-.rag-source { font-size: 0.75rem; color: var(--text-light); margin-top: 4px; padding: 2px 8px; background: #f0f4f8; border-radius: 6px; display: inline-block; }
+.rag-source { font-size: 0.72rem; color: var(--text-light); margin-top: 2px; padding: 1px 6px; background: #f0f4f8; border-radius: 4px; display: inline-block; }
 
 /* === Footer === */
 .app-footer {

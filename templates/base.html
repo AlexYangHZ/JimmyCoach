@@ -23,6 +23,40 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Floating Chat Assistant (global) -->
+    <div id="chat-float" class="chat-float collapsed">
+        <div class="chat-float-header" onclick="toggleChat()">
+            <span>💬 小教练 · 问我数学问题</span>
+            <span class="chat-toggle-icon">▲</span>
+        </div>
+        <div class="chat-float-body">
+            <div id="chat-float-messages" class="chat-float-messages"
+                 hx-get="/chat/history"
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+            </div>
+            <form class="chat-float-form"
+                  hx-post="/chat/send"
+                  hx-target="#chat-float-messages"
+                  hx-swap="beforeend"
+                  hx-on::after-request="this.reset()">
+                <input type="hidden" name="subject" value="math">
+                <input type="hidden" name="grade" value="7">
+                <textarea name="message" placeholder="输入你的数学问题..." rows="2" required></textarea>
+                <button type="submit">发送</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    function toggleChat() {
+        var el = document.getElementById('chat-float');
+        el.classList.toggle('collapsed');
+        var icon = el.querySelector('.chat-toggle-icon');
+        icon.textContent = el.classList.contains('collapsed') ? '▲' : '▼';
+    }
+    </script>
+
     <footer class="app-footer">
         <p>Jimmy的学习伙伴 🤖 · 基于人教版七年级上册教材</p>
     </footer>

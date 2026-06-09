@@ -1,19 +1,17 @@
 """Page routes — serve HTML pages."""
 
-import yaml
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.database import get_db
 from services.progress import ProgressService
-from config import settings
 
 router = APIRouter()
 
-# Subject config — 七年级上册, three subjects
 SUBJECTS_CONFIG = [
     {"id": "math", "name": "数学", "icon": "📐", "grade": 7, "semester": "上册",
+     "pdf_url": "/textbook/math/grade7/pages/full.pdf",
      "description": "有理数、代数式、整式加减、一元一次方程、几何图形初步"},
     {"id": "english", "name": "英语", "icon": "🌐", "grade": 7, "semester": "上册",
      "description": "待添加PDF处理后启用"},
@@ -21,169 +19,88 @@ SUBJECTS_CONFIG = [
      "description": "待添加PDF处理后启用"},
 ]
 
-
-def load_math_topics():
-    """Load math topics from the extracted textbook index."""
-    index_path = settings.data_dir / "textbooks" / "math" / "grade7" / "INDEX.md"
-    if not index_path.exists():
-        return []
-
-    topics = []
-    text = index_path.read_text(encoding="utf-8")
-    current_chapter = None
-
-    for line in text.split("\n"):
-        line = line.strip()
-        if line.startswith("## 第") and "章" in line:
-            current_chapter = line.lstrip("# ").strip()
-        elif line.startswith("- [") and "章" not in line:
-            # Parse section: "  - [1.1 正数和负数](chapter_01/section_01.md)"
-            import re
-            match = re.match(r"- \[([\d.]+)\s+(.+?)\]\((.+?)\)", line)
-            if match and current_chapter:
-                topics.append({
-                    "id": match.group(3).replace("/", "-").replace(".md", ""),
-                    "code": match.group(1),
-                    "title": match.group(2),
-                    "path": match.group(3),
-                    "chapter": current_chapter,
-                })
-
-    return topics
+# Section → PDF mapping (matches split_pdf.py output)
+MATH_SECTIONS = [
+    {"id": "ch01_sec01", "code": "1.1", "title": "正数和负数", "chapter": "第1章 有理数", "pdf": "ch01_sec01.pdf", "pages": 5},
+    {"id": "ch01_sec02", "code": "1.2", "title": "有理数及其大小比较", "chapter": "第1章 有理数", "pdf": "ch01_sec02.pdf", "pages": 14},
+    {"id": "ch01_reading", "code": "阅读", "title": "用正负数表示允许偏差", "chapter": "第1章 有理数", "pdf": "ch01_reading.pdf", "pages": 1},
+    {"id": "ch01_history", "code": "数学史", "title": "漫漫长路识负数", "chapter": "第1章 有理数", "pdf": "ch01_history.pdf", "pages": 1},
+    {"id": "ch02_sec01", "code": "2.1", "title": "有理数的加法与减法", "chapter": "第2章 有理数的运算", "pdf": "ch02_sec01.pdf", "pages": 13},
+    {"id": "ch02_sec02", "code": "2.2", "title": "有理数的乘法与除法", "chapter": "第2章 有理数的运算", "pdf": "ch02_sec02.pdf", "pages": 13},
+    {"id": "ch02_sec03", "code": "2.3", "title": "有理数的乘方", "chapter": "第2章 有理数的运算", "pdf": "ch02_sec03.pdf", "pages": 8},
+    {"id": "ch03_sec01", "code": "3.1", "title": "列代数式表示数量关系", "chapter": "第3章 代数式", "pdf": "ch03_sec01.pdf", "pages": 10},
+    {"id": "ch03_sec02", "code": "3.2", "title": "代数式的值", "chapter": "第3章 代数式", "pdf": "ch03_sec02.pdf", "pages": 6},
+    {"id": "ch04_sec01", "code": "4.1", "title": "整式", "chapter": "第4章 整式的加减", "pdf": "ch04_sec01.pdf", "pages": 6},
+    {"id": "ch04_sec02", "code": "4.2", "title": "整式的加法与减法", "chapter": "第4章 整式的加减", "pdf": "ch04_sec02.pdf", "pages": 12},
+    {"id": "ch05_sec01", "code": "5.1", "title": "方程", "chapter": "第5章 一元一次方程", "pdf": "ch05_sec01.pdf", "pages": 9},
+    {"id": "ch05_sec02", "code": "5.2", "title": "解一元一次方程", "chapter": "第5章 一元一次方程", "pdf": "ch05_sec02.pdf", "pages": 13},
+    {"id": "ch05_sec03", "code": "5.3", "title": "实际问题与一元一次方程", "chapter": "第5章 一元一次方程", "pdf": "ch05_sec03.pdf", "pages": 12},
+    {"id": "ch06_sec01", "code": "6.1", "title": "几何图形", "chapter": "第6章 几何图形初步", "pdf": "ch06_sec01.pdf", "pages": 12},
+    {"id": "ch06_sec02", "code": "6.2", "title": "直线、射线、线段", "chapter": "第6章 几何图形初步", "pdf": "ch06_sec02.pdf", "pages": 8},
+    {"id": "ch06_sec03", "code": "6.3", "title": "角", "chapter": "第6章 几何图形初步", "pdf": "ch06_sec03.pdf", "pages": 14},
+]
 
 
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: AsyncSession = Depends(get_db)):
-    progress_svc = ProgressService(db)
-
-    enriched_subjects = []
+    subjects = []
     for subj in SUBJECTS_CONFIG:
-        # Count topics for math
-        topic_count = 0
-        if subj["id"] == "math":
-            topics = load_math_topics()
-            topic_count = len(topics)
-
-        enriched_subjects.append({
-            **subj,
-            "topic_count": topic_count,
-            "ready": subj["id"] == "math",  # Only math is ready
-        })
+        ready = subj["id"] == "math"
+        topic_count = len(MATH_SECTIONS) if ready else 0
+        subjects.append({**subj, "topic_count": topic_count, "ready": ready})
 
     return request.app.state.templates.TemplateResponse(
-        "home.html",
-        {"request": request, "subjects": enriched_subjects},
+        "home.html", {"request": request, "subjects": subjects},
     )
 
 
 @router.get("/subjects/{subject}/{grade}", response_class=HTMLResponse)
-async def subject_page(
-    request: Request,
-    subject: str,
-    grade: int,
-    db: AsyncSession = Depends(get_db),
-):
+async def subject_page(request: Request, subject: str, grade: int,
+                        db: AsyncSession = Depends(get_db)):
     if subject != "math":
+        name = {"english": "英语", "chinese": "语文"}.get(subject, subject)
+        icon = {"english": "🌐", "chinese": "📖"}.get(subject, "📚")
         return request.app.state.templates.TemplateResponse(
-            "subject.html",
-            {
-                "request": request,
-                "subject": subject,
-                "grade": grade,
-                "subject_name": {"math": "数学", "english": "英语", "chinese": "语文"}.get(subject, subject),
-                "subject_icon": {"math": "📐", "english": "🌐", "chinese": "📖"}.get(subject, "📚"),
-                "topics": [],
-                "not_ready": True,
-            },
-        )
+            "subject.html", {"request": request, "subject_name": name,
+                             "subject_icon": icon, "grade": grade,
+                             "topics": [], "not_ready": True})
 
     progress_svc = ProgressService(db)
-    raw_topics = load_math_topics()
-
-    # Enrich with progress
-    simplified = [{"id": t["id"], "title": t["title"], "chapter": t["chapter"],
-                    "code": t["code"], "order": i + 1, "dependencies": [], "key_points": []}
-                 for i, t in enumerate(raw_topics)]
+    simplified = [{"id": s["id"], "title": s["title"], "chapter": s["chapter"],
+                    "code": s["code"], "pages": s["pages"], "order": i + 1,
+                    "dependencies": [], "key_points": []}
+                  for i, s in enumerate(MATH_SECTIONS)]
     enriched = await progress_svc.get_progress_summary(simplified)
-
-    # All topics are available (no hard dependency chain for textbook browsing)
-    completed_ids = {t["id"] for t in enriched if t["status"] == "mastered"}
-    for topic in enriched:
-        topic["available"] = True
-        topic["code"] = topic.get("code", "")
-        topic["chapter"] = topic.get("chapter", "")
+    for t in enriched:
+        t["available"] = True
 
     return request.app.state.templates.TemplateResponse(
-        "subject.html",
-        {
-            "request": request,
-            "subject": subject,
-            "grade": grade,
-            "subject_name": "数学",
-            "subject_icon": "📐",
-            "topics": enriched,
-            "not_ready": False,
-        },
-    )
+        "subject.html", {"request": request, "subject": subject, "grade": grade,
+                         "subject_name": "数学", "subject_icon": "📐",
+                         "topics": enriched, "not_ready": False})
 
 
 @router.get("/learn/{subject}/{grade}/{topic_id}", response_class=HTMLResponse)
-async def lesson_page(
-    request: Request,
-    subject: str,
-    grade: int,
-    topic_id: str,
-    db: AsyncSession = Depends(get_db),
-):
-    """Lesson page with textbook content + exercises + chat."""
+async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
+                       db: AsyncSession = Depends(get_db)):
     if subject != "math":
         return HTMLResponse("Coming soon", status_code=404)
 
-    # Load markdown content for this topic
-    topics = load_math_topics()
-    topic = None
-    for t in topics:
-        if t["id"] == topic_id:
-            topic = t
+    sec = None
+    for s in MATH_SECTIONS:
+        if s["id"] == topic_id:
+            sec = s
             break
+    if not sec:
+        return HTMLResponse("Not found", status_code=404)
 
-    if not topic:
-        return HTMLResponse("Topic not found", status_code=404)
-
-    # Load the actual markdown content
-    md_path = settings.data_dir / "textbooks" / "math" / "grade7" / topic["path"]
-    content_html = ""
-    if md_path.exists():
-        md_text = md_path.read_text(encoding="utf-8")
-        # Simple markdown to HTML
-        html_lines = []
-        for line in md_text.split("\n"):
-            line = line.strip()
-            if not line:
-                html_lines.append("<br>")
-            elif line.startswith("# "):
-                html_lines.append(f'<h2>{line[2:]}</h2>')
-            elif line.startswith("## "):
-                html_lines.append(f'<h3>{line[3:]}</h3>')
-            elif line.startswith("**"):
-                html_lines.append(f'<p><strong>{line.strip("*")}</strong></p>')
-            else:
-                html_lines.append(f"<p>{line}</p>")
-        content_html = "\n".join(html_lines)
-
-    # Start session
+    pdf_url = f"/textbook/math/grade7/pages/{sec['pdf']}"
     progress_svc = ProgressService(db)
     session_id = await progress_svc.start_session(topic_id)
 
     return request.app.state.templates.TemplateResponse(
-        "lesson.html",
-        {
-            "request": request,
-            "subject": subject,
-            "grade": grade,
-            "topic": topic,
-            "session_id": session_id,
+        "lesson.html", {
+            "request": request, "subject": subject, "grade": grade,
+            "section": sec, "pdf_url": pdf_url, "session_id": session_id,
             "subject_name": "数学",
-            "content_html": content_html,
-        },
-    )
+        })
