@@ -68,10 +68,11 @@ async def test_subject_page_renders(client):
 
 @pytest.mark.asyncio
 async def test_lesson_page_renders(client):
-    response = await client.get("/learn/math/7/chapter_01-section_01")
+    response = await client.get("/learn/math/7/ch01_sec01")
     assert response.status_code == 200
-    assert "chat-panel" in response.text
-    assert "textbook-content" in response.text
+    assert "mindmap-area" in response.text
+    assert "btn-pdf-link" in response.text
+    assert "exercise-container" in response.text
 
 
 @pytest.mark.asyncio

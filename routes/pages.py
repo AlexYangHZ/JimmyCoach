@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.database import get_db
 from services.progress import ProgressService
 from data.mindmaps.math_grade7 import get_mindmap
+from data.keypoints.math_grade7 import get_keypoints
 
 router = APIRouter()
 
@@ -96,6 +97,7 @@ async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
         return HTMLResponse("Not found", status_code=404)
 
     pdf_url = f"/textbook/math/grade7/pages/{sec['pdf']}"
+    keypoints = get_keypoints(topic_id)
     progress_svc = ProgressService(db)
     session_id = await progress_svc.start_session(topic_id)
 
@@ -103,7 +105,7 @@ async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
         "lesson.html", {
             "request": request, "subject": subject, "grade": grade,
             "section": sec, "pdf_url": pdf_url, "session_id": session_id,
-            "subject_name": "数学",
+            "subject_name": "数学", "keypoints": keypoints,
         })
 
 

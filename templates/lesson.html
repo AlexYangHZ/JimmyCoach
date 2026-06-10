@@ -16,6 +16,42 @@
         <a href="{{ pdf_url }}" target="_blank" class="btn-pdf-link">📖 查看教材PDF原文 →</a>
     </div>
 
+    <!-- Key Points — formulas, concepts, tips -->
+    {% if keypoints %}
+    <div class="keypoints-box">
+        {% if keypoints.concepts %}
+        <div class="kp-section">
+            <h3>📌 核心概念</h3>
+            <ul>
+            {% for c in keypoints.concepts %}
+                <li>{{ c }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% if keypoints.formulas %}
+        <div class="kp-section kp-formulas">
+            <h3>📐 公式与定理</h3>
+            <ul>
+            {% for f in keypoints.formulas %}
+                <li><strong>{{ f }}</strong></li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        {% if keypoints.tips %}
+        <div class="kp-section kp-tips">
+            <h3>💡 学习提示</h3>
+            <ul>
+            {% for t in keypoints.tips %}
+                <li>{{ t }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <!-- Mind Map — always visible -->
     <div id="mindmap-area" class="mindmap-area"
          hx-get="/mindmap/{{ section.id }}"

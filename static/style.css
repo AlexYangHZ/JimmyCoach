@@ -348,6 +348,23 @@ a:hover { text-decoration: underline; }
 }
 .btn-pdf-link:hover { background: #eef6ff; text-decoration: none; }
 
+/* === Key Points Box === */
+.keypoints-box {
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+    border: 2px solid #d4ddf7; border-radius: 16px;
+    padding: 20px 24px; margin: 16px 0 20px;
+}
+.keypoints-box h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.kp-section { margin-bottom: 14px; }
+.kp-section:last-child { margin-bottom: 0; }
+.kp-section ul { padding-left: 20px; }
+.kp-section li { margin-bottom: 4px; line-height: 1.7; font-size: 0.95rem; }
+.kp-formulas { background: #fff; padding: 12px 16px; border-radius: 10px; border-left: 4px solid #e94; }
+.kp-formulas h3 { color: #e67e22; }
+.kp-formulas li { font-family: 'Courier New', monospace; font-size: 1rem; }
+.kp-tips { background: #fffef5; padding: 12px 16px; border-radius: 10px; border-left: 4px solid #f1c40f; }
+.kp-tips h3 { color: #d4a017; }
+
 /* === Mind Map === */
 .mindmap-area { margin: 16px 0 24px; }
 .mindmap-container {
