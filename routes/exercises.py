@@ -299,7 +299,7 @@ async def download_exercises(section_id: str):
 
 @router.get("/exercises/all", response_class=HTMLResponse)
 async def all_exercises(request: Request):
-    """Show all 85 exercises from all sections on one page."""
+    """Show all 85 exercises from all sections on one page (uses Jinja2 template)."""
     sections = []
     for sec in MATH_SECTIONS:
         ex_list = EXERCISES.get(sec["id"], EXERCISES["default"])
@@ -309,120 +309,10 @@ async def all_exercises(request: Request):
 
     total_ex = sum(len(s["exercises"]) for s in sections)
 
-    html_parts = [
-        '<div class="all-ex-page">',
-        '<div class="all-ex-top">',
-        '<a href="/subjects/math/7" class="all-ex-back">← 返回知识点</a>',
-        '<h1>📝 全部练习题</h1>',
-        f'<p class="all-ex-summary">数学七年级上册 · {total_ex} 道题 · {len(sections)} 个知识点</p>',
-        '</div>',
-    ]
-
-    # Sidebar quick-nav
-    html_parts.append('<nav class="all-ex-nav"><span>快速跳转：</span>')
-    for s in sections:
-        html_parts.append(f'<a href="#sec-{s["section"]["id"]}">{s["section"]["code"]}</a>')
-    html_parts.append('</nav>')
-
-    for s in sections:
-        sec = s["section"]
-        html_parts.append(
-            f'<div class="all-ex-chapter" id="sec-{sec["id"]}">'
-            f'<div class="all-ex-ch-head">'
-            f'<span class="all-ex-ch-num">{sec["code"]}</span>'
-            f'<h2>{sec["title"]}</h2>'
-            f'<span class="all-ex-ch-badge">{sec["chapter"]}</span>'
-            f'</div>'
-            f'<div class="all-ex-ch-list">'
-        )
-
-        for i, ex in enumerate(s["exercises"]):
-            qid = f"ae-{sec['id']}-{i}"
-            qnum = i + 1
-            qtype_icon = {"choice": "🔤", "fill": "✏️", "true_false": "✅"}.get(ex["type"], "📝")
-
-            html_parts.append(f'<div class="ae-card" id="{qid}">')
-            html_parts.append(
-                f'<div class="ae-q">'
-                f'<span class="ae-q-num">{qnum}</span>'
-                f'<span class="ae-q-type">{qtype_icon}</span>'
-                f'<span class="ae-q-text">{ex["question"]}</span>'
-                f'</div>'
-            )
-
-            if ex["type"] == "choice" and "choices" in ex:
-                html_parts.append('<div class="ae-choices">')
-                for j, choice in enumerate(ex.get("choices", [])):
-                    letter = chr(65 + j)
-                    html_parts.append(
-                        f'<button class="ae-opt" '
-                        f'onclick="aeCheck(\'{qid}\',{j},{ex["answer"]},this)" '
-                        f'data-correct="{ex["answer"]}">'
-                        f'<span class="ae-opt-letter">{letter}</span>'
-                        f'<span class="ae-opt-text">{choice}</span>'
-                        f'</button>'
-                    )
-                html_parts.append('</div>')
-            elif ex["type"] == "fill":
-                html_parts.append(
-                    f'<div class="ae-fill">'
-                    f'<input class="ae-input" id="{qid}-inp" placeholder="输入你的答案...">'
-                    f'<button class="ae-btn" onclick="aeFill(\'{qid}\',\'{ex["answer"]}\')">检查</button>'
-                    f'<button class="ae-btn-err" onclick="aeErr(\'{sec["id"]}\',{i},\'{ex["question"]}\',\'{ex["answer"]}\')">📝 错题本</button>'
-                    f'</div>'
-                )
-            elif ex["type"] == "true_false":
-                html_parts.append(
-                    f'<div class="ae-choices">'
-                    f'<button class="ae-opt" onclick="aeCheck(\'{qid}\',0,{0 if ex["answer"]=="正确" else 1},this)" data-correct="{0 if ex["answer"]=="正确" else 1}"><span class="ae-opt-letter">✓</span>正确</button>'
-                    f'<button class="ae-opt" onclick="aeCheck(\'{qid}\',1,{0 if ex["answer"]=="正确" else 1},this)" data-correct="{0 if ex["answer"]=="正确" else 1}"><span class="ae-opt-letter">✗</span>错误</button>'
-                    f'</div>'
-                )
-
-            html_parts.append(
-                f'<div class="ae-answer" id="{qid}-ans">'
-                f'<span class="ae-ans-label">✅ 正确答案：</span>{ex["answer"]}'
-                f'<span class="ae-ans-desc">{ex["explanation"]}</span>'
-                f'</div>'
-            )
-            html_parts.append('</div>')
-
-        html_parts.append('</div></div>')
-
-    html_parts.append('</div>')
-
-    js = """
-<script>
-function aeCheck(qid, selected, correct, el) {
-    var card = document.getElementById(qid);
-    var opts = card.querySelectorAll('.ae-opt');
-    opts.forEach(function(o) { o.classList.remove('ae-pick', 'ae-right', 'ae-wrong'); o.disabled = true; });
-    if (selected === correct) {
-        el.classList.add('ae-right');
-    } else {
-        el.classList.add('ae-wrong');
-        opts[correct].classList.add('ae-right');
-    }
-    document.getElementById(qid + '-ans').classList.add('ae-show');
-}
-function aeFill(qid, answer) {
-    document.getElementById(qid + '-ans').classList.add('ae-show');
-}
-function aeErr(sid, idx, q, ans) {
-    fetch('/exercise/error', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'section_id=' + encodeURIComponent(sid) + '&exercise_idx=' + idx +
-              '&question=' + encodeURIComponent(q) + '&correct_answer=' + encodeURIComponent(ans)
-    }).then(function(r){ return r.text(); }).then(function(t){
-        var btn = event.target;
-        btn.textContent = '✅ 已记录';
-        btn.disabled = true;
-    });
-}
-</script>
-"""
-    return HTMLResponse("".join(html_parts) + js)
+    return request.app.state.templates.TemplateResponse(
+        "all_exercises.html",
+        {"request": request, "sections": sections, "total_ex": total_ex},
+    )
 
 
 @router.post("/exercise/error", response_class=HTMLResponse)

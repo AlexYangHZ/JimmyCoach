@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}全部练习题 — Jimmy教练{% endblock %}
+
+{% block content %}
+<div class="all-ex-page">
+    <div class="all-ex-top">
+        <a href="/subjects/math/7" class="all-ex-back">← 返回知识点</a>
+        <h1>📝 全部练习题</h1>
+        <p class="all-ex-summary">数学七年级上册 · {{ total_ex }} 道题 · {{ sections|length }} 个知识点</p>
+    </div>
+
+    <nav class="all-ex-nav">
+        <span>快速跳转：</span>
+        {% for s in sections %}
+        <a href="#sec-{{ s.section.id }}">{{ s.section.code }}</a>
+        {% endfor %}
+    </nav>
+
+    {% for s in sections %}
+    <div class="all-ex-chapter" id="sec-{{ s.section.id }}">
+        <div class="all-ex-ch-head">
+            <span class="all-ex-ch-num">{{ s.section.code }}</span>
+            <h2>{{ s.section.title }}</h2>
+            <span class="all-ex-ch-badge">{{ s.section.chapter }}</span>
+        </div>
+        <div class="all-ex-ch-list">
+            {% for ex in s.exercises %}
+            {% set qid = "ae-" + s.section.id + "-" + loop.index0|string %}
+            {% set qnum = loop.index %}
+            <div class="ae-card" id="{{ qid }}">
+                <div class="ae-q">
+                    <span class="ae-q-num">{{ qnum }}</span>
+                    <span class="ae-q-type">{% if ex.type == 'choice' %}🔤{% elif ex.type == 'fill' %}✏️{% else %}✅{% endif %}</span>
+                    <span class="ae-q-text">{{ ex.question }}</span>
+                </div>
+                {% if ex.type == 'choice' and ex.choices %}
+                <div class="ae-choices">
+                    {% for choice in ex.choices %}
+                    <button class="ae-opt"
+                        onclick="aeCheck('{{ qid }}',{{ loop.index0 }},{{ ex.answer }},this)"
+                        data-correct="{{ ex.answer }}">
+                        <span class="ae-opt-letter">{{ "ABCD"[loop.index0] }}</span>
+                        <span class="ae-opt-text">{{ choice }}</span>
+                    </button>
+                    {% endfor %}
+                </div>
+                {% elif ex.type == 'fill' %}
+                <div class="ae-fill">
+                    <input class="ae-input" id="{{ qid }}-inp" placeholder="输入你的答案...">
+                    <button class="ae-btn" onclick="aeFill('{{ qid }}','{{ ex.answer }}')">检查</button>
+                </div>
+                {% elif ex.type == 'true_false' %}
+                <div class="ae-choices">
+                    <button class="ae-opt" onclick="aeCheck('{{ qid }}',0,{{ 0 if ex.answer == '正确' else 1 }},this)" data-correct="{{ 0 if ex.answer == '正确' else 1 }}"><span class="ae-opt-letter">✓</span>正确</button>
+                    <button class="ae-opt" onclick="aeCheck('{{ qid }}',1,{{ 0 if ex.answer == '正确' else 1 }},this)" data-correct="{{ 0 if ex.answer == '正确' else 1 }}"><span class="ae-opt-letter">✗</span>错误</button>
+                </div>
+                {% endif %}
+                <div class="ae-answer" id="{{ qid }}-ans">
+                    <span class="ae-ans-label">✅ 正确答案：</span>{{ ex.answer }}
+                    <span class="ae-ans-desc">{{ ex.explanation }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+function aeCheck(qid, selected, correct, el) {
+    var opts = document.querySelectorAll('#' + qid + ' .ae-opt');
+    opts.forEach(function(o) { o.classList.remove('ae-pick','ae-right','ae-wrong'); o.disabled = true; });
+    if (selected === correct) { el.classList.add('ae-right'); }
+    else { el.classList.add('ae-wrong'); opts[correct].classList.add('ae-right'); }
+    document.getElementById(qid + '-ans').classList.add('ae-show');
+}
+function aeFill(qid, answer) { document.getElementById(qid + '-ans').classList.add('ae-show'); }
+</script>
+{% endblock %}
