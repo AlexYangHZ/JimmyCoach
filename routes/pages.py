@@ -68,18 +68,23 @@ async def subject_page(request: Request, subject: str, grade: int,
                              "topics": [], "not_ready": True})
 
     progress_svc = ProgressService(db)
-    simplified = [{"id": s["id"], "title": s["title"], "chapter": s["chapter"],
-                    "code": s["code"], "pages": s["pages"], "order": i + 1,
-                    "dependencies": [], "key_points": []}
-                  for i, s in enumerate(MATH_SECTIONS)]
+    simplified = []
+    for i, s in enumerate(MATH_SECTIONS):
+        simplified.append({
+            "id": s["id"], "title": s["title"], "chapter": s["chapter"],
+            "code": s["code"], "pages": s["pages"], "order": i + 1,
+            "dependencies": [], "key_points": [],
+        })
     enriched = await progress_svc.get_progress_summary(simplified)
     for t in enriched:
         t["available"] = True
 
     return request.app.state.templates.TemplateResponse(
-        "subject.html", {"request": request, "subject": subject, "grade": grade,
-                         "subject_name": "数学", "subject_icon": "📐",
-                         "topics": enriched, "not_ready": False})
+        "subject.html", {
+            "request": request, "subject": subject, "grade": grade,
+            "subject_name": "数学", "subject_icon": "📐",
+            "topics": enriched, "not_ready": False,
+        })
 
 
 @router.get("/learn/{subject}/{grade}/{topic_id}", response_class=HTMLResponse)

@@ -2,39 +2,76 @@
 {% block title %}{{ subject_name }} {{ grade }}年级 — Jimmy教练{% endblock %}
 
 {% block content %}
-<div class="subject-container">
+<div class="subject-page">
     <div class="breadcrumb">
         <a href="/">← 返回首页</a>
     </div>
 
-    <div class="subject-header">
-        <h1>{{ subject_icon }} {{ subject_name }} · {{ grade }}年级上册</h1>
-        <div class="subject-actions">
-            <a href="/exercises/all" class="btn-action">📋 全部练习题</a>
-            <a href="/error-book" class="btn-action btn-error-book">📝 错题本</a>
+    <div class="subject-hero">
+        <div class="subject-hero-left">
+            <span class="subject-hero-icon">{{ subject_icon }}</span>
+            <div>
+                <h1>{{ subject_name }}<small> · {{ grade }}年级上册</small></h1>
+                {% if not not_ready %}
+                <p class="subject-hero-desc">共 {{ topics|length }} 个知识点，覆盖人教版七年级上册全部章节</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="subject-hero-actions">
+            <a href="/exercises/all" class="btn-hero">
+                <span class="btn-hero-icon">📋</span> 全部练习
+            </a>
+            <a href="/error-book" class="btn-hero btn-hero-err">
+                <span class="btn-hero-icon">📝</span> 错题本
+            </a>
         </div>
     </div>
 
     {% if not_ready %}
-        <div class="coming-soon">
-            <p>📚 该科目内容正在准备中...</p>
-            <p>PDF教材已就绪，等待提取处理。</p>
-        </div>
+    <div class="state-empty">
+        <div class="state-empty-icon">📚</div>
+        <h2>内容准备中</h2>
+        <p>PDF 教材已就绪，等待提取处理后将自动上线。</p>
+    </div>
     {% else %}
-        <div class="topic-list">
-            {% for topic in topics %}
-            <div class="topic-item status-{{ topic.status }}">
-                <div class="topic-number">{{ topic.code }}</div>
-                <div class="topic-info">
-                    <h3>{{ topic.title }}</h3>
-                    <div class="topic-meta">
-                        <span>{{ topic.chapter }}</span>
-                        <a href="/learn/{{ subject }}/{{ grade }}/{{ topic.id }}" class="btn-start">📖 查看内容</a>
+
+    {% set chapters = {} %}
+    {% for t in topics %}
+        {% if t.chapter not in chapters %}
+            {% set _ = chapters.update({t.chapter: []}) %}
+        {% endif %}
+        {% set _ = chapters[t.chapter].append(t) %}
+    {% endfor %}
+
+    {% for ch_name, ch_topics in chapters.items() %}
+    <div class="chapter-block">
+        <div class="chapter-head">
+            <h2>{{ ch_name }}</h2>
+            <span class="chapter-count">{{ ch_topics|length }} 个知识点</span>
+        </div>
+        <div class="chapter-topics">
+            {% for t in ch_topics %}
+            <a href="/learn/{{ subject }}/{{ grade }}/{{ t.id }}" class="topic-card-link">
+                <div class="topic-card">
+                    <span class="topic-card-code">{{ t.code }}</span>
+                    <div class="topic-card-body">
+                        <h3>{{ t.title }}</h3>
+                        <div class="topic-card-foot">
+                            <span>📄 {{ t.pages }}页</span>
+                            {% if t.status == 'mastered' %}
+                            <span class="tag-done">✅ 已掌握</span>
+                            {% elif t.status == 'in_progress' %}
+                            <span class="tag-progress">🔵 学习中</span>
+                            {% endif %}
+                        </div>
                     </div>
+                    <span class="topic-card-arrow">→</span>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
+    </div>
+    {% endfor %}
     {% endif %}
 </div>
 {% endblock %}

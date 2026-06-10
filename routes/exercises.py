@@ -307,97 +307,114 @@ async def all_exercises(request: Request):
             continue
         sections.append({"section": sec, "exercises": ex_list})
 
-    # Debug
-    total_ex = sum(len(EXERCISES.get(s["id"], EXERCISES["default"])) for s in MATH_SECTIONS if EXERCISES.get(s["id"], EXERCISES["default"]) != EXERCISES["default"])
+    total_ex = sum(len(s["exercises"]) for s in sections)
 
     html_parts = [
-        f'<!-- DEBUG: {len(MATH_SECTIONS)} sections, {len(EXERCISES)} exercise groups, {total_ex} total exercises -->',
-        '<div class="all-exercises-page">',
-        '<div class="all-ex-header">',
-        '<h1>📝 数学七年级上册 · 全部练习题</h1>',
-        f'<p class="subtitle">共 {sum(len(s["exercises"]) for s in sections)} 道题，覆盖 {len(sections)} 个知识点</p>',
-        '<p><a href="/subjects/math/7">← 返回知识点列表</a></p>',
+        '<div class="all-ex-page">',
+        '<div class="all-ex-top">',
+        '<a href="/subjects/math/7" class="all-ex-back">← 返回知识点</a>',
+        '<h1>📝 全部练习题</h1>',
+        f'<p class="all-ex-summary">数学七年级上册 · {total_ex} 道题 · {len(sections)} 个知识点</p>',
         '</div>',
     ]
 
+    # Sidebar quick-nav
+    html_parts.append('<nav class="all-ex-nav"><span>快速跳转：</span>')
+    for s in sections:
+        html_parts.append(f'<a href="#sec-{s["section"]["id"]}">{s["section"]["code"]}</a>')
+    html_parts.append('</nav>')
+
     for s in sections:
         sec = s["section"]
-        html_parts.append(f'<div class="all-ex-section">')
         html_parts.append(
-            f'<h2 class="all-ex-section-title">{sec["code"]} {sec["title"]} '
-            f'<span class="section-badge">{sec["chapter"]}</span></h2>'
+            f'<div class="all-ex-chapter" id="sec-{sec["id"]}">'
+            f'<div class="all-ex-ch-head">'
+            f'<span class="all-ex-ch-num">{sec["code"]}</span>'
+            f'<h2>{sec["title"]}</h2>'
+            f'<span class="all-ex-ch-badge">{sec["chapter"]}</span>'
+            f'</div>'
+            f'<div class="all-ex-ch-list">'
         )
 
         for i, ex in enumerate(s["exercises"]):
-            qid = f"all-{sec['id']}-{i}"
-            html_parts.append(f'<div class="exercise-item" id="{qid}">')
+            qid = f"ae-{sec['id']}-{i}"
+            qnum = i + 1
+            qtype_icon = {"choice": "🔤", "fill": "✏️", "true_false": "✅"}.get(ex["type"], "📝")
+
+            html_parts.append(f'<div class="ae-card" id="{qid}">')
             html_parts.append(
-                f'<div class="q-title">'
-                f'<span class="q-source">{sec["code"]}</span> '
-                f'第{i+1}题：{ex["question"]}'
+                f'<div class="ae-q">'
+                f'<span class="ae-q-num">{qnum}</span>'
+                f'<span class="ae-q-type">{qtype_icon}</span>'
+                f'<span class="ae-q-text">{ex["question"]}</span>'
                 f'</div>'
             )
 
             if ex["type"] == "choice" and "choices" in ex:
-                html_parts.append('<div class="q-choices">')
+                html_parts.append('<div class="ae-choices">')
                 for j, choice in enumerate(ex.get("choices", [])):
+                    letter = chr(65 + j)
                     html_parts.append(
-                        f'<span class="q-choice" '
-                        f'onclick="checkChoice(\'{qid}\', {j}, {ex["answer"]}, this)" '
+                        f'<button class="ae-opt" '
+                        f'onclick="aeCheck(\'{qid}\',{j},{ex["answer"]},this)" '
                         f'data-correct="{ex["answer"]}">'
-                        f'{chr(65+j)}. {choice}</span>'
+                        f'<span class="ae-opt-letter">{letter}</span>'
+                        f'<span class="ae-opt-text">{choice}</span>'
+                        f'</button>'
                     )
                 html_parts.append('</div>')
             elif ex["type"] == "fill":
                 html_parts.append(
-                    f'<input type="text" class="exercise-input" id="{qid}-input" '
-                    f'placeholder="输入答案" style="max-width:300px"> '
-                    f'<button class="btn-submit" onclick="checkFill(\'{qid}\', \'{ex["answer"]}\')">检查</button>'
+                    f'<div class="ae-fill">'
+                    f'<input class="ae-input" id="{qid}-inp" placeholder="输入你的答案...">'
+                    f'<button class="ae-btn" onclick="aeFill(\'{qid}\',\'{ex["answer"]}\')">检查</button>'
+                    f'<button class="ae-btn-err" onclick="aeErr(\'{sec["id"]}\',{i},\'{ex["question"]}\',\'{ex["answer"]}\')">📝 错题本</button>'
+                    f'</div>'
+                )
+            elif ex["type"] == "true_false":
+                html_parts.append(
+                    f'<div class="ae-choices">'
+                    f'<button class="ae-opt" onclick="aeCheck(\'{qid}\',0,{0 if ex["answer"]=="正确" else 1},this)" data-correct="{0 if ex["answer"]=="正确" else 1}"><span class="ae-opt-letter">✓</span>正确</button>'
+                    f'<button class="ae-opt" onclick="aeCheck(\'{qid}\',1,{0 if ex["answer"]=="正确" else 1},this)" data-correct="{0 if ex["answer"]=="正确" else 1}"><span class="ae-opt-letter">✗</span>错误</button>'
+                    f'</div>'
                 )
 
-            # Hidden answer
             html_parts.append(
-                f'<div class="q-answer" id="{qid}-answer">'
-                f'<strong>答案：</strong>{ex["answer"]}<br>'
-                f'<strong>解释：</strong>{ex["explanation"]}'
-                f'<button class="btn-submit" style="margin-left:12px;font-size:0.8rem" '
-                f'onclick="recordError(\'{sec["id"]}\', {i}, \'{ex["question"]}\', \'{ex["answer"]}\')">'
-                f'📝 加入错题本</button>'
+                f'<div class="ae-answer" id="{qid}-ans">'
+                f'<span class="ae-ans-label">✅ 正确答案：</span>{ex["answer"]}'
+                f'<span class="ae-ans-desc">{ex["explanation"]}</span>'
                 f'</div>'
             )
             html_parts.append('</div>')
 
-        html_parts.append('</div>')
+        html_parts.append('</div></div>')
 
     html_parts.append('</div>')
 
-    # JS for error recording
     js = """
 <script>
-function checkChoice(qid, selected, correct, el) {
-    var choices = document.querySelectorAll('#' + qid + ' .q-choice');
-    choices.forEach(function(c) { c.classList.remove('selected', 'correct', 'wrong'); });
+function aeCheck(qid, selected, correct, el) {
+    var card = document.getElementById(qid);
+    var opts = card.querySelectorAll('.ae-opt');
+    opts.forEach(function(o) { o.classList.remove('ae-pick', 'ae-right', 'ae-wrong'); o.disabled = true; });
     if (selected === correct) {
-        el.classList.add('correct');
+        el.classList.add('ae-right');
     } else {
-        el.classList.add('wrong');
-        choices[correct].classList.add('correct');
+        el.classList.add('ae-wrong');
+        opts[correct].classList.add('ae-right');
     }
-    document.getElementById(qid + '-answer').classList.add('show');
+    document.getElementById(qid + '-ans').classList.add('ae-show');
 }
-function checkFill(qid, answer) {
-    var input = document.getElementById(qid + '-input');
-    document.getElementById(qid + '-answer').classList.add('show');
+function aeFill(qid, answer) {
+    document.getElementById(qid + '-ans').classList.add('ae-show');
 }
-function recordError(sectionId, exIdx, question, correctAnswer) {
+function aeErr(sid, idx, q, ans) {
     fetch('/exercise/error', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'section_id=' + encodeURIComponent(sectionId) +
-              '&exercise_idx=' + exIdx +
-              '&question=' + encodeURIComponent(question) +
-              '&correct_answer=' + encodeURIComponent(correctAnswer)
-    }).then(r => r.text()).then(t => {
+        body: 'section_id=' + encodeURIComponent(sid) + '&exercise_idx=' + idx +
+              '&question=' + encodeURIComponent(q) + '&correct_answer=' + encodeURIComponent(ans)
+    }).then(function(r){ return r.text(); }).then(function(t){
         var btn = event.target;
         btn.textContent = '✅ 已记录';
         btn.disabled = true;
