@@ -3,9 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>{% block title %}JimmyCoach{% endblock %}</title>
+    <style>
+:root{--primary:#4a90d9;--primary-dark:#357abd;--success:#27ae60;--warning:#f39c12;--danger:#e74c3c;--bg:#f5f7fa;--card-bg:#fff;--text:#2c3e50;--text-light:#7f8c8d;--border:#e1e8ed;--radius:12px;--shadow:0 2px 8px rgba(0,0,0,.08)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--primary);text-decoration:none}
+.app-header{background:var(--card-bg);border-bottom:1px solid var(--border);padding:12px 24px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-size:1.25rem;font-weight:700;color:var(--primary)}
+.header-inner nav{display:flex;gap:16px}
+.header-inner nav a{color:var(--text);font-size:.9rem;padding:4px 8px;border-radius:6px}
+.app-main{flex:1;max-width:960px;margin:0 auto;padding:24px;width:100%}
+.app-footer{text-align:center;padding:16px;color:var(--text-light);font-size:.85rem;border-top:1px solid var(--border);margin-top:40px}
+.ae-card{background:var(--card-bg);border-radius:14px;padding:18px 22px;box-shadow:0 1px 3px rgba(0,0,0,.04);border:1px solid #f0f2f5;margin-bottom:10px}
+.ae-q{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.ae-q-num{width:28px;height:28px;border-radius:8px;background:#eef2f7;font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ae-q-text{font-size:1rem;font-weight:500;line-height:1.5}
+.ae-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ae-opt{display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px solid #e8ecf0;border-radius:12px;background:#fff;cursor:pointer;font-size:.93rem}
+.ae-opt:hover{border-color:#b0c8e6;background:#fafcff}
+.ae-opt-letter{width:26px;height:26px;border-radius:50%;background:#eef2f7;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0}
+.ae-opt.ae-right{border-color:var(--success);background:#e8f5e9}.ae-opt.ae-right .ae-opt-letter{background:var(--success);color:#fff}
+.ae-opt.ae-wrong{border-color:var(--danger);background:#fdecea}.ae-opt.ae-wrong .ae-opt-letter{background:var(--danger);color:#fff}
+.ae-answer{display:none;margin-top:12px;padding:10px 14px;background:#e8f5e9;border-radius:10px;font-size:.9rem}.ae-answer.ae-show{display:block}
+.ae-ans-label{font-weight:600}.ae-ans-desc{display:block;color:#555;margin-top:4px;font-size:.85rem}
+.ae-fill{display:flex;gap:8px;align-items:center}
+.ae-input{flex:1;padding:10px 14px;border:2px solid #e8ecf0;border-radius:10px;font-size:.93rem;max-width:320px}
+.ae-btn{padding:8px 18px;background:var(--primary);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:.9rem}
+.ae-btn-err{padding:8px 14px;border:1px solid #e74c3c;color:#e74c3c;border-radius:10px;cursor:pointer;font-size:.85rem;background:0 0}
+.all-ex-page{max-width:860px;margin:0 auto}
+.all-ex-top{margin-bottom:24px}.all-ex-back{font-size:.9rem;color:var(--primary)}
+.all-ex-top h1{font-size:1.6rem;margin:8px 0 4px}.all-ex-summary{color:var(--text-light);font-size:.95rem}
+.all-ex-nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;background:var(--card-bg);border-radius:12px;margin-bottom:28px;box-shadow:var(--shadow);font-size:.85rem;position:sticky;top:56px;z-index:10}
+.all-ex-nav a{padding:3px 10px;background:#eef2f7;border-radius:8px;color:var(--text);font-weight:500}
+.all-ex-nav a:hover{background:var(--primary);color:#fff}
+.all-ex-chapter{margin-bottom:32px}
+.all-ex-ch-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #eef2f7}
+.all-ex-ch-num{width:36px;height:36px;border-radius:10px;background:var(--primary);color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center}
+.all-ex-ch-head h2{font-size:1.15rem}.all-ex-ch-badge{font-size:.8rem;color:var(--text-light);background:#f5f6f8;padding:3px 10px;border-radius:10px}
+.breadcrumb{margin-bottom:16px;font-size:.9rem;color:var(--text-light)}
+.hero{text-align:center;padding:40px 0 24px}.hero h1{font-size:2rem;margin-bottom:8px}
+.subtitle{color:var(--text-light);font-size:1.1rem}
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:24px}
+.subject-card{background:var(--card-bg);border-radius:var(--radius);padding:24px;text-align:center;box-shadow:var(--shadow);display:block;color:var(--text)}
+.subject-card:hover{transform:translateY(-3px);box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.subject-icon{font-size:2.5rem;margin-bottom:8px}.subject-card h2{font-size:1.2rem;margin-bottom:12px}
+.subject-desc{font-size:.85rem;color:var(--text-light);margin:8px 0}
+.subject-card-wrap{display:flex;flex-direction:column;gap:4px}
+.pdf-link{display:block;text-align:center;padding:8px;background:#f8f9fa;border-radius:0 0 var(--radius) var(--radius);color:var(--primary);font-size:.85rem;font-weight:500}
+.badge-ready{background:#e8f5e9;color:var(--success);padding:4px 12px;border-radius:12px;font-size:.8rem}
+.badge-pending{background:#fff8e1;color:var(--warning);padding:4px 12px;border-radius:12px;font-size:.8rem}
+.subject-soon{opacity:.7}
+.loading{text-align:center;padding:40px;color:var(--text-light)}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:12px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
     <script src="/static/htmx.min.js"></script>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=3">
 </head>
 <body>
     <header class="app-header">
