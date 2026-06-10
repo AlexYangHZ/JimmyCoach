@@ -351,50 +351,40 @@ async def record_error(
 
 @router.get("/error-book", response_class=HTMLResponse)
 async def error_book(request: Request, db: AsyncSession = Depends(get_db)):
-    """Display all recorded errors with counts."""
+    """Display all recorded errors with interactive answer mode."""
     stmt = select(ErrorLog).order_by(ErrorLog.error_count.desc())
     result = await db.execute(stmt)
     errors = result.scalars().all()
 
-    # Build section name lookup
     sec_names = {s["id"]: f"{s['code']} {s['title']}" for s in MATH_SECTIONS}
 
-    if not errors:
-        return HTMLResponse(
-            '<div style="max-width:700px;margin:40px auto;text-align:center">'
-            '<h2>📝 错题本</h2>'
-            '<p style="color:#7f8c8d;margin:20px">还没有错题记录，继续保持！🎉</p>'
-            '<a href="/subjects/math/7">← 返回继续练习</a>'
-            '</div>'
-        )
+    # Enrich errors with full exercise data (choices, type, explanation)
+    enriched = []
+    for e in errors:
+        ex_data = {"type": "fill", "choices": [], "explanation": ""}
+        ex_list = EXERCISES.get(e.section_id, [])
+        if ex_list and e.exercise_idx < len(ex_list):
+            ex_data = ex_list[e.exercise_idx]
+            # For choice exercises, answer is an index — convert to display text
+            if ex_data.get("type") == "choice" and "choices" in ex_data:
+                try:
+                    ans_idx = int(e.correct_answer)
+                    if ans_idx < len(ex_data["choices"]):
+                        ex_data["answer"] = ans_idx  # keep as index for template
+                except (ValueError, TypeError):
+                    pass
+        enriched.append({
+            "error": e,
+            "section_name": sec_names.get(e.section_id, e.section_id),
+            "exercise_data": ex_data,
+        })
 
     total_errors = sum(e.error_count for e in errors)
-    html_parts = [
-        '<div style="max-width:800px;margin:20px auto;padding:0 20px">',
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">',
-        '<h1>📝 错题本</h1>',
-        f'<span style="color:#e74c3c;font-weight:600">共 {len(errors)} 道错题，累计 {total_errors} 次错误</span>',
-        '</div>',
-        '<p><a href="/subjects/math/7">← 返回知识点列表</a> | <a href="/exercises/all">📋 全部练习题</a></p>',
-        '<div class="topic-list" style="margin-top:16px">',
-    ]
 
-    for e in errors:
-        sec_name = sec_names.get(e.section_id, e.section_id)
-        count_badge = f"🔴×{e.error_count}" if e.error_count > 1 else "🔴"
-        html_parts.append(
-            f'<div class="exercise-card" style="border-left:4px solid #e74c3c">'
-            f'<p class="exercise-question"><strong>{e.question}</strong></p>'
-            f'<div style="display:flex;gap:16px;font-size:0.9rem;margin-top:8px">'
-            f'<span>📖 {sec_name}</span>'
-            f'<span>✅ 正确答案：<strong>{e.correct_answer}</strong></span>'
-            f'<span style="color:#e74c3c;font-weight:700">{count_badge}</span>'
-            f'</div>'
-            f'</div>'
-        )
-
-    html_parts.append('</div></div>')
-    return HTMLResponse("".join(html_parts))
+    return request.app.state.templates.TemplateResponse(
+        "error_book.html",
+        {"request": request, "errors": enriched, "total_errors": total_errors},
+    )
 
 
 @router.get("/exercises/{section_id}", response_class=HTMLResponse)

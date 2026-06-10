@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}错题本 — Jimmy教练{% endblock %}
+
+{% block content %}
+<div class="err-page">
+    <div class="err-top">
+        <a href="/subjects/math/7" class="all-ex-back">← 返回知识点</a>
+        <h1>📝 错题本</h1>
+        <p class="all-ex-summary">{{ errors|length }} 道错题 · 累计 {{ total_errors }} 次错误</p>
+    </div>
+
+    {% if not errors %}
+    <div class="state-empty">
+        <div class="state-empty-icon">🎉</div>
+        <h2>还没有错题记录</h2>
+        <p>继续保持，加油！</p>
+        <a href="/subjects/math/7" class="btn-primary">去练习</a>
+    </div>
+    {% else %}
+
+    <div class="err-list">
+    {% for item in errors %}
+    {% set e = item.error %}
+    {% set ex = item.exercise_data %}
+    {% set qid = "err-" + e.id|string %}
+    <div class="ae-card" id="{{ qid }}" style="border-left:4px solid #e74c3c">
+        <div class="ae-q">
+            <span class="ae-q-num" style="background:#fdecea;color:#e74c3c">{{ loop.index }}</span>
+            <span class="ae-q-type">{% if ex.type == 'choice' %}🔤{% elif ex.type == 'fill' %}✏️{% else %}✅{% endif %}</span>
+            <span class="ae-q-text">{{ e.question }}</span>
+            <span class="err-count">{% if e.error_count > 1 %}×{{ e.error_count }}{% endif %}</span>
+        </div>
+        <div class="err-meta">
+            <span>📖 {{ item.section_name }}</span>
+        </div>
+
+        {% if ex.type == 'choice' and ex.choices %}
+        <div class="ae-choices">
+            {% for choice in ex.choices %}
+            {% set is_correct = (loop.index0 == ex.answer) %}
+            <div class="ae-opt {% if is_correct %}ae-right{% endif %}" style="pointer-events:none">
+                <span class="ae-opt-letter">{{ "ABCD"[loop.index0] }}</span>
+                <span class="ae-opt-text">{{ choice }}</span>
+                {% if is_correct %}<span style="margin-left:auto">✅</span>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% elif ex.type == 'fill' %}
+        <div class="ae-fill">
+            <input class="ae-input" placeholder="{{ e.correct_answer }}" disabled
+                   style="background:#e8f5e9;border-color:#27ae60">
+            <span class="ae-ans-label">✅ 正确答案</span>
+        </div>
+        {% elif ex.type == 'true_false' %}
+        <div class="ae-choices">
+            <div class="ae-opt {% if e.correct_answer == '正确' %}ae-right{% endif %}" style="pointer-events:none">
+                <span class="ae-opt-letter">✓</span>正确{% if e.correct_answer == '正确' %}<span style="margin-left:auto">✅</span>{% endif %}
+            </div>
+            <div class="ae-opt {% if e.correct_answer == '错误' %}ae-right{% endif %}" style="pointer-events:none">
+                <span class="ae-opt-letter">✗</span>错误{% if e.correct_answer == '错误' %}<span style="margin-left:auto">✅</span>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if ex.explanation %}
+        <div class="ae-answer ae-show" style="background:#fff3e0">
+            <span class="ae-ans-desc">💡 {{ ex.explanation }}</span>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
