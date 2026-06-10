@@ -24,6 +24,9 @@
             <a href="/error-book" class="btn-hero btn-hero-err">
                 <span class="btn-hero-icon">📝</span> 错题本
             </a>
+            <button class="btn-hero btn-hero-reset" onclick="if(confirm('确定要重置所有学习进度和错题记录吗？此操作不可恢复！')){fetch('/reset-all',{method:'POST'}).then(r=>r.text()).then(t=>document.write(t))}">
+                🔄 重置
+            </button>
         </div>
     </div>
 

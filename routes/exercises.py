@@ -387,6 +387,20 @@ async def error_book(request: Request, db: AsyncSession = Depends(get_db)):
     )
 
 
+@router.post("/reset-all", response_class=HTMLResponse)
+async def reset_all(db: AsyncSession = Depends(get_db)):
+    """Reset all study progress and error book data."""
+    from sqlalchemy import delete
+    from db.models import StudySession, ExerciseAttempt, ChatMessage, ProgressSnapshot, ErrorLog
+    await db.execute(delete(ErrorLog))
+    await db.execute(delete(ExerciseAttempt))
+    await db.execute(delete(ChatMessage))
+    await db.execute(delete(ProgressSnapshot))
+    await db.execute(delete(StudySession))
+    await db.commit()
+    return HTMLResponse('<script>alert("✅ 学习进度和错题本已重置");window.location.href="/subjects/math/7"</script>')
+
+
 @router.get("/exercises/{section_id}", response_class=HTMLResponse)
 async def get_exercises(section_id: str):
     """Return pre-built exercises for a section as HTML (must be last route)."""
