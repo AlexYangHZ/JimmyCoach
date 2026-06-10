@@ -126,6 +126,26 @@ a:hover { text-decoration: underline; }
 }
 .progress-text { font-size: 0.8rem; color: var(--text-light); }
 
+/* === Subject Header === */
+.subject-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.subject-actions { display: flex; gap: 8px; }
+.btn-action {
+    padding: 8px 18px; background: var(--primary); color: white;
+    border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-decoration: none;
+    transition: all 0.2s;
+}
+.btn-action:hover { background: var(--primary-dark); text-decoration: none; transform: scale(1.02); }
+.btn-error-book { background: #e74c3c; }
+.btn-error-book:hover { background: #c0392b; }
+
+/* === All Exercises Page === */
+.all-exercises-page { max-width: 860px; margin: 0 auto; }
+.all-ex-header { margin-bottom: 24px; }
+.all-ex-header h1 { font-size: 1.6rem; }
+.all-ex-section { margin-bottom: 32px; }
+.all-ex-section-title { font-size: 1.15rem; color: var(--primary); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #eef2f7; }
+.q-source { display: inline-block; padding: 1px 6px; background: #eef2f7; border-radius: 4px; font-size: 0.75rem; color: var(--text-light); margin-right: 6px; }
+
 /* === Subject (Topic Tree) === */
 .breadcrumb { margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light); }
 

@@ -51,6 +51,19 @@ class ProgressSnapshot(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     topic_id = Column(String(100), unique=True, nullable=False)
-    status = Column(String(20), nullable=False, default="not_started")  # not_started, in_progress, mastered
+    status = Column(String(20), nullable=False, default="not_started")
     last_studied = Column(DateTime, nullable=True)
     attempts_count = Column(Integer, default=0)
+
+
+class ErrorLog(Base):
+    """Track wrong answers for the error book feature."""
+    __tablename__ = "error_logs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    section_id = Column(String(100), nullable=False)
+    exercise_idx = Column(Integer, nullable=False)  # index in the section's exercise list
+    question = Column(Text, nullable=False)
+    correct_answer = Column(Text, nullable=False)
+    error_count = Column(Integer, default=1)
+    last_error_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

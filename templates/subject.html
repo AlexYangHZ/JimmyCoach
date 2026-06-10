@@ -7,7 +7,13 @@
         <a href="/">← 返回首页</a>
     </div>
 
-    <h1>{{ subject_icon }} {{ subject_name }} · {{ grade }}年级上册</h1>
+    <div class="subject-header">
+        <h1>{{ subject_icon }} {{ subject_name }} · {{ grade }}年级上册</h1>
+        <div class="subject-actions">
+            <a href="/exercises/all" class="btn-action">📋 全部练习题</a>
+            <a href="/error-book" class="btn-action btn-error-book">📝 错题本</a>
+        </div>
+    </div>
 
     {% if not_ready %}
         <div class="coming-soon">

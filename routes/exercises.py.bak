@@ -202,6 +202,36 @@ def _build_exercise_html(section_id: str) -> str:
     return "\n".join(parts)
 
 
+@router.get("/exercises/{section_id}", response_class=HTMLResponse)
+async def get_exercises(section_id: str):
+    """Return pre-built exercises for a section as HTML."""
+    html = _build_exercise_html(section_id)
+    # Also include the interactive JS
+    js = """
+<script>
+function checkChoice(qid, selected, correct, el) {
+    var choices = document.querySelectorAll('#' + qid + ' .q-choice');
+    choices.forEach(function(c) { c.classList.remove('selected', 'correct', 'wrong'); });
+    if (selected === correct) {
+        el.classList.add('correct');
+    } else {
+        el.classList.add('wrong');
+        choices[correct].classList.add('correct');
+    }
+    document.getElementById(qid + '-answer').classList.add('show');
+}
+function checkFill(qid, answer) {
+    var input = document.getElementById(qid + '-input');
+    var resultDiv = document.getElementById(qid + '-answer');
+    if (input.value.trim()) {
+        resultDiv.classList.add('show');
+    }
+}
+</script>
+"""
+    return HTMLResponse(html + js)
+
+
 @router.get("/exercises/{section_id}/download")
 async def download_exercises(section_id: str):
     """Generate and download a Word document of exercises for printing."""
@@ -295,6 +325,14 @@ async def download_exercises(section_id: str):
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         headers={"Content-Disposition": f"attachment; filename={safe_name}"},
     )
+
+
+@router.get("/exercises/all-v2", response_class=HTMLResponse)
+async def all_exercises_v2(request: Request):
+    """[V2] Show all exercises loaded from JSON."""
+    ex_data = _load_exercises()
+    total = sum(len(v) for k, v in ex_data.items() if k != "default")
+    return HTMLResponse(f"<h1>All Exercises V2</h1><p>Loaded {len(ex_data)} groups, {total} total exercises</p><p>Keys: {sorted(ex_data.keys())}</p>")
 
 
 @router.get("/exercises/all", response_class=HTMLResponse)
@@ -488,46 +526,3 @@ async def error_book(request: Request, db: AsyncSession = Depends(get_db)):
 
     html_parts.append('</div></div>')
     return HTMLResponse("".join(html_parts))
-
-
-@router.get("/exercises/{section_id}", response_class=HTMLResponse)
-async def get_exercises(section_id: str):
-    """Return pre-built exercises for a section as HTML (must be last route)."""
-    html = _build_exercise_html(section_id)
-    js = """
-<script>
-function checkChoice(qid, selected, correct, el) {
-    var choices = document.querySelectorAll('#' + qid + ' .q-choice');
-    choices.forEach(function(c) { c.classList.remove('selected', 'correct', 'wrong'); });
-    if (selected === correct) {
-        el.classList.add('correct');
-    } else {
-        el.classList.add('wrong');
-        choices[correct].classList.add('correct');
-    }
-    document.getElementById(qid + '-answer').classList.add('show');
-}
-function checkFill(qid, answer) {
-    var input = document.getElementById(qid + '-input');
-    var resultDiv = document.getElementById(qid + '-answer');
-    if (input.value.trim()) {
-        resultDiv.classList.add('show');
-    }
-}
-function recordError(sectionId, exIdx, question, correctAnswer) {
-    fetch('/exercise/error', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'section_id=' + encodeURIComponent(sectionId) +
-              '&exercise_idx=' + exIdx +
-              '&question=' + encodeURIComponent(question) +
-              '&correct_answer=' + encodeURIComponent(correctAnswer)
-    }).then(r => r.text()).then(t => {
-        var btn = event.target;
-        btn.textContent = '✅ 已记录';
-        btn.disabled = true;
-    });
-}
-</script>
-"""
-    return HTMLResponse(html + js)

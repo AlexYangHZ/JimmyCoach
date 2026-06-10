@@ -8,9 +8,23 @@ import pickle
 from pathlib import Path
 
 import jieba
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+
+# Lazy imports to avoid sklearn TLS issues at server startup
+_np = None
+_TfidfVectorizer = None
+_cosine_similarity = None
+
+def _get_sklearn():
+    global _np, _TfidfVectorizer, _cosine_similarity
+    if _np is None:
+        import numpy as _np_module
+        _np = _np_module
+    if _TfidfVectorizer is None:
+        from sklearn.feature_extraction.text import TfidfVectorizer as TF
+        _TfidfVectorizer = TF
+    if _cosine_similarity is None:
+        from sklearn.metrics.pairwise import cosine_similarity as CS
+        _cosine_similarity = CS
 
 MARKDOWN_DIR = Path("data/textbooks/math/grade7")
 CACHE_PATH = Path("data/vectordb/math/retriever.pkl")
@@ -99,7 +113,8 @@ class MathRetriever:
         print(f"  Tokenizing {len(all_texts)} chunks...")
         tokenized = [self._tokenize(t) for t in all_texts]
 
-        self.vectorizer = TfidfVectorizer(
+        _get_sklearn()
+        self.vectorizer = _TfidfVectorizer(
             max_features=5000,
             ngram_range=(1, 2),  # unigrams + bigrams
             sublinear_tf=True,
@@ -115,12 +130,13 @@ class MathRetriever:
         if self.vectorizer is None:
             self.build_index()
 
+        _get_sklearn()
         query_tok = self._tokenize(query)
         query_vec = self.vectorizer.transform([query_tok])
-        scores = cosine_similarity(query_vec, self.doc_vectors)[0]
+        scores = _cosine_similarity(query_vec, self.doc_vectors)[0]
 
         # Get top-k indices
-        top_indices = np.argsort(scores)[::-1][:top_k]
+        top_indices = _np.argsort(scores)[::-1][:top_k]
 
         results = []
         for idx in top_indices:
