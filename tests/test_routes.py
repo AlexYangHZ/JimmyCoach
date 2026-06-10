@@ -63,7 +63,7 @@ async def test_subject_page_renders(client):
     assert response.status_code == 200
     assert "正数和负数" in response.text
     assert "chapter-block" in response.text
-    assert "查看内容" in response.text
+    assert "topic-card" in response.text
 
 
 @pytest.mark.asyncio
