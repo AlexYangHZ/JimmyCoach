@@ -179,22 +179,27 @@ MATH_SECTIONS_FALLBACK = MATH_SECTIONS = [
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: AsyncSession = Depends(get_db)):
     subjects = []
+    total_topics = 0
+    ready_count = 0
     for subj in SUBJECT_CATALOG:
         grades_display = []
         for g in subj["grades"]:
             if g.get("ready"):
+                ready_count += 1
                 tc = g.get("topic_count", 0)
                 if tc == 0 and subj["id"] == "math":
                     tc = len(MATH_SECTIONS_FALLBACK)
                 elif tc == 0:
                     tc = len(_load_sections(subj["id"], g["grade"]))
+                total_topics += tc
                 grades_display.append({**g, "topic_count": tc})
             else:
                 grades_display.append({**g, "topic_count": 0})
         subjects.append({**subj, "grades": grades_display})
 
     return request.app.state.templates.TemplateResponse(
-        "home.html", _ctx(request, subjects=subjects))
+        "home.html", _ctx(request, subjects=subjects,
+                          total_topics=total_topics, ready_count=ready_count))
 
 
 @router.get("/subjects/{subject}/{grade}", response_class=HTMLResponse)

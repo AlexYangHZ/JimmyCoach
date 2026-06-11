@@ -2,39 +2,76 @@
 {% block title %}Jimmy教练 — 首页{% endblock %}
 
 {% block content %}
-<div class="home-container">
-    <section class="hero">
-        <h1>你好，Jimmy！👋</h1>
-        <p class="subtitle">AI辅导教练，随时随地帮你学习</p>
-    </section>
-
-    <section class="subject-grid">
-        {% for subject in subjects %}
-        <div class="subject-card">
-            <div class="subject-card-top">
-                <span class="subject-icon">{{ subject.icon }}</span>
-                <h2>{{ subject.name }}</h2>
-            </div>
-            <p class="subject-desc">{{ subject.description }}</p>
-            <div class="subject-grades">
-                {% for g in subject.grades %}
-                    {% if g.ready %}
-                    <a href="/subjects/{{ subject.id }}/{{ g.grade }}" class="grade-tag active">
-                        {{ g.grade }}年级{{ g.semester }}
-                        {% if g.topic_count %}
-                        <span style="font-size:.7rem;opacity:.8"> · {{ g.topic_count }}知识点</span>
-                        {% endif %}
-                    </a>
-                    {% if g.pdf_url %}
-                    <a href="{{ g.pdf_url }}" target="_blank" class="pdf-link">📄 查看教材PDF原文</a>
-                    {% endif %}
-                    {% else %}
-                    <span class="grade-tag soon">{{ g.grade }}年级{{ g.semester }} · 即将上线</span>
-                    {% endif %}
-                {% endfor %}
+<div class="home-page">
+    <!-- Hero -->
+    <section class="home-hero">
+        <div class="home-hero-content">
+            <span class="home-hero-emoji">🎓</span>
+            <div>
+                <h1>你好，Jimmy！</h1>
+                <p>AI辅导教练，随时随地帮你学习</p>
             </div>
         </div>
-        {% endfor %}
+        <div class="home-hero-stats">
+            <div class="hero-stat">
+                <span class="hero-stat-num">{{ ready_count }}</span>
+                <span class="hero-stat-label">可用学科</span>
+            </div>
+            <div class="hero-stat">
+                <span class="hero-stat-num">{{ total_topics }}</span>
+                <span class="hero-stat-label">知识点</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subjects -->
+    <section class="home-subjects">
+        <div class="section-head">
+            <h2>📚 我的学科</h2>
+            <a href="/admin" class="section-link">⚙️ 管理教材</a>
+        </div>
+
+        <div class="subject-grid">
+            {% for subject in subjects %}
+            <div class="subj-card">
+                <div class="subj-card-top">
+                    <span class="subj-icon">{{ subject.icon }}</span>
+                    <div class="subj-card-head">
+                        <h3>{{ subject.name }}</h3>
+                        <p class="subj-desc">{{ subject.description }}</p>
+                    </div>
+                </div>
+                <div class="subj-grades">
+                    {% for g in subject.grades %}
+                        {% if g.ready %}
+                        <a href="/subjects/{{ subject.id }}/{{ g.grade }}" class="subj-grade subj-grade-active">
+                            <span class="grade-label">{{ g.grade }}年级{{ g.semester }}</span>
+                            <span class="grade-count">{{ g.topic_count }} 知识点</span>
+                            <span class="grade-arrow">→</span>
+                        </a>
+                        {% if g.pdf_url %}
+                        <a href="{{ g.pdf_url }}" target="_blank" class="subj-pdf-link">📄 教材原文</a>
+                        {% endif %}
+                        {% else %}
+                        <span class="subj-grade subj-grade-soon">
+                            <span class="grade-label">{{ g.grade }}年级{{ g.semester }}</span>
+                            <span class="grade-count">即将上线</span>
+                        </span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not subjects %}
+        <div class="home-empty">
+            <span class="empty-icon">📚</span>
+            <h2>还没有学科内容</h2>
+            <p>前往管理后台上传第一本教材开始吧</p>
+            <a href="/admin" class="btn-primary">🚀 开始上传</a>
+        </div>
+        {% endif %}
     </section>
 </div>
 {% endblock %}
