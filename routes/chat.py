@@ -2,6 +2,7 @@
 
 import html as _html
 import json
+from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import HTMLResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,28 +15,34 @@ from config import settings
 
 router = APIRouter()
 
-# Map subjects to their retriever
-SUBJECT_RETRIEVERS = {
-    "math": _get_retriever_async,
-}
+# Map subjects to their retriever (lazy, created on first use)
+_subject_retrievers: dict[str, object] = {}
 
-RAG_SYSTEM_PROMPT = """你是一位耐心、鼓励性的AI辅导老师，名叫小教练。
-你的学生叫Jimmy，今年12岁，正在学习七年级上册的内容。
+async def _get_subject_retriever(subject: str):
+    """Get or create a retriever for a subject."""
+    if subject not in _subject_retrievers:
+        from services.retriever import MathRetriever
+        r = MathRetriever()
+        r.MARKDOWN_DIR = Path(f"data/textbooks/{subject}/grade7")
+        r.CACHE_PATH = Path(f"data/vectordb/{subject}/retriever.pkl")
+        r.CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        if not r.load():
+            r.build_index()
+            r.save()
+        _subject_retrievers[subject] = r
+    return _subject_retrievers[subject]
 
-教学原则：
-- 用简单易懂的语言解释概念
-- 多用生活中的例子帮助理解
-- 每次回复控制在300字以内
-- 学生做对时真诚表扬，做错时温和鼓励
-- 使用适合12岁学生的语言
+RAG_SYSTEM_PROMPT = """你是小教练，一位耐心的AI辅导老师。学生Jimmy，12岁，七年级。
 
-重要：回答问题时，请基于下面提供的教材内容进行回答。
-如果教材内容不足以回答该问题，请诚实地告诉学生，并基于你的知识补充说明。
+要求：
+- 直接回答问题，不要重复或复述学生的问题
+- 用简单易懂的语言，每次300字以内
+- 多用生活例子，像朋友聊天一样
+- 基于下面教材内容回答，引用原文例子
+- 若教材无相关内容，诚实说明并用自己的知识补充
 
-教材参考内容：
-{context}
-
-请基于以上教材内容回答Jimmy的问题。引用教材中的例子和解释。"""
+教材内容：
+{context}"""
 
 
 @router.post("/chat/send", response_class=HTMLResponse)
@@ -64,18 +71,15 @@ async def chat_send(
     context_chunks = []
     rag_source_chapter = ""
     rag_source_section = ""
-    if subject in SUBJECT_RETRIEVERS:
-        retriever_fn = SUBJECT_RETRIEVERS.get(subject)
-        if retriever_fn:
-            try:
-                retriever = await retriever_fn()
-                results = retriever.search(message, top_k=3)
-                if results:
-                    context_chunks = [r["text"][:600] for r in results]
-                    rag_source_chapter = results[0]["chapter"]
-                    rag_source_section = results[0]["section"]
-            except Exception as e:
-                print(f"[RAG] Retriever error for '{message[:30]}...': {e}")
+    try:
+        retriever = await _get_subject_retriever(subject)
+        results = retriever.search(message, top_k=3)
+        if results:
+            context_chunks = [r["text"][:600] for r in results]
+            rag_source_chapter = results[0]["chapter"]
+            rag_source_section = results[0]["section"]
+    except Exception as e:
+        print(f"[RAG] Retriever error for '{message[:30]}...': {e}")
 
     # Build context
     if context_chunks:
@@ -169,17 +173,14 @@ async def chat_stream(
     # === RAG retrieval ===
     context_chunks = []
     rag_source_chapter = ""
-    if subject in SUBJECT_RETRIEVERS:
-        retriever_fn = SUBJECT_RETRIEVERS.get(subject)
-        if retriever_fn:
-            try:
-                retriever = await retriever_fn()
-                results = retriever.search(message, top_k=3)
-                if results:
-                    context_chunks = [r["text"][:600] for r in results]
-                    rag_source_chapter = results[0]["chapter"]
-            except Exception as e:
-                print(f"[RAG] Stream error: {e}")
+    try:
+        retriever = await _get_subject_retriever(subject)
+        results = retriever.search(message, top_k=3)
+        if results:
+            context_chunks = [r["text"][:600] for r in results]
+            rag_source_chapter = results[0]["chapter"]
+    except Exception as e:
+        print(f"[RAG] Stream error: {e}")
 
     context_text = "\n\n---\n\n".join(context_chunks) if context_chunks else "（暂无相关教材内容）"
     system_prompt = RAG_SYSTEM_PROMPT.format(context=context_text)

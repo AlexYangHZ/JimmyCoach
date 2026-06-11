@@ -108,6 +108,14 @@ function openChat(subject, name, grade) {
 }
 
 function closeChat() { document.getElementById('chat-modal').style.display = 'none'; }
+function formatMD(text) {
+    return text
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>')
+        .replace(/^- (.+)$/gm, '• $1');
+}
 
 function sendChat(e) {
     e.preventDefault();
@@ -149,9 +157,9 @@ function sendChat(e) {
                             var data = JSON.parse(line.slice(6));
                             if (data.token) {
                                 text += data.token;
-                                bubble.innerHTML = text + '<span class="typing-cursor">▌</span>';
+                                bubble.innerHTML = formatMD(text) + '<span class="typing-cursor">▌</span>';
                             } else if (data.done) {
-                                bubble.innerHTML = text;
+                                bubble.innerHTML = formatMD(text);
                                 if (data.source) bubble.insertAdjacentHTML('beforeend', '<div class="rag-tag">' + data.source + '</div>');
                             } else if (data.error) {
                                 bubble.innerHTML = data.error;
