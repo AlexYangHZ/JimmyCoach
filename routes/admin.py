@@ -21,8 +21,18 @@ router = APIRouter(prefix="/admin")
 
 @router.get("", response_class=HTMLResponse)
 async def admin_page(request: Request):
+    # Show all subjects from catalog for published list
+    all_subjects = []
+    for subj in SUBJECT_CATALOG:
+        for g in subj.get("grades", []):
+            if g.get("ready"):
+                all_subjects.append({
+                    "id": subj["id"], "name": subj["name"], "icon": subj["icon"],
+                    "grade": g["grade"], "semester": g.get("semester", "上册"),
+                })
     return request.app.state.templates.TemplateResponse(
-        "admin.html", {"request": request, "nav_subjects": get_nav_subjects()})
+        "admin.html", {"request": request, "nav_subjects": get_nav_subjects(),
+                       "all_subjects": all_subjects})
 
 
 @router.post("/upload")

@@ -39,10 +39,13 @@
     <div class="admin-card">
         <h2>✅ 已发布内容</h2>
         <div id="published-list">
-            {% for subj in nav_subjects %}
+            {% for subj in all_subjects %}
             <div class="pub-item">
                 <span>{{ subj.icon }} {{ subj.name }} {{ subj.grade }}年级{{ subj.semester }}</span>
-                <a href="/subjects/{{ subj.id }}/{{ subj.grade }}" class="btn-start" style="font-size:.8rem">查看</a>
+                <span style="display:flex;gap:8px">
+                    <a href="/subjects/{{ subj.id }}/{{ subj.grade }}" class="btn-start" style="font-size:.8rem">查看</a>
+                    <button class="btn-reset" onclick="deleteSubject('{{ subj.id }}', {{ subj.grade }})" style="font-size:.75rem">🗑 清理</button>
+                </span>
             </div>
             {% endfor %}
         </div>
@@ -78,6 +81,13 @@ function confirmChapters(taskId) {
         if(div) { div.innerHTML = t; }
         setTimeout(function(){ location.reload(); }, 2000);
     });
+}
+function deleteSubject(subject, grade) {
+    if (confirm('确定要删除 ' + subject + ' ' + grade + '年级的所有内容吗？此操作不可恢复！')) {
+        fetch('/admin/delete/'+subject+'/'+grade, {method:'POST'}).then(r=>r.text()).then(t=>{
+            document.open(); document.write(t); document.close();
+        });
+    }
 }
 </script>
 {% endblock %}
