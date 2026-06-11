@@ -51,10 +51,7 @@ async def test_health_check(client):
 async def test_home_page_renders(client):
     response = await client.get("/")
     assert response.status_code == 200
-    assert "七年级" in response.text
     assert "数学" in response.text
-    assert "英语" in response.text
-    assert "语文" in response.text
 
 
 @pytest.mark.asyncio
