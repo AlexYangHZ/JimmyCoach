@@ -192,11 +192,9 @@ async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
 
 
 @router.get("/mindmap/{section_id}", response_class=HTMLResponse)
-async def mindmap_page(section_id: str):
+async def mindmap_page(section_id: str, subject: str = "math"):
     """Return interactive mind map HTML for a section."""
-    # Extract subject from section_id (e.g., "ch01_sec01" → math grade 7)
-    # For now, default to math; future: parse subject from request
-    tree = _get_mindmap("math", section_id)
+    tree = _get_mindmap(subject, section_id)
     if not tree:
         return HTMLResponse('<p class="error">该知识点暂无脑图数据</p>')
 

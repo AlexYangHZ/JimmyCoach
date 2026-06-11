@@ -54,7 +54,7 @@
 
     <!-- Mind Map — always visible -->
     <div id="mindmap-area" class="mindmap-area"
-         hx-get="/mindmap/{{ section.id }}"
+         hx-get="/mindmap/{{ section.id }}?subject={{ subject }}"
          hx-trigger="load"
          hx-swap="innerHTML">
         <div class="loading"><p>加载脑图中...</p><div class="spinner"></div></div>
