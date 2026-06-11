@@ -22,10 +22,10 @@ async def _get_subject_retriever(subject: str):
     """Get or create a retriever for a subject."""
     if subject not in _subject_retrievers:
         from services.retriever import MathRetriever
-        r = MathRetriever()
-        r.MARKDOWN_DIR = Path(f"data/textbooks/{subject}/grade7")
-        r.CACHE_PATH = Path(f"data/vectordb/{subject}/retriever.pkl")
-        r.CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        md_dir = Path(f"data/textbooks/{subject}/grade7")
+        cache = Path(f"data/vectordb/{subject}/retriever.pkl")
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        r = MathRetriever(markdown_dir=md_dir, cache_path=cache)
         if not r.load():
             r.build_index()
             r.save()

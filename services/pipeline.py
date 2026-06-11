@@ -230,10 +230,9 @@ class PipelineService:
             (ch_dir / f"section_{sec['id'][5:7]}.md").write_text(content, encoding="utf-8")
 
         from services.retriever import MathRetriever
-        r = MathRetriever()
-        r.MARKDOWN_DIR = md_dir
-        r.CACHE_PATH = Path(f"data/vectordb/{subject}/retriever.pkl")
-        r.CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        cache = Path(f"data/vectordb/{subject}/retriever.pkl")
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        r = MathRetriever(markdown_dir=md_dir, cache_path=cache)
         r.build_index()
 
         await self._register_in_catalog(subject, task.subject_name, grade, task.semester, len(sections_config))

@@ -34,10 +34,12 @@ CACHE_PATH = Path("data/vectordb/math/retriever.pkl")
 class MathRetriever:
     """TF-IDF based retriever for math textbook content."""
 
-    def __init__(self):
+    def __init__(self, markdown_dir=None, cache_path=None):
         self.vectorizer = None
         self.doc_vectors = None
-        self.documents = []  # list of {"text": ..., "chapter": ..., "section": ...}
+        self.documents = []
+        self.markdown_dir = markdown_dir or MARKDOWN_DIR
+        self.cache_path = cache_path or CACHE_PATH
 
     def _chunk_text(self, text: str, max_chars: int = 500) -> list[str]:
         """Split text into chunks of ~max_chars, preserving paragraph boundaries."""
@@ -69,7 +71,7 @@ class MathRetriever:
         all_texts = []
         all_metadata = []
 
-        for md_file in sorted(MARKDOWN_DIR.rglob("*.md")):
+        for md_file in sorted(self.markdown_dir.rglob("*.md")):
             # Parse path for metadata
             rel = md_file.relative_to(MARKDOWN_DIR)
             parts = rel.parts
@@ -155,8 +157,8 @@ class MathRetriever:
 
     def save(self):
         """Cache the built index to disk."""
-        CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(CACHE_PATH, "wb") as f:
+        self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.cache_path, "wb") as f:
             pickle.dump({
                 "vectorizer": self.vectorizer,
                 "doc_vectors": self.doc_vectors,
@@ -166,8 +168,8 @@ class MathRetriever:
 
     def load(self) -> bool:
         """Load cached index from disk. Returns True if successful."""
-        if CACHE_PATH.exists():
-            with open(CACHE_PATH, "rb") as f:
+        if self.cache_path.exists():
+            with open(self.cache_path, "rb") as f:
                 data = pickle.load(f)
             self.vectorizer = data["vectorizer"]
             self.doc_vectors = data["doc_vectors"]
