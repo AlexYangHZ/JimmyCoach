@@ -223,7 +223,9 @@ class PipelineService:
         md_dir = base
         md_dir.mkdir(parents=True, exist_ok=True)
         for s, sec in zip(all_sections, sections_config):
-            ch_dir = md_dir / f"chapter_{sec['id'][2:4]}"
+            ch_num = sec['id'][2:4]
+            sec_num = sec['id'][-2:]
+            ch_dir = md_dir / f"chapter_{ch_num}"
             ch_dir.mkdir(parents=True, exist_ok=True)
             pdf_path = pages_dir / sec["pdf"]
             content = f"# {sec['title']}\n\n所属章节: {sec['chapter']}"
@@ -237,7 +239,7 @@ class PipelineService:
                     content = f"# {sec['title']}\n\n" + "\n\n".join(text_parts)
                 except Exception:
                     pass
-            (ch_dir / f"section_{sec['id'][5:7]}.md").write_text(content, encoding="utf-8")
+            (ch_dir / f"section_{sec_num}.md").write_text(content, encoding="utf-8")
 
         from services.retriever import MathRetriever
         cache = Path(f"data/vectordb/{subject}/retriever.pkl")
