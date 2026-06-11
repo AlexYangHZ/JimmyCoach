@@ -1,5 +1,92 @@
 {% extends "base.html" %}
-{% block title %}Jimmy教练 — 首页{% endblock %}
+{% block title %}Jimmy教练 — 首页<!-- Chat Modal -->
+<div class="chat-modal-overlay" id="chat-modal" style="display:none">
+    <div class="chat-modal">
+        <div class="chat-modal-head">
+            <h3 id="chat-modal-title">💬 课程问答</h3>
+            <button class="chat-modal-close" onclick="closeChat()">✕</button>
+        </div>
+        <div class="chat-modal-body" id="chat-modal-msgs">
+            <div class="chat-welcome">👋 你好！关于这门课的任何问题都可以问我。</div>
+        </div>
+        <form class="chat-modal-form" onsubmit="sendChat(event)">
+            <input type="hidden" id="chat-subject" value="">
+            <input type="hidden" id="chat-grade" value="">
+            <input type="text" id="chat-input" placeholder="输入你的问题..." required autocomplete="off">
+            <button type="submit" id="chat-send-btn">发送</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openChat(subject, name, grade) {
+    document.getElementById('chat-subject').value = subject;
+    document.getElementById('chat-grade').value = grade;
+    document.getElementById('chat-modal-title').textContent = '💬 ' + name + ' · 课程问答';
+    document.getElementById('chat-modal-msgs').innerHTML = '<div class="chat-welcome">👋 你好！关于' + name + '的任何问题都可以问我。</div>';
+    document.getElementById('chat-modal').style.display = 'flex';
+    document.getElementById('chat-input').focus();
+}
+function closeChat() { document.getElementById('chat-modal').style.display = 'none'; }
+function sendChat(e) {
+    e.preventDefault();
+    var input = document.getElementById('chat-input');
+    var msg = input.value.trim();
+    if (!msg) return;
+    var msgs = document.getElementById('chat-modal-msgs');
+    var subject = document.getElementById('chat-subject').value;
+    var grade = document.getElementById('chat-grade').value;
+    var btn = document.getElementById('chat-send-btn');
+
+    msgs.insertAdjacentHTML('beforeend', '<div class="chat-bubble chat-bubble-user">' + msg + '</div>');
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble chat-bubble-ai';
+    bubble.innerHTML = '<span class="typing-cursor">▌</span>';
+    msgs.appendChild(bubble);
+    msgs.scrollTop = msgs.scrollHeight;
+    input.value = '';
+    btn.disabled = true;
+
+    var form = new FormData();
+    form.append('message', msg);
+    form.append('subject', subject);
+    form.append('grade', grade);
+    form.append('topic_id', subject + '-chat');
+
+    fetch('/chat/stream', {method:'POST', body:form}).then(function(r){
+        var reader = r.body.getReader();
+        var decoder = new TextDecoder();
+        var text = '';
+        function read() {
+            reader.read().then(function(result){
+                if (result.done) { btn.disabled = false; return; }
+                var chunk = decoder.decode(result.value, {stream: true});
+                var lines = chunk.split('\n');
+                lines.forEach(function(line){
+                    if (line.startsWith('data: ')){
+                        try {
+                            var data = JSON.parse(line.slice(6));
+                            if (data.token) {
+                                text += data.token;
+                                bubble.innerHTML = text + '<span class="typing-cursor">▌</span>';
+                            } else if (data.done) {
+                                bubble.innerHTML = text;
+                                if (data.source) bubble.insertAdjacentHTML('beforeend', '<div class="rag-tag">' + data.source + '</div>');
+                            } else if (data.error) {
+                                bubble.innerHTML = data.error;
+                            }
+                        } catch(ex){}
+                    }
+                });
+                msgs.scrollTop = msgs.scrollHeight;
+                read();
+            });
+        }
+        read();
+    });
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="home-page">
@@ -52,6 +139,7 @@
                         {% if g.pdf_url %}
                         <a href="{{ g.pdf_url }}" target="_blank" class="subj-pdf-link">📄 教材原文</a>
                         {% endif %}
+                        <button class="subj-pdf-link" onclick="openChat('{{ subject.id }}', '{{ subject.name }}', {{ g.grade }})" style="background:none;border:none;cursor:pointer;font-family:inherit">💬 课程问答</button>
                         {% else %}
                         <span class="subj-grade subj-grade-soon">
                             <span class="grade-label">{{ g.grade }}年级{{ g.semester }}</span>
@@ -74,4 +162,91 @@
         {% endif %}
     </section>
 </div>
+<!-- Chat Modal -->
+<div class="chat-modal-overlay" id="chat-modal" style="display:none">
+    <div class="chat-modal">
+        <div class="chat-modal-head">
+            <h3 id="chat-modal-title">💬 课程问答</h3>
+            <button class="chat-modal-close" onclick="closeChat()">✕</button>
+        </div>
+        <div class="chat-modal-body" id="chat-modal-msgs">
+            <div class="chat-welcome">👋 你好！关于这门课的任何问题都可以问我。</div>
+        </div>
+        <form class="chat-modal-form" onsubmit="sendChat(event)">
+            <input type="hidden" id="chat-subject" value="">
+            <input type="hidden" id="chat-grade" value="">
+            <input type="text" id="chat-input" placeholder="输入你的问题..." required autocomplete="off">
+            <button type="submit" id="chat-send-btn">发送</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openChat(subject, name, grade) {
+    document.getElementById('chat-subject').value = subject;
+    document.getElementById('chat-grade').value = grade;
+    document.getElementById('chat-modal-title').textContent = '💬 ' + name + ' · 课程问答';
+    document.getElementById('chat-modal-msgs').innerHTML = '<div class="chat-welcome">👋 你好！关于' + name + '的任何问题都可以问我。</div>';
+    document.getElementById('chat-modal').style.display = 'flex';
+    document.getElementById('chat-input').focus();
+}
+function closeChat() { document.getElementById('chat-modal').style.display = 'none'; }
+function sendChat(e) {
+    e.preventDefault();
+    var input = document.getElementById('chat-input');
+    var msg = input.value.trim();
+    if (!msg) return;
+    var msgs = document.getElementById('chat-modal-msgs');
+    var subject = document.getElementById('chat-subject').value;
+    var grade = document.getElementById('chat-grade').value;
+    var btn = document.getElementById('chat-send-btn');
+
+    msgs.insertAdjacentHTML('beforeend', '<div class="chat-bubble chat-bubble-user">' + msg + '</div>');
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble chat-bubble-ai';
+    bubble.innerHTML = '<span class="typing-cursor">▌</span>';
+    msgs.appendChild(bubble);
+    msgs.scrollTop = msgs.scrollHeight;
+    input.value = '';
+    btn.disabled = true;
+
+    var form = new FormData();
+    form.append('message', msg);
+    form.append('subject', subject);
+    form.append('grade', grade);
+    form.append('topic_id', subject + '-chat');
+
+    fetch('/chat/stream', {method:'POST', body:form}).then(function(r){
+        var reader = r.body.getReader();
+        var decoder = new TextDecoder();
+        var text = '';
+        function read() {
+            reader.read().then(function(result){
+                if (result.done) { btn.disabled = false; return; }
+                var chunk = decoder.decode(result.value, {stream: true});
+                var lines = chunk.split('\n');
+                lines.forEach(function(line){
+                    if (line.startsWith('data: ')){
+                        try {
+                            var data = JSON.parse(line.slice(6));
+                            if (data.token) {
+                                text += data.token;
+                                bubble.innerHTML = text + '<span class="typing-cursor">▌</span>';
+                            } else if (data.done) {
+                                bubble.innerHTML = text;
+                                if (data.source) bubble.insertAdjacentHTML('beforeend', '<div class="rag-tag">' + data.source + '</div>');
+                            } else if (data.error) {
+                                bubble.innerHTML = data.error;
+                            }
+                        } catch(ex){}
+                    }
+                });
+                msgs.scrollTop = msgs.scrollHeight;
+                read();
+            });
+        }
+        read();
+    });
+}
+</script>
 {% endblock %}

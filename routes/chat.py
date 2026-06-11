@@ -1,8 +1,9 @@
 """Chat routes — RAG-based subject Q&A using DeepSeek."""
 
 import html as _html
+import json
 from fastapi import APIRouter, Request, Form, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.database import get_db
@@ -139,3 +140,75 @@ async def chat_history(
             html_parts.append(f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{_html.escape(msg["content"])}</div>')
 
     return HTMLResponse("".join(html_parts))
+
+
+@router.post("/chat/stream")
+async def chat_stream(
+    message: str = Form(...),
+    subject: str = Form("math"),
+    topic_id: str = Form(""),
+    grade: int = Form(7),
+    db: AsyncSession = Depends(get_db),
+):
+    """Streaming RAG chat with SSE for typewriter effect."""
+    progress_svc = ProgressService(db)
+
+    # Get or create session
+    session_id = None
+    last_session = await progress_svc.get_last_session()
+    if last_session and topic_id:
+        session_id = last_session.id
+    if not session_id:
+        session_id = await progress_svc.start_session(topic_id or f"{subject}-chat")
+
+    await progress_svc.add_chat_message(session_id, "user", message)
+
+    # === RAG retrieval ===
+    context_chunks = []
+    rag_source_chapter = ""
+    if subject in SUBJECT_RETRIEVERS:
+        retriever_fn = SUBJECT_RETRIEVERS.get(subject)
+        if retriever_fn:
+            try:
+                retriever = await retriever_fn()
+                results = retriever.search(message, top_k=3)
+                if results:
+                    context_chunks = [r["text"][:600] for r in results]
+                    rag_source_chapter = results[0]["chapter"]
+            except Exception as e:
+                print(f"[RAG] Stream error: {e}")
+
+    context_text = "\n\n---\n\n".join(context_chunks) if context_chunks else "（暂无相关教材内容）"
+    system_prompt = RAG_SYSTEM_PROMPT.format(context=context_text)
+
+    async def event_stream():
+        collected = []
+        try:
+            ai_tutor = get_ai_tutor()
+            stream = await ai_tutor.client.chat.completions.create(
+                model=ai_tutor.model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": message},
+                ],
+                temperature=0.7, max_tokens=500, stream=True,
+            )
+            async for chunk in stream:
+                delta = chunk.choices[0].delta
+                if delta.content:
+                    collected.append(delta.content)
+                    yield f"data: {json.dumps({'token': delta.content})}\n\n"
+
+            full_reply = "".join(collected)
+            await progress_svc.add_chat_message(session_id, "assistant", full_reply)
+
+            source = ""
+            if rag_source_chapter:
+                source = f"📖 参考：{rag_source_chapter}"
+            yield f"data: {json.dumps({'done': True, 'source': source})}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'error': '老师有点忙，请稍后再试'})}\n\n"
+            print(f"[Stream] Error: {e}")
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
