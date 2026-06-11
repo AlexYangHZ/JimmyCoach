@@ -78,36 +78,46 @@ async def list_tasks(db: AsyncSession = Depends(get_db)):
     tasks = result.scalars().all()
 
     if not tasks:
-        return HTMLResponse('<p style="color:var(--text-light);text-align:center;padding:20px">暂无处理任务</p>')
+        return HTMLResponse('<div class="empty-state">📭 暂无处理任务<br><small>上传PDF后任务会出现在这里</small></div>')
 
     status_map = {
-        "pending": ("⏳", "等待处理"), "phase1": ("🔍", "正在分析目录..."),
-        "awaiting_confirm": ("👆", "请确认章节结构"),
-        "phase2": ("🔄", "正在生成内容"), "phase3": ("📦", "正在发布..."),
-        "done": ("✅", "已完成"), "failed": ("❌", "处理失败"),
+        "pending": ("⏳", "等待处理", "status-pending"),
+        "phase1": ("🔍", "分析目录结构", "status-active"),
+        "awaiting_confirm": ("👆", "待确认章节", "status-warn"),
+        "phase2": ("🔄", "生成内容中", "status-active"),
+        "phase3": ("📦", "发布中", "status-active"),
+        "done": ("✅", "已完成", "status-done"),
+        "failed": ("❌", "处理失败", "status-err"),
     }
 
     html = ['<div class="task-list">']
     for t in tasks:
-        icon, label = status_map.get(t.status, ("❓", t.status))
+        icon, label, cls = status_map.get(t.status, ("❓", t.status, ""))
         bar = ""
         if t.status in ("phase2", "phase3"):
-            bar = f'<div class="task-progress"><div class="task-progress-fill" style="width:{t.progress}%"></div></div>'
+            bar = f'<div class="mini-progress"><div class="mini-progress-fill" style="width:{t.progress}%"></div></div>'
 
-        actions = f'<button class="btn-reset" onclick="deleteTask({t.id})" style="font-size:.7rem;margin-top:8px">🗑 删除</button>'
+        actions = ""
         if t.status == "awaiting_confirm" and t.chapters_json:
-            actions += f'<button class="btn-start" onclick="showConfirm({t.id})" style="font-size:.85rem;margin-top:8px">确认章节</button>'
+            actions += f'<button class="btn-sm btn-sm-primary" onclick="showConfirm({t.id})">确认章节</button>'
         elif t.status == "done":
-            actions += f'<a href="/subjects/{t.subject}/{t.grade}" class="btn-start" style="font-size:.85rem;margin-top:8px">查看</a>'
+            actions += f'<a href="/subjects/{t.subject}/{t.grade}" class="btn-sm btn-sm-primary">查看</a>'
+        actions += f'<button class="btn-sm btn-sm-danger" onclick="deleteTask({t.id})" style="margin-left:4px">删除</button>'
 
-        err = f'<p class="task-err">{t.error_message[:200]}</p>' if t.error_message else ""
+        err = f'<div class="task-err">{t.error_message[:200]}</div>' if t.error_message else ""
+        pct = f" {t.progress}%" if t.status in ("phase2", "phase3") else ""
 
         html.append(
-            f'<div class="task-card">'
-            f'<div class="task-card-top"><span class="task-icon">{icon}</span>'
+            f'<div class="task-card {cls}">'
+            f'<div class="task-card-top">'
+            f'<span class="task-icon">{icon}</span>'
+            f'<div class="task-info">'
             f'<span class="task-name">{t.subject_name} {t.grade}年级{t.semester}</span>'
-            f'<span class="task-status">{label} {t.progress}%</span></div>'
-            f'{bar}{err}{actions}'
+            f'<span class="task-detail">{label}{pct} · {t.created_at.strftime("%m/%d %H:%M") if t.created_at else ""}</span>'
+            f'</div>'
+            f'</div>'
+            f'{bar}{err}'
+            f'<div class="task-actions">{actions}</div>'
             f'</div>'
         )
     html.append('</div>')
