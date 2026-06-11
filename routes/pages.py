@@ -79,20 +79,6 @@ SUBJECT_CATALOG = [
             {"grade": 7, "semester": "上册", "ready": True, "pdf_url": "/textbook/math/grade7/pages/full.pdf"},
         ],
     },
-    {
-        "id": "english", "name": "英语", "icon": "🌐",
-        "description": "人教版七年级英语，听说读写全面发展",
-        "grades": [
-            {"grade": 7, "semester": "上册", "ready": False},
-        ],
-    },
-    {
-        "id": "chinese", "name": "语文", "icon": "📖",
-        "description": "统编版七年级语文，经典篇目与写作训练",
-        "grades": [
-            {"grade": 7, "semester": "上册", "ready": False},
-        ],
-    },
 ]
 
 # Build nav items (for header) and home display
