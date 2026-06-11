@@ -122,22 +122,25 @@ async def chat_history(
     topic: str = "",
     db: AsyncSession = Depends(get_db),
 ):
-    """Return recent chat messages as HTML partial."""
+    """Return recent chat messages as HTML partial (filtered by topic)."""
     progress_svc = ProgressService(db)
-    last_session = await progress_svc.get_last_session()
-    if not last_session:
-        return HTMLResponse('<div class="chat-float-msg assistant">👋 你好！我是小教练，关于七年级上册数学的任何问题都可以问我。</div>')
+    from sqlalchemy import select
+    from db.models import StudySession
+    stmt = select(StudySession).where(StudySession.topic_id == topic).order_by(StudySession.id.desc()).limit(1)
+    result = await db.execute(stmt)
+    session = result.scalar_one_or_none()
 
-    history = await progress_svc.get_chat_history(last_session.id)
+    if not session:
+        return HTMLResponse('<div class="chat-welcome">👋 你好！关于这门课的任何问题都可以问我。</div>')
+
+    history = await progress_svc.get_chat_history(session.id)
     if not history:
-        return HTMLResponse('<div class="chat-float-msg assistant">👋 你好！有任何关于数学的问题都可以问我。</div>')
+        return HTMLResponse('<div class="chat-welcome">👋 你好！有任何问题都可以问我。</div>')
 
     html_parts = []
-    for msg in history[-20:]:
-        if msg["role"] == "user":
-            html_parts.append(f'<div class="chat-float-msg user"><strong>🧑 你：</strong>{_html.escape(msg["content"])}</div>')
-        else:
-            html_parts.append(f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{_html.escape(msg["content"])}</div>')
+    for msg in history[-30:]:
+        cls = "chat-bubble-user" if msg["role"] == "user" else "chat-bubble-ai"
+        html_parts.append(f'<div class="{cls}">{_html.escape(msg["content"])}</div>')
 
     return HTMLResponse("".join(html_parts))
 
