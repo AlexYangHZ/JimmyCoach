@@ -7,6 +7,24 @@ import re
 import yaml
 from openai import AsyncOpenAI
 
+from config import settings
+
+# Shared singleton
+_ai_tutor_instance: "AITutorService | None" = None
+
+
+def get_ai_tutor() -> "AITutorService":
+    """Get or create the shared AITutorService singleton."""
+    global _ai_tutor_instance
+    if _ai_tutor_instance is None:
+        _ai_tutor_instance = AITutorService(
+            api_key=settings.deepseek_api_key,
+            base_url=settings.deepseek_base_url,
+            model=settings.deepseek_model,
+            prompts_dir=settings.prompts_dir,
+        )
+    return _ai_tutor_instance
+
 
 class AITutorService:
     """Handles all DeepSeek API interactions."""

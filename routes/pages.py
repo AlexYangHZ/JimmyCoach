@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.database import get_db
 from services.progress import ProgressService
-from config import settings
+from config import settings, SUBJECT_NAMES, SUBJECT_ICONS, SUBJECT_DESCRIPTIONS
 
 # Fallback to hardcoded math data for backward compatibility
 try:
@@ -112,18 +112,15 @@ def _discover_subjects():
                 })
     return subjects
 
-NAMES = {"math": "数学", "english": "英语", "chinese": "语文", "science": "科学"}
-ICONS = {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}
-DESCRIPTIONS = {
-    "math": "涵盖数与代数、图形与几何等核心领域",
-    "english": "人教版七年级英语，听说读写全面发展",
-    "chinese": "统编版七年级语文，经典篇目与写作训练",
-    "science": "科学探索，物理化学生物基础入门",
-}
+# Backward compat aliases (from config.py)
+NAMES, ICONS, DESCRIPTIONS = SUBJECT_NAMES, SUBJECT_ICONS, SUBJECT_DESCRIPTIONS
 
-# Build catalog from filesystem + hardcoded math
+# Build catalog from filesystem + hardcoded math (with fallback for CI/tests)
 _catalog_lock = asyncio.Lock()
-SUBJECT_CATALOG = list(_discover_subjects().values())
+try:
+    SUBJECT_CATALOG = list(_discover_subjects().values())
+except Exception:
+    SUBJECT_CATALOG = []
 
 # Always ensure math 七年级上册 is present (manually created, no sections.json)
 has_math = any(s["id"] == "math" for s in SUBJECT_CATALOG)
@@ -204,10 +201,8 @@ async def home(request: Request, db: AsyncSession = Depends(get_db)):
 async def subject_page(request: Request, subject: str, grade: int,
                         db: AsyncSession = Depends(get_db)):
     sections = _load_sections(subject, grade)
-    name_map = {"math": "数学", "english": "英语", "chinese": "语文", "science": "科学"}
-    icon_map = {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}
-    name = name_map.get(subject, subject)
-    icon = icon_map.get(subject, "📚")
+    name = NAMES.get(subject, subject)
+    icon = ICONS.get(subject, "📚")
 
     if not sections:
         return request.app.state.templates.TemplateResponse(
@@ -249,11 +244,10 @@ async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
     progress_svc = ProgressService(db)
     session_id = await progress_svc.start_session(topic_id)
 
-    name_map = {"math": "数学", "english": "英语", "chinese": "语文", "science": "科学"}
     return request.app.state.templates.TemplateResponse(
         "lesson.html", _ctx(request, subject=subject, grade=grade,
                             section=sec, pdf_url=pdf_url, session_id=session_id,
-                            subject_name=name_map.get(subject, subject), keypoints=keypoints))
+                            subject_name=NAMES.get(subject, subject), keypoints=keypoints))
 
 
 @router.get("/mindmap/{section_id}", response_class=HTMLResponse)

@@ -15,7 +15,8 @@ from docx.shared import Pt, Inches, Cm, RGBColor
 
 from db.database import get_db
 from db.models import ErrorLog
-from routes.pages import MATH_SECTIONS, get_nav_subjects, NAMES
+from routes.pages import MATH_SECTIONS, get_nav_subjects
+from config import SUBJECT_NAMES as NAMES
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from services.ai_tutor import AITutorService
 from services.progress import ProgressService
@@ -184,11 +185,10 @@ _LEGACY_EXERCISES = {
 EXERCISES = _load_exercises("math")
 
 def get_exercises_for(subject: str = "math") -> dict:
-    """Get exercises for a specific subject (loaded from JSON or legacy fallback)."""
+    """Get exercises for a specific subject (JSON-backed or legacy fallback)."""
     data = _load_exercises(subject)
-    # If only has "default", try legacy math data for math subject
-    if subject == "math" and len(data) <= 2:
-        # Merge legacy math exercises
+    # For math, always merge legacy exercises to fill gaps
+    if subject == "math":
         for k, v in _LEGACY_EXERCISES.items():
             if k not in data:
                 data[k] = v

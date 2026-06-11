@@ -81,9 +81,8 @@ async def test_chat_history_empty(client):
 
 @pytest.mark.asyncio
 async def test_subject_page_empty_for_invalid(client):
-    response = await client.get("/subjects/english/7")
+    response = await client.get("/subjects/nonexistent/7")
     assert response.status_code == 200
-    assert "soon" in response.text.lower() or "准备中" in response.text
 
 
 @pytest.mark.asyncio

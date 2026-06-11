@@ -22,3 +22,13 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# Shared subject metadata
+SUBJECT_NAMES = {"math": "数学", "english": "英语", "chinese": "语文", "science": "科学"}
+SUBJECT_ICONS = {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}
+SUBJECT_DESCRIPTIONS = {
+    "math": "涵盖数与代数、图形与几何等核心领域",
+    "english": "人教版七年级英语，听说读写全面发展",
+    "chinese": "统编版七年级语文，经典篇目与写作训练",
+    "science": "科学探索，物理化学生物基础入门",
+}

@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 import fitz
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.ai_tutor import AITutorService
-from config import settings
+from services.ai_tutor import get_ai_tutor
+from config import settings, SUBJECT_ICONS
 
 TOC_PARSE_PROMPT = """你是教材分析专家。以下是教材目录页文本。请提取每章每节信息，返回JSON。
 
@@ -82,12 +82,7 @@ class PipelineService:
 
     def __init__(self, db: AsyncSession):
         self.db = db
-        self.ai = AITutorService(
-            api_key=settings.deepseek_api_key,
-            base_url=settings.deepseek_base_url,
-            model=settings.deepseek_model,
-            prompts_dir=settings.prompts_dir,
-        )
+        self.ai = get_ai_tutor()
 
     async def update_task(self, task_id: int, **kwargs):
         from db.models import PipelineTask
@@ -108,7 +103,13 @@ class PipelineService:
                 raw = response.choices[0].message.content or "{}"
                 m = re.search(r'\{[\s\S]*\}', raw)
                 return json.loads(m.group() if m else raw)
-            except Exception:
+            except (json.JSONDecodeError, KeyError, AttributeError) as e:
+                print(f"[Pipeline] AI JSON parse error (attempt {attempt+1}): {e}")
+                if attempt == retries - 1:
+                    return {}
+                await asyncio.sleep(1)
+            except Exception as e:
+                print(f"[Pipeline] AI API error (attempt {attempt+1}): {e}")
                 if attempt == retries - 1:
                     return {}
                 await asyncio.sleep(1)
@@ -262,7 +263,7 @@ class PipelineService:
                     return
             SUBJECT_CATALOG.append({
                 "id": subject, "name": subject_name,
-                "icon": {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}.get(subject, "📚"),
+                "icon": SUBJECT_ICONS.get(subject, "📚"),
                 "description": f"{subject_name} {grade}年级{semester}",
                 "grades": [{"grade": grade, "semester": semester, "ready": True,
                             "pdf_url": f"/textbook/{subject}/grade{grade}/pages/full.pdf",

@@ -6,19 +6,12 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.database import get_db
-from services.ai_tutor import AITutorService
+from services.ai_tutor import get_ai_tutor
 from services.progress import ProgressService
 from services.retriever import get_retriever as _get_retriever_async
 from config import settings
 
 router = APIRouter()
-
-ai_tutor = AITutorService(
-    api_key=settings.deepseek_api_key,
-    base_url=settings.deepseek_base_url,
-    model=settings.deepseek_model,
-    prompts_dir=settings.prompts_dir,
-)
 
 # Map subjects to their retriever
 SUBJECT_RETRIEVERS = {
@@ -80,8 +73,8 @@ async def chat_send(
                     context_chunks = [r["text"][:600] for r in results]
                     rag_source_chapter = results[0]["chapter"]
                     rag_source_section = results[0]["section"]
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[RAG] Retriever error for '{message[:30]}...': {e}")
 
     # Build context
     if context_chunks:
@@ -93,6 +86,7 @@ async def chat_send(
 
     # Get AI response
     try:
+        ai_tutor = get_ai_tutor()
         response = await ai_tutor.client.chat.completions.create(
             model=ai_tutor.model,
             messages=[
