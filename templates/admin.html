@@ -82,6 +82,13 @@ function confirmChapters(taskId) {
         setTimeout(function(){ location.reload(); }, 2000);
     });
 }
+function deleteTask(taskId) {
+    if (confirm('确定要删除此任务吗？')) {
+        fetch('/admin/tasks/'+taskId+'/delete', {method:'POST'}).then(r=>r.text()).then(t=>{
+            document.open(); document.write(t); document.close();
+        });
+    }
+}
 function deleteSubject(subject, grade) {
     if (confirm('确定要删除 ' + subject + ' ' + grade + '年级的所有内容吗？此操作不可恢复！')) {
         fetch('/admin/delete/'+subject+'/'+grade, {method:'POST'}).then(r=>r.text()).then(t=>{

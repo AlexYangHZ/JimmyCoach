@@ -94,13 +94,11 @@ async def list_tasks(db: AsyncSession = Depends(get_db)):
         if t.status in ("phase2", "phase3"):
             bar = f'<div class="task-progress"><div class="task-progress-fill" style="width:{t.progress}%"></div></div>'
 
-        actions = ""
+        actions = f'<button class="btn-reset" onclick="deleteTask({t.id})" style="font-size:.7rem;margin-top:8px">🗑 删除</button>'
         if t.status == "awaiting_confirm" and t.chapters_json:
-            actions = f'<button class="btn-start" onclick="showConfirm({t.id})" style="font-size:.85rem;margin-top:8px">确认章节</button>'
+            actions += f'<button class="btn-start" onclick="showConfirm({t.id})" style="font-size:.85rem;margin-top:8px">确认章节</button>'
         elif t.status == "done":
-            actions = f'<a href="/subjects/{t.subject}/{t.grade}" class="btn-start" style="font-size:.85rem;margin-top:8px">查看</a>'
-        elif t.status == "failed":
-            actions = f'<button class="btn-reset" onclick="retryTask({t.id})" style="font-size:.85rem;margin-top:8px">重试</button>'
+            actions += f'<a href="/subjects/{t.subject}/{t.grade}" class="btn-start" style="font-size:.85rem;margin-top:8px">查看</a>'
 
         err = f'<p class="task-err">{t.error_message[:200]}</p>' if t.error_message else ""
 
@@ -142,6 +140,20 @@ async def task_progress(task_id: int, db: AsyncSession = Depends(get_db)):
             await asyncio.sleep(2)
 
     return StreamingResponse(stream(), media_type="text/event-stream")
+
+
+@router.post("/tasks/{task_id}/delete")
+async def delete_task(task_id: int, db: AsyncSession = Depends(get_db)):
+    """Delete a pipeline task and its uploaded PDF."""
+    task = await db.get(PipelineTask, task_id)
+    if task:
+        # Remove uploaded PDF
+        pdf_path = Path(task.pdf_path)
+        if pdf_path.exists():
+            pdf_path.unlink()
+        await db.delete(task)
+        await db.commit()
+    return HTMLResponse('<script>location.reload()</script>')
 
 
 @router.post("/delete/{subject}/{grade}")
