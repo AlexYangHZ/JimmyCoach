@@ -14,7 +14,7 @@ from docx.shared import Pt, Inches, Cm, RGBColor
 
 from db.database import get_db
 from db.models import ErrorLog
-from routes.pages import MATH_SECTIONS
+from routes.pages import MATH_SECTIONS, get_nav_subjects
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from services.ai_tutor import AITutorService
 from services.progress import ProgressService
@@ -327,7 +327,8 @@ async def all_exercises(request: Request):
 
     return request.app.state.templates.TemplateResponse(
         "all_exercises.html",
-        {"request": request, "sections": sections, "total_ex": total_ex},
+        {"request": request, "sections": sections, "total_ex": total_ex,
+         "nav_subjects": get_nav_subjects()},
     )
 
 
@@ -399,7 +400,8 @@ async def error_book(request: Request, db: AsyncSession = Depends(get_db)):
 
     return request.app.state.templates.TemplateResponse(
         "error_book.html",
-        {"request": request, "errors": enriched, "total_errors": total_errors},
+        {"request": request, "errors": enriched, "total_errors": total_errors,
+         "nav_subjects": get_nav_subjects()},
     )
 
 

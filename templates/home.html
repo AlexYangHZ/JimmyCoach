@@ -5,28 +5,34 @@
 <div class="home-container">
     <section class="hero">
         <h1>你好，Jimmy！👋</h1>
-        <p class="subtitle">七年级上册 · AI辅导教练</p>
+        <p class="subtitle">AI辅导教练，随时随地帮你学习</p>
     </section>
 
     <section class="subject-grid">
         {% for subject in subjects %}
-        <div class="subject-card-wrap">
-            <a href="/subjects/{{ subject.id }}/{{ subject.grade }}"
-               class="subject-card {% if not subject.ready %}subject-soon{% endif %}">
-                <div class="subject-icon">{{ subject.icon }}</div>
-                <h2>{{ subject.name }} · {{ subject.semester }}</h2>
-                <p class="subject-desc">{{ subject.description }}</p>
-                {% if subject.ready %}
-                    <span class="badge badge-ready">✅ {{ subject.topic_count }} 个知识点</span>
-                {% else %}
-                    <span class="badge badge-pending">⏳ 即将上线</span>
-                {% endif %}
-            </a>
-            {% if subject.pdf_url %}
-            <a href="{{ subject.pdf_url }}" target="_blank" class="pdf-link">
-                📄 查看教材PDF原文
-            </a>
-            {% endif %}
+        <div class="subject-card">
+            <div class="subject-card-top">
+                <span class="subject-icon">{{ subject.icon }}</span>
+                <h2>{{ subject.name }}</h2>
+            </div>
+            <p class="subject-desc">{{ subject.description }}</p>
+            <div class="subject-grades">
+                {% for g in subject.grades %}
+                    {% if g.ready %}
+                    <a href="/subjects/{{ subject.id }}/{{ g.grade }}" class="grade-tag active">
+                        {{ g.grade }}年级{{ g.semester }}
+                        {% if g.topic_count %}
+                        <span style="font-size:.7rem;opacity:.8"> · {{ g.topic_count }}知识点</span>
+                        {% endif %}
+                    </a>
+                    {% if g.pdf_url %}
+                    <a href="{{ g.pdf_url }}" target="_blank" class="pdf-link">📄 查看教材PDF原文</a>
+                    {% endif %}
+                    {% else %}
+                    <span class="grade-tag soon">{{ g.grade }}年级{{ g.semester }} · 即将上线</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
         {% endfor %}
     </section>

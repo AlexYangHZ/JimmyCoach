@@ -11,15 +11,49 @@ from data.keypoints.math_grade7 import get_keypoints
 
 router = APIRouter()
 
-SUBJECTS_CONFIG = [
-    {"id": "math", "name": "数学", "icon": "📐", "grade": 7, "semester": "上册",
-     "pdf_url": "/textbook/math/grade7/pages/full.pdf",
-     "description": "有理数、代数式、整式加减、一元一次方程、几何图形初步"},
-    {"id": "english", "name": "英语", "icon": "🌐", "grade": 7, "semester": "上册",
-     "description": "待添加PDF处理后启用"},
-    {"id": "chinese", "name": "语文", "icon": "📖", "grade": 7, "semester": "上册",
-     "description": "待添加PDF处理后启用"},
+
+def _ctx(request: Request, **extra) -> dict:
+    """Common template context for all pages."""
+    return {"request": request, "nav_subjects": get_nav_subjects(), **extra}
+
+
+# Subject catalog — each subject can have multiple grade/semester entries
+# ready=True means content is available, ready=False means coming soon
+SUBJECT_CATALOG = [
+    {
+        "id": "math", "name": "数学", "icon": "📐",
+        "description": "涵盖数与代数、图形与几何、统计与概率等核心领域",
+        "grades": [
+            {"grade": 7, "semester": "上册", "ready": True, "pdf_url": "/textbook/math/grade7/pages/full.pdf"},
+        ],
+    },
+    {
+        "id": "english", "name": "英语", "icon": "🌐",
+        "description": "人教版七年级英语，听说读写全面发展",
+        "grades": [
+            {"grade": 7, "semester": "上册", "ready": False},
+        ],
+    },
+    {
+        "id": "chinese", "name": "语文", "icon": "📖",
+        "description": "统编版七年级语文，经典篇目与写作训练",
+        "grades": [
+            {"grade": 7, "semester": "上册", "ready": False},
+        ],
+    },
 ]
+
+# Build nav items (for header) and home display
+def get_nav_subjects():
+    """Return list of subjects with their primary grade for nav."""
+    nav = []
+    for subj in SUBJECT_CATALOG:
+        primary = subj["grades"][0]
+        nav.append({
+            "id": subj["id"], "name": subj["name"], "icon": subj["icon"],
+            "grade": primary["grade"], "semester": primary["semester"],
+        })
+    return nav
 
 # Section → PDF mapping (matches split_pdf.py output)
 MATH_SECTIONS = [
@@ -46,14 +80,20 @@ MATH_SECTIONS = [
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: AsyncSession = Depends(get_db)):
     subjects = []
-    for subj in SUBJECTS_CONFIG:
-        ready = subj["id"] == "math"
-        topic_count = len(MATH_SECTIONS) if ready else 0
-        subjects.append({**subj, "topic_count": topic_count, "ready": ready})
+    for subj in SUBJECT_CATALOG:
+        grades_display = []
+        for g in subj["grades"]:
+            if g["ready"]:
+                topic_count = len(MATH_SECTIONS) if subj["id"] == "math" else 0
+                grades_display.append({
+                    **g, "topic_count": topic_count,
+                })
+            else:
+                grades_display.append({**g, "topic_count": 0})
+        subjects.append({**subj, "grades": grades_display})
 
     return request.app.state.templates.TemplateResponse(
-        "home.html", {"request": request, "subjects": subjects},
-    )
+        "home.html", _ctx(request, subjects=subjects))
 
 
 @router.get("/subjects/{subject}/{grade}", response_class=HTMLResponse)
@@ -63,9 +103,8 @@ async def subject_page(request: Request, subject: str, grade: int,
         name = {"english": "英语", "chinese": "语文"}.get(subject, subject)
         icon = {"english": "🌐", "chinese": "📖"}.get(subject, "📚")
         return request.app.state.templates.TemplateResponse(
-            "subject.html", {"request": request, "subject_name": name,
-                             "subject_icon": icon, "grade": grade,
-                             "topics": [], "not_ready": True})
+            "subject.html", _ctx(request, subject_name=name, subject_icon=icon,
+                                 grade=grade, subject=subject, topics=[], not_ready=True))
 
     progress_svc = ProgressService(db)
     simplified = []
@@ -80,11 +119,9 @@ async def subject_page(request: Request, subject: str, grade: int,
         t["available"] = True
 
     return request.app.state.templates.TemplateResponse(
-        "subject.html", {
-            "request": request, "subject": subject, "grade": grade,
-            "subject_name": "数学", "subject_icon": "📐",
-            "topics": enriched, "not_ready": False,
-        })
+        "subject.html", _ctx(request, subject=subject, grade=grade,
+                             subject_name="数学", subject_icon="📐",
+                             topics=enriched, not_ready=False))
 
 
 @router.get("/learn/{subject}/{grade}/{topic_id}", response_class=HTMLResponse)
@@ -107,11 +144,9 @@ async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
     session_id = await progress_svc.start_session(topic_id)
 
     return request.app.state.templates.TemplateResponse(
-        "lesson.html", {
-            "request": request, "subject": subject, "grade": grade,
-            "section": sec, "pdf_url": pdf_url, "session_id": session_id,
-            "subject_name": "数学", "keypoints": keypoints,
-        })
+        "lesson.html", _ctx(request, subject=subject, grade=grade,
+                            section=sec, pdf_url=pdf_url, session_id=session_id,
+                            subject_name="数学", keypoints=keypoints))
 
 
 @router.get("/mindmap/{section_id}", response_class=HTMLResponse)
