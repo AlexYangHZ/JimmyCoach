@@ -24,7 +24,9 @@ async def admin_page(request: Request):
     # Show all subjects from catalog for published list
     all_subjects = []
     for subj in SUBJECT_CATALOG:
-        for g in subj.get("grades", []):
+        if not subj.get("grades"):
+            continue
+        for g in subj["grades"]:
             if g.get("ready"):
                 all_subjects.append({
                     "id": subj["id"], "name": subj["name"], "icon": subj["icon"],
@@ -160,7 +162,9 @@ async def delete_content(subject: str, grade: int, db: AsyncSession = Depends(ge
 
     for subj in SUBJECT_CATALOG:
         subj["grades"] = [g for g in subj["grades"]
-                          if not (g["grade"] == grade and g.get("ready"))]
+                          if not (g["grade"] == grade)]
+    # Remove subjects with no remaining grades
+    SUBJECT_CATALOG[:] = [s for s in SUBJECT_CATALOG if s["grades"]]
 
     # Also clean up tasks
     await db.execute(delete(PipelineTask).where(

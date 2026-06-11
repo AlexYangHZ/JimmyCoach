@@ -144,10 +144,13 @@ def get_nav_subjects():
     """Return list of subjects with their primary grade for nav."""
     nav = []
     for subj in SUBJECT_CATALOG:
-        primary = subj["grades"][0]
+        ready_grades = [g for g in subj.get("grades", []) if g.get("ready")]
+        if not ready_grades:
+            continue
+        primary = ready_grades[0]
         nav.append({
             "id": subj["id"], "name": subj["name"], "icon": subj["icon"],
-            "grade": primary["grade"], "semester": primary["semester"],
+            "grade": primary["grade"], "semester": primary.get("semester", "上册"),
         })
     return nav
 
@@ -180,11 +183,13 @@ async def home(request: Request, db: AsyncSession = Depends(get_db)):
     for subj in SUBJECT_CATALOG:
         grades_display = []
         for g in subj["grades"]:
-            if g["ready"]:
-                topic_count = len(MATH_SECTIONS_FALLBACK) if subj["id"] == "math" else 0
-                grades_display.append({
-                    **g, "topic_count": topic_count,
-                })
+            if g.get("ready"):
+                tc = g.get("topic_count", 0)
+                if tc == 0 and subj["id"] == "math":
+                    tc = len(MATH_SECTIONS_FALLBACK)
+                elif tc == 0:
+                    tc = len(_load_sections(subj["id"], g["grade"]))
+                grades_display.append({**g, "topic_count": tc})
             else:
                 grades_display.append({**g, "topic_count": 0})
         subjects.append({**subj, "grades": grades_display})
