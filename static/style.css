@@ -516,26 +516,6 @@ a:hover { text-decoration: underline; }
 }
 .btn-download:hover { background: #eef6ff; text-decoration: none; }
 
-/* === Exercises (answer-on-click) === */
-.exercise-item {
-    background: var(--card-bg); border-radius: var(--radius); padding: 16px 20px;
-    margin-bottom: 10px; box-shadow: var(--shadow);
-}
-.exercise-item .q-title { font-weight: 600; margin-bottom: 8px; }
-.exercise-item .q-choices { display: flex; flex-wrap: wrap; gap: 8px; }
-.exercise-item .q-choice {
-    padding: 6px 14px; border: 1px solid var(--border); border-radius: 16px;
-    cursor: pointer; font-size: 0.9rem; transition: all 0.15s;
-}
-.exercise-item .q-choice:hover { border-color: var(--primary); background: #eef6ff; }
-.exercise-item .q-choice.selected { background: var(--primary); color: white; border-color: var(--primary); }
-.exercise-item .q-choice.correct { background: var(--success); color: white; border-color: var(--success); }
-.exercise-item .q-choice.wrong { background: var(--danger); color: white; border-color: var(--danger); }
-.exercise-item .q-answer { display: none; margin-top: 10px; padding: 10px 14px; background: #e8f5e9; border-radius: 8px; font-size: 0.9rem; }
-.exercise-item .q-answer.show { display: block; }
-.btn-show-answer { margin-top: 8px; padding: 4px 14px; background: none; border: 1px solid var(--primary); color: var(--primary); border-radius: 14px; cursor: pointer; font-size: 0.85rem; }
-.btn-show-answer:hover { background: #eef6ff; }
-
 /* === Floating Chat === */
 .chat-float {
     position: fixed; bottom: 20px; right: 20px; width: 380px; max-height: 520px;

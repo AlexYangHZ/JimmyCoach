@@ -163,38 +163,54 @@ EXERCISES = _load_exercises()
 
 
 def _build_exercise_html(section_id: str) -> str:
-    """Build HTML for a set of exercises."""
+    """Build HTML for exercises using ae-card style matching all-exercises page."""
     ex_list = EXERCISES.get(section_id, EXERCISES["default"])
     if not ex_list:
         ex_list = EXERCISES["default"]
 
     parts = []
     for i, ex in enumerate(ex_list):
-        qid = f"q-{section_id}-{i}"
-        parts.append(f'<div class="exercise-item" id="{qid}">')
-        parts.append(f'<div class="q-title">第{i+1}题：{ex["question"]}</div>')
+        qid = f"ae-{section_id}-{i}"
+        qtype_icon = {"choice": "🔤", "fill": "✏️", "true_false": "✅"}.get(ex["type"], "📝")
+        parts.append(f'<div class="ae-card" id="{qid}">')
+        parts.append(
+            f'<div class="ae-q">'
+            f'<span class="ae-q-num">{i+1}</span>'
+            f'<span class="ae-q-type">{qtype_icon}</span>'
+            f'<span class="ae-q-text">{ex["question"]}</span>'
+            f'</div>'
+        )
 
         if ex["type"] == "choice" and "choices" in ex:
-            parts.append('<div class="q-choices">')
-            for j, choice in enumerate(ex["choices"]):
+            parts.append('<div class="ae-choices">')
+            for j, choice in enumerate(ex.get("choices", [])):
                 parts.append(
-                    f'<span class="q-choice" onclick="checkChoice(\'{qid}\', {j}, {ex["answer"]}, this)">'
-                    f'{chr(65+j)}. {choice}</span>'
+                    f'<button class="ae-opt" onclick="aeCheck(\'{qid}\',{j},{ex["answer"]},this)" data-correct="{ex["answer"]}">'
+                    f'<span class="ae-opt-letter">{chr(65+j)}</span>'
+                    f'<span class="ae-opt-text">{choice}</span>'
+                    f'</button>'
                 )
             parts.append('</div>')
         elif ex["type"] == "fill":
             parts.append(
-                f'<div style="margin:8px 0">'
-                f'<input type="text" class="exercise-input" id="{qid}-input" '
-                f'placeholder="输入你的答案" style="max-width:300px"> '
-                f'<button class="btn-submit" onclick="checkFill(\'{qid}\', \'{ex["answer"]}\')">检查</button>'
+                f'<div class="ae-fill">'
+                f'<input class="ae-input" id="{qid}-inp" placeholder="输入你的答案...">'
+                f'<button class="ae-btn" onclick="aeFill(\'{qid}\',\'{ex["answer"]}\')">检查</button>'
+                f'</div>'
+            )
+        elif ex["type"] == "true_false":
+            correct_idx = 0 if str(ex["answer"]) == "正确" else 1
+            parts.append(
+                f'<div class="ae-choices">'
+                f'<button class="ae-opt" onclick="aeCheck(\'{qid}\',0,{correct_idx},this)" data-correct="{correct_idx}"><span class="ae-opt-letter">✓</span>正确</button>'
+                f'<button class="ae-opt" onclick="aeCheck(\'{qid}\',1,{correct_idx},this)" data-correct="{correct_idx}"><span class="ae-opt-letter">✗</span>错误</button>'
                 f'</div>'
             )
 
         parts.append(
-            f'<div class="q-answer" id="{qid}-answer">'
-            f'<strong>答案：</strong>{ex["answer"]}<br>'
-            f'<strong>解释：</strong>{ex["explanation"]}'
+            f'<div class="ae-answer" id="{qid}-ans">'
+            f'<span class="ae-ans-label">✅ 正确答案：</span>{ex["answer"]}'
+            f'<span class="ae-ans-desc">{ex["explanation"]}</span>'
             f'</div>'
         )
         parts.append('</div>')
@@ -407,38 +423,14 @@ async def get_exercises(section_id: str):
     html = _build_exercise_html(section_id)
     js = """
 <script>
-function checkChoice(qid, selected, correct, el) {
-    var choices = document.querySelectorAll('#' + qid + ' .q-choice');
-    choices.forEach(function(c) { c.classList.remove('selected', 'correct', 'wrong'); });
-    if (selected === correct) {
-        el.classList.add('correct');
-    } else {
-        el.classList.add('wrong');
-        choices[correct].classList.add('correct');
-    }
-    document.getElementById(qid + '-answer').classList.add('show');
+function aeCheck(qid, selected, correct, el) {
+    var opts = document.querySelectorAll('#' + qid + ' .ae-opt');
+    opts.forEach(function(o) { o.classList.remove('ae-right','ae-wrong'); o.disabled = true; });
+    if (selected === correct) { el.classList.add('ae-right'); }
+    else { el.classList.add('ae-wrong'); opts[correct].classList.add('ae-right'); }
+    document.getElementById(qid + '-ans').classList.add('ae-show');
 }
-function checkFill(qid, answer) {
-    var input = document.getElementById(qid + '-input');
-    var resultDiv = document.getElementById(qid + '-answer');
-    if (input.value.trim()) {
-        resultDiv.classList.add('show');
-    }
-}
-function recordError(sectionId, exIdx, question, correctAnswer) {
-    fetch('/exercise/error', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'section_id=' + encodeURIComponent(sectionId) +
-              '&exercise_idx=' + exIdx +
-              '&question=' + encodeURIComponent(question) +
-              '&correct_answer=' + encodeURIComponent(correctAnswer)
-    }).then(r => r.text()).then(t => {
-        var btn = event.target;
-        btn.textContent = '✅ 已记录';
-        btn.disabled = true;
-    });
-}
+function aeFill(qid, answer) { document.getElementById(qid + '-ans').classList.add('ae-show'); }
 </script>
 """
     return HTMLResponse(html + js)
