@@ -219,14 +219,24 @@ class PipelineService:
 
         await self.update_task(task_id, status="phase3", progress=90)
 
-        # Build retriever
+        # Generate markdown files from extracted PDF text for retriever
         md_dir = base
         md_dir.mkdir(parents=True, exist_ok=True)
-        # Generate simple markdown from extracted text for retriever
         for s, sec in zip(all_sections, sections_config):
             ch_dir = md_dir / f"chapter_{sec['id'][2:4]}"
             ch_dir.mkdir(parents=True, exist_ok=True)
+            pdf_path = pages_dir / sec["pdf"]
             content = f"# {sec['title']}\n\n所属章节: {sec['chapter']}"
+            if pdf_path.exists():
+                try:
+                    extract_doc = fitz.open(pdf_path)
+                    text_parts = []
+                    for page in extract_doc:
+                        text_parts.append(page.get_text())
+                    extract_doc.close()
+                    content = f"# {sec['title']}\n\n" + "\n\n".join(text_parts)
+                except Exception:
+                    pass
             (ch_dir / f"section_{sec['id'][5:7]}.md").write_text(content, encoding="utf-8")
 
         from services.retriever import MathRetriever

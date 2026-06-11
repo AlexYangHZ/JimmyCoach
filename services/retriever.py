@@ -73,7 +73,7 @@ class MathRetriever:
 
         for md_file in sorted(self.markdown_dir.rglob("*.md")):
             # Parse path for metadata
-            rel = md_file.relative_to(MARKDOWN_DIR)
+            rel = md_file.relative_to(self.markdown_dir)
             parts = rel.parts
 
             chapter = "Unknown"
