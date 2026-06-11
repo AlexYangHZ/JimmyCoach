@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from config import settings
 from db.database import init_db
-from routes import pages, chat, exercises
+from routes import pages, chat, exercises, admin
 
 
 @asynccontextmanager
@@ -25,6 +25,7 @@ app.mount("/textbook", StaticFiles(directory="data/textbooks"), name="textbook")
 app.include_router(pages.router)
 app.include_router(chat.router)
 app.include_router(exercises.router)
+app.include_router(admin.router)
 
 
 @app.get("/health")

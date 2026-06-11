@@ -67,3 +67,21 @@ class ErrorLog(Base):
     correct_answer = Column(Text, nullable=False)
     error_count = Column(Integer, default=1)
     last_error_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+class PipelineTask(Base):
+    """Track PDF processing pipeline tasks."""
+    __tablename__ = "pipeline_tasks"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    subject = Column(String(50), nullable=False)
+    subject_name = Column(String(50), nullable=False)
+    grade = Column(Integer, nullable=False)
+    semester = Column(String(10), nullable=False, default="上册")
+    pdf_path = Column(String(500), nullable=False)
+    status = Column(String(30), nullable=False, default="pending")
+    progress = Column(Integer, default=0)
+    chapters_json = Column(Text)
+    error_message = Column(Text)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

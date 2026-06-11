@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}管理后台 — Jimmy教练{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+    <h1>⚙️ 内容管理</h1>
+
+    <div class="admin-card">
+        <h2>📤 上传新教材</h2>
+        <form class="upload-form" onsubmit="uploadPDF(event)">
+            <div class="form-row">
+                <input type="file" id="pdf-file" accept=".pdf" required>
+            </div>
+            <div class="form-row">
+                <select id="subject" required>
+                    <option value="math">📐 数学</option>
+                    <option value="english">🌐 英语</option>
+                    <option value="chinese">📖 语文</option>
+                    <option value="science">🔬 科学</option>
+                </select>
+                <input type="text" id="subject-name" placeholder="学科中文名" value="数学" required style="flex:1">
+                <input type="number" id="grade" value="7" min="1" max="12" style="width:80px" required>
+                <select id="semester">
+                    <option value="上册">上册</option>
+                    <option value="下册">下册</option>
+                </select>
+                <button type="submit" class="btn-start">🚀 开始处理</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="admin-card">
+        <h2>📋 处理任务 <span style="font-size:.8rem;color:var(--text-light)">(每5秒自动刷新)</span></h2>
+        <div id="task-list" hx-get="/admin/tasks" hx-trigger="load, every 5s" hx-swap="innerHTML">
+            <p style="color:var(--text-light);text-align:center;padding:20px">加载中...</p>
+        </div>
+    </div>
+
+    <div class="admin-card">
+        <h2>✅ 已发布内容</h2>
+        <div id="published-list">
+            {% for subj in nav_subjects %}
+            <div class="pub-item">
+                <span>{{ subj.icon }} {{ subj.name }} {{ subj.grade }}年级{{ subj.semester }}</span>
+                <a href="/subjects/{{ subj.id }}/{{ subj.grade }}" class="btn-start" style="font-size:.8rem">查看</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+function uploadPDF(e) {
+    e.preventDefault();
+    var btn = e.target.querySelector('button');
+    btn.textContent = '处理中...'; btn.disabled = true;
+    var form = new FormData();
+    form.append('file', document.getElementById('pdf-file').files[0]);
+    form.append('subject', document.getElementById('subject').value);
+    form.append('subject_name', document.getElementById('subject-name').value);
+    form.append('grade', document.getElementById('grade').value);
+    form.append('semester', document.getElementById('semester').value);
+    fetch('/admin/upload', {method:'POST', body:form}).then(r=>r.text()).then(t=>{
+        document.open(); document.write(t); document.close();
+    });
+}
+function showConfirm(taskId) {
+    fetch('/admin/chapters/'+taskId).then(r=>r.text()).then(t=>{
+        var div = document.createElement('div');
+        div.innerHTML = t;
+        div.style.cssText = 'position:fixed;top:15%;left:50%;transform:translateX(-50%);background:white;padding:24px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:999;max-height:70vh;overflow-y:auto;max-width:600px;width:90%';
+        document.body.appendChild(div);
+    });
+}
+function confirmChapters(taskId) {
+    fetch('/admin/confirm/'+taskId, {method:'POST'}).then(r=>r.text()).then(t=>{
+        var div = document.querySelector('.confirm-chapters');
+        if(div) { div.innerHTML = t; }
+        setTimeout(function(){ location.reload(); }, 2000);
+    });
+}
+</script>
+{% endblock %}

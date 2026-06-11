@@ -1,13 +1,65 @@
 """Page routes — serve HTML pages."""
 
+import json
+from pathlib import Path
+
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.database import get_db
 from services.progress import ProgressService
-from data.mindmaps.math_grade7 import get_mindmap
-from data.keypoints.math_grade7 import get_keypoints
+from config import settings
+
+# Fallback to hardcoded math data for backward compatibility
+try:
+    from data.mindmaps.math_grade7 import get_mindmap as _math_mm, MINDMAPS
+except ImportError:
+    MINDMAPS = {}
+    def _math_mm(sid): return MINDMAPS.get(sid)
+
+try:
+    from data.keypoints.math_grade7 import get_keypoints as _math_kp, KEYPOINTS
+except ImportError:
+    KEYPOINTS = {}
+    def _math_kp(sid): return KEYPOINTS.get(sid)
+
+
+def _load_sections(subject, grade):
+    """Load sections config from pipeline-generated JSON, or fall back to hardcoded."""
+    json_path = Path(f"data/textbooks/{subject}/grade{grade}/sections.json")
+    if json_path.exists():
+        with open(json_path, encoding="utf-8") as f:
+            return json.load(f)
+    # Fallback to hardcoded math sections
+    if subject == "math" and grade == 7:
+        return MATH_SECTIONS_FALLBACK
+    return []
+
+
+def _get_mindmap(subject, section_id):
+    """Get mindmap for any subject (dynamic JSON or hardcoded fallback)."""
+    json_path = Path(f"data/mindmaps/{subject}_grade7.json")
+    if json_path.exists():
+        with open(json_path, encoding="utf-8") as f:
+            data = json.load(f)
+        return data.get(section_id)
+    # Fallback: math hardcoded
+    if subject == "math":
+        return _math_mm(section_id)
+    return None
+
+
+def _get_keypoints(subject, section_id):
+    """Get keypoints for any subject."""
+    json_path = Path(f"data/keypoints/{subject}_grade7.json")
+    if json_path.exists():
+        with open(json_path, encoding="utf-8") as f:
+            data = json.load(f)
+        return data.get(section_id)
+    if subject == "math":
+        return _math_kp(section_id)
+    return None
 
 router = APIRouter()
 
@@ -56,7 +108,8 @@ def get_nav_subjects():
     return nav
 
 # Section → PDF mapping (matches split_pdf.py output)
-MATH_SECTIONS = [
+# Backward compat: keep MATH_SECTIONS name
+MATH_SECTIONS_FALLBACK = MATH_SECTIONS = [
     {"id": "ch01_sec01", "code": "1.1", "title": "正数和负数", "chapter": "第1章 有理数", "pdf": "ch01_sec01.pdf", "pages": 5},
     {"id": "ch01_sec02", "code": "1.2", "title": "有理数及其大小比较", "chapter": "第1章 有理数", "pdf": "ch01_sec02.pdf", "pages": 14},
     {"id": "ch01_reading", "code": "阅读", "title": "用正负数表示允许偏差", "chapter": "第1章 有理数", "pdf": "ch01_reading.pdf", "pages": 1},
@@ -84,7 +137,7 @@ async def home(request: Request, db: AsyncSession = Depends(get_db)):
         grades_display = []
         for g in subj["grades"]:
             if g["ready"]:
-                topic_count = len(MATH_SECTIONS) if subj["id"] == "math" else 0
+                topic_count = len(MATH_SECTIONS_FALLBACK) if subj["id"] == "math" else 0
                 grades_display.append({
                     **g, "topic_count": topic_count,
                 })
@@ -99,19 +152,23 @@ async def home(request: Request, db: AsyncSession = Depends(get_db)):
 @router.get("/subjects/{subject}/{grade}", response_class=HTMLResponse)
 async def subject_page(request: Request, subject: str, grade: int,
                         db: AsyncSession = Depends(get_db)):
-    if subject != "math":
-        name = {"english": "英语", "chinese": "语文"}.get(subject, subject)
-        icon = {"english": "🌐", "chinese": "📖"}.get(subject, "📚")
+    sections = _load_sections(subject, grade)
+    name_map = {"math": "数学", "english": "英语", "chinese": "语文", "science": "科学"}
+    icon_map = {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}
+    name = name_map.get(subject, subject)
+    icon = icon_map.get(subject, "📚")
+
+    if not sections:
         return request.app.state.templates.TemplateResponse(
             "subject.html", _ctx(request, subject_name=name, subject_icon=icon,
                                  grade=grade, subject=subject, topics=[], not_ready=True))
 
     progress_svc = ProgressService(db)
     simplified = []
-    for i, s in enumerate(MATH_SECTIONS):
+    for i, s in enumerate(sections):
         simplified.append({
-            "id": s["id"], "title": s["title"], "chapter": s["chapter"],
-            "code": s["code"], "pages": s["pages"], "order": i + 1,
+            "id": s["id"], "title": s["title"], "chapter": s.get("chapter", ""),
+            "code": s.get("code", ""), "pages": s.get("pages", 0), "order": i + 1,
             "dependencies": [], "key_points": [],
         })
     enriched = await progress_svc.get_progress_summary(simplified)
@@ -120,39 +177,40 @@ async def subject_page(request: Request, subject: str, grade: int,
 
     return request.app.state.templates.TemplateResponse(
         "subject.html", _ctx(request, subject=subject, grade=grade,
-                             subject_name="数学", subject_icon="📐",
+                             subject_name=name, subject_icon=icon,
                              topics=enriched, not_ready=False))
 
 
 @router.get("/learn/{subject}/{grade}/{topic_id}", response_class=HTMLResponse)
 async def lesson_page(request: Request, subject: str, grade: int, topic_id: str,
                        db: AsyncSession = Depends(get_db)):
-    if subject != "math":
-        return HTMLResponse("Coming soon", status_code=404)
-
+    sections = _load_sections(subject, grade)
     sec = None
-    for s in MATH_SECTIONS:
+    for s in sections:
         if s["id"] == topic_id:
             sec = s
             break
     if not sec:
         return HTMLResponse("Not found", status_code=404)
 
-    pdf_url = f"/textbook/math/grade7/pages/{sec['pdf']}"
-    keypoints = get_keypoints(topic_id)
+    pdf_url = f"/textbook/{subject}/grade{grade}/pages/{sec['pdf']}"
+    keypoints = _get_keypoints(subject, topic_id)
     progress_svc = ProgressService(db)
     session_id = await progress_svc.start_session(topic_id)
 
+    name_map = {"math": "数学", "english": "英语", "chinese": "语文", "science": "科学"}
     return request.app.state.templates.TemplateResponse(
         "lesson.html", _ctx(request, subject=subject, grade=grade,
                             section=sec, pdf_url=pdf_url, session_id=session_id,
-                            subject_name="数学", keypoints=keypoints))
+                            subject_name=name_map.get(subject, subject), keypoints=keypoints))
 
 
 @router.get("/mindmap/{section_id}", response_class=HTMLResponse)
 async def mindmap_page(section_id: str):
     """Return interactive mind map HTML for a section."""
-    tree = get_mindmap(section_id)
+    # Extract subject from section_id (e.g., "ch01_sec01" → math grade 7)
+    # For now, default to math; future: parse subject from request
+    tree = _get_mindmap("math", section_id)
     if not tree:
         return HTMLResponse('<p class="error">该知识点暂无脑图数据</p>')
 
