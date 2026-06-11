@@ -22,18 +22,39 @@ from config import settings
 
 router = APIRouter()
 
-EXERCISE_CACHE_DIR = Path("data/exercises/math")
+EXERCISE_CACHE_DIR = Path("data/exercises")
 EXERCISE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-def _load_exercises():
-    """Load exercises from JSON file (bypasses .pyc caching issues)."""
-    json_path = Path("data/exercises/exercises.json")
+# Cache loaded exercises by subject
+_EXERCISE_CACHE: dict[str, dict] = {}
+
+def _load_exercises(subject: str = "math") -> dict:
+    """Load exercises from per-subject JSON file."""
+    if subject in _EXERCISE_CACHE:
+        return _EXERCISE_CACHE[subject]
+    json_path = Path(f"data/exercises/{subject}.json")
     if json_path.exists():
         with open(json_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+            _EXERCISE_CACHE[subject] = data
+            return data
+    # Fallback: old math exercises.json
+    fallback = Path("data/exercises/exercises.json")
+    if fallback.exists():
+        with open(fallback, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            _EXERCISE_CACHE[subject] = data
+            return data
     return _DEFAULT_EXERCISES
 
 _DEFAULT_EXERCISES = {
+    "default": [
+        {"type": "choice", "question": "请先学习教材内容，再来做练习哦！", "choices": ["知道了"], "answer": 0, "explanation": "这个知识点的练习题正在准备中，先仔细阅读教材吧！"},
+    ],
+}
+
+# Legacy hardcoded exercises (for sections without JSON data)
+_LEGACY_EXERCISES = {
     "ch01_sec01": [
         {"type": "choice", "question": "下列哪个是负数？", "choices": ["5", "0", "-3", "1/2"], "answer": 2, "explanation": "负数是小于0的数，-3是负数。"},
         {"type": "choice", "question": "如果上升5m记作+5m，那么下降3m记作什么？", "choices": ["+3m", "-3m", "0m", "3m"], "answer": 1, "explanation": "具有相反意义的量，下降用负数表示，所以是-3m。"},
@@ -158,13 +179,27 @@ _DEFAULT_EXERCISES = {
     ],
 }
 
-# Load exercises from JSON at module init (bypasses .pyc caching)
-EXERCISES = _load_exercises()
+# Backward compat: default to math exercises
+EXERCISES = _load_exercises("math")
+
+def get_exercises_for(subject: str = "math") -> dict:
+    """Get exercises for a specific subject (loaded from JSON or legacy fallback)."""
+    data = _load_exercises(subject)
+    # If only has "default", try legacy math data for math subject
+    if subject == "math" and len(data) <= 2:
+        # Merge legacy math exercises
+        for k, v in _LEGACY_EXERCISES.items():
+            if k not in data:
+                data[k] = v
+        if "default" not in data:
+            data["default"] = _DEFAULT_EXERCISES["default"]
+    return data
 
 
-def _build_exercise_html(section_id: str) -> str:
-    """Build HTML for exercises using ae-card style matching all-exercises page."""
-    ex_list = EXERCISES.get(section_id, EXERCISES["default"])
+def _build_exercise_html(section_id: str, subject: str = "math") -> str:
+    """Build HTML for exercises using ae-card style."""
+    ex_data = get_exercises_for(subject)
+    ex_list = ex_data.get(section_id, ex_data.get("default", []))
     if not ex_list:
         ex_list = EXERCISES["default"]
 
@@ -219,16 +254,17 @@ def _build_exercise_html(section_id: str) -> str:
 
 
 @router.get("/exercises/{section_id}/download")
-async def download_exercises(section_id: str):
-    """Generate and download a Word document of exercises for printing."""
-    ex_list = EXERCISES.get(section_id, EXERCISES["default"])
-    if not ex_list or ex_list == EXERCISES["default"]:
-        # Try to find section name
-        from routes.pages import MATH_SECTIONS
+async def download_exercises(section_id: str, subject: str = "math", grade: int = 7):
+    """Generate and download a Word document of exercises."""
+    ex_data = get_exercises_for(subject)
+    from routes.pages import _load_sections
+    sections_data = _load_sections(subject, grade)
+    ex_list = ex_data.get(section_id, ex_data.get("default", []))
+    if not ex_list:
         sec_name = section_id
-        for s in MATH_SECTIONS:
+        for s in sections_data:
             if s["id"] == section_id:
-                sec_name = f"{s['code']} {s['title']}"
+                sec_name = f"{s.get('code','')} {s['title']}"
                 break
         # Still return a basic doc
         ex_list = [{"type": "choice", "question": "请先学习教材，练习题正在准备中",
@@ -247,11 +283,10 @@ async def download_exercises(section_id: str):
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     # Subtitle
-    from routes.pages import MATH_SECTIONS
     sec_name = section_id
-    for s in MATH_SECTIONS:
+    for s in sections_data:
         if s["id"] == section_id:
-            sec_name = f"{s['chapter']} — {s['code']} {s['title']}"
+            sec_name = f"{s.get('chapter','')} — {s.get('code','')} {s['title']}"
             break
     subtitle = doc.add_paragraph(sec_name)
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -314,12 +349,15 @@ async def download_exercises(section_id: str):
 
 
 @router.get("/exercises/all", response_class=HTMLResponse)
-async def all_exercises(request: Request):
-    """Show all 85 exercises from all sections on one page (uses Jinja2 template)."""
+async def all_exercises(request: Request, subject: str = "math", grade: int = 7):
+    """Show all exercises from all sections (subject-aware)."""
+    from routes.pages import _load_sections
+    sections_data = _load_sections(subject, grade)
+    ex_data = get_exercises_for(subject)
     sections = []
-    for sec in MATH_SECTIONS:
-        ex_list = EXERCISES.get(sec["id"], EXERCISES["default"])
-        if ex_list == EXERCISES["default"]:
+    for sec in sections_data:
+        ex_list = ex_data.get(sec["id"], ex_data.get("default", []))
+        if not ex_list:
             continue
         sections.append({"section": sec, "exercises": ex_list})
 
@@ -373,13 +411,18 @@ async def error_book(request: Request, db: AsyncSession = Depends(get_db)):
     result = await db.execute(stmt)
     errors = result.scalars().all()
 
-    sec_names = {s["id"]: f"{s['code']} {s['title']}" for s in MATH_SECTIONS}
+    sec_names = {}
+    for s in MATH_SECTIONS:
+        sec_names[s["id"]] = f"{s.get('code','')} {s['title']}"
 
-    # Enrich errors with full exercise data (choices, type, explanation)
+    # Enrich errors with full exercise data
     enriched = []
     for e in errors:
         ex_data = {"type": "fill", "choices": [], "explanation": ""}
-        ex_list = EXERCISES.get(e.section_id, [])
+        ex_subject = get_exercises_for(e.subject) if hasattr(e, 'subject') else EXERCISES
+        ex_list = ex_subject.get(e.section_id, [])
+        if not ex_list:
+            ex_list = EXERCISES.get(e.section_id, [])
         if ex_list and e.exercise_idx < len(ex_list):
             ex_data = ex_list[e.exercise_idx]
             # For choice exercises, answer is an index — convert to display text
@@ -420,9 +463,9 @@ async def reset_all(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/exercises/{section_id}", response_class=HTMLResponse)
-async def get_exercises(section_id: str):
-    """Return pre-built exercises for a section as HTML (must be last route)."""
-    html = _build_exercise_html(section_id)
+async def get_exercises(section_id: str, subject: str = "math"):
+    """Return pre-built exercises for a section as HTML."""
+    html = _build_exercise_html(section_id, subject)
     js = """
 <script>
 function aeCheck(qid, selected, correct, el) {

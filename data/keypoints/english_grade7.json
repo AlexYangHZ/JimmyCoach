@@ -1,0 +1,34 @@
+{
+  "ch01_sec01": {
+    "concepts": [
+      "核心概念1",
+      "概念2",
+      "概念3"
+    ],
+    "formulas": [
+      "公式定理1",
+      "公式2"
+    ],
+    "tips": [
+      "学习提示1",
+      "提示2"
+    ]
+  },
+  "ch01_sec02": {
+    "concepts": [
+      "学校场所词汇：sports field, student centre, classroom, dining hall, art building, library, gym, school hall, locker, blackboard, smart whiteboard",
+      "方位介词：in front of, behind, next to, between, across from",
+      "There be 结构：用于描述某处存在某物或某人，如“There are 40 student desks in the room.”",
+      "描述学校场所及喜好：用“What’s your school like?”和“What do you like about your school?”进行问答"
+    ],
+    "formulas": [
+      "There be + 名词 + 地点状语（如：There is a smart whiteboard in the classroom.）",
+      "Where + be + 地点? 回答：It’s + 方位介词 + 地点（如：Where’s the dining hall? It’s in front of the art building.）"
+    ],
+    "tips": [
+      "注意方位介词与定冠词the的搭配，如“behind the sports field”中的“the”不可省略。",
+      "区分可数名词与不可数名词在There be句型中的用法：There are + 可数名词复数，There is + 可数名词单数/不可数名词。",
+      "练习描述学校时，先说出场所名称，再用方位介词和There be结构补充细节，最后表达个人喜好及原因。"
+    ]
+  }
+}

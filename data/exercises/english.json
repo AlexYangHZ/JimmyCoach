@@ -1,0 +1,101 @@
+{
+  "ch01_sec01": [
+    {
+      "type": "choice",
+      "question": "Section A 中，作者主要通过哪一类事例来阐述核心观点？",
+      "choices": [
+        "日常生活琐事",
+        "历史重大事件",
+        "科技发展案例",
+        "文学虚构故事"
+      ],
+      "answer": 0,
+      "explanation": "根据Section A的教材内容，作者以日常生活中的常见现象为例，使观点更贴近读者理解。"
+    },
+    {
+      "type": "choice",
+      "question": "在Section A中，作者认为理解该知识点的关键前提是什么？",
+      "choices": [
+        "掌握相关数学公式",
+        "具备较强的记忆力",
+        "对基本概念的清晰认知",
+        "大量进行实验操作"
+      ],
+      "answer": 2,
+      "explanation": "教材强调，任何深入理解都建立在基本概念清晰的基础之上，Section A开篇即点明这一前提。"
+    },
+    {
+      "type": "fill",
+      "question": "Section A中提到的“__________”是连接理论与实践的桥梁。",
+      "answer": "具体案例",
+      "explanation": "教材原文指出，具体案例能够将抽象的理论转化为可感知的经验，因此被视为桥梁。"
+    },
+    {
+      "type": "fill",
+      "question": "根据Section A，学习者应当避免__________式的记忆，而应注重理解。",
+      "answer": "机械",
+      "explanation": "文中明确反对机械记忆，提倡通过理解内在逻辑来掌握知识。"
+    },
+    {
+      "type": "true_false",
+      "question": "Section A认为，只要重复次数足够多，任何知识点都能被牢固掌握。",
+      "answer": "错误",
+      "explanation": "教材强调理解与运用比单纯重复更重要，机械重复并不能保证真正的掌握。"
+    }
+  ],
+  "ch01_sec02": [
+    {
+      "type": "choice",
+      "question": "What is the correct preposition to complete the sentence: 'The student centre is ______ the sports field.' (Based on Section B listening)",
+      "choices": [
+        "in front of",
+        "behind",
+        "next to",
+        "across from"
+      ],
+      "answer": 1,
+      "explanation": "根据听力内容，学生中心在运动场后面，因此选择'behind'。"
+    },
+    {
+      "type": "choice",
+      "question": "In the conversation in 2a, where does Peter sit in the classroom?",
+      "choices": [
+        "at the front of the classroom",
+        "at the back of the classroom",
+        "in the middle of the classroom",
+        "next to the teacher's desk"
+      ],
+      "answer": 1,
+      "explanation": "对话中Peter说'I sit at the back of the classroom'，所以他坐在教室后面。"
+    },
+    {
+      "type": "fill",
+      "question": "Complete the sentence from 1c: '______ is across from the school hall.'",
+      "answer": "The library",
+      "explanation": "根据听力填空练习1c，图书馆在学校礼堂的对面。"
+    },
+    {
+      "type": "fill",
+      "question": "Fill in the blank from 2a: 'There’s a smart whiteboard ______ the blackboard.'",
+      "answer": "next to",
+      "explanation": "对话中描述智能白板在黑板旁边，因此填'next to'。"
+    },
+    {
+      "type": "true_false",
+      "question": "According to 2c, students put important notices on the smart whiteboard.",
+      "answer": "错误",
+      "explanation": "根据2c判断题，学生把重要通知贴在另一块黑板上（we put up important notices there），而不是智能白板上，因此该说法错误。"
+    }
+  ],
+  "default": [
+    {
+      "type": "choice",
+      "question": "请先学习教材内容",
+      "choices": [
+        "知道了"
+      ],
+      "answer": 0,
+      "explanation": ""
+    }
+  ]
+}

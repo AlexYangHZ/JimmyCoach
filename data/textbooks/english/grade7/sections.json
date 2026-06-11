@@ -1,0 +1,98 @@
+[
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "Section A",
+    "chapter": "第1章 Starter Unit",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "Section B",
+    "chapter": "第1章 Starter Unit",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "Section A",
+    "chapter": "第2章 Unit 1 You and Me",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "Section B",
+    "chapter": "第2章 Unit 1 You and Me",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "Section A",
+    "chapter": "第3章 Unit 2 Keep Tidy!",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "Section B",
+    "chapter": "第3章 Unit 2 Keep Tidy!",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "Section A",
+    "chapter": "第4章 Unit 3 Welcome!",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "Section B",
+    "chapter": "第4章 Unit 3 Welcome!",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 8
+  },
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "Section A",
+    "chapter": "第5章 Unit 4 We’re Family!",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "Section B",
+    "chapter": "第5章 Unit 4 We’re Family!",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 8
+  },
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "Section A",
+    "chapter": "第6章 Unit 5 My School",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "Section B",
+    "chapter": "第6章 Unit 5 My School",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 10
+  }
+]

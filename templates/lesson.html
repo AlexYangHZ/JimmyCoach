@@ -64,12 +64,12 @@
     <div id="exercises-area" class="exercises-section">
         <div class="exercises-header">
             <h2>📝 练习题</h2>
-            <a href="/exercises/{{ section.id }}/download" class="btn-download" target="_blank">
+            <a href="/exercises/{{ section.id }}/download?subject={{ subject }}&grade={{ grade }}" class="btn-download" target="_blank">
                 📥 下载Word版（可打印）
             </a>
         </div>
         <div id="exercise-container"
-             hx-get="/exercises/{{ section.id }}"
+             hx-get="/exercises/{{ section.id }}?subject={{ subject }}"
              hx-trigger="load"
              hx-swap="innerHTML">
             <div class="loading"><p>加载练习题中...</p><div class="spinner"></div></div>
