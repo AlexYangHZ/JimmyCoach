@@ -14,7 +14,7 @@ from docx.shared import Pt, Inches, Cm, RGBColor
 
 from db.database import get_db
 from db.models import ErrorLog
-from routes.pages import MATH_SECTIONS, get_nav_subjects
+from routes.pages import MATH_SECTIONS, get_nav_subjects, NAMES
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from services.ai_tutor import AITutorService
 from services.progress import ProgressService
@@ -376,11 +376,12 @@ async def record_error(
     exercise_idx: int = Form(...),
     question: str = Form(...),
     correct_answer: str = Form(...),
+    subject: str = Form("math"),
     db: AsyncSession = Depends(get_db),
 ):
-    """Record a wrong answer in the error book."""
-    # Check if already exists
+    """Record a wrong answer in the error book (per-subject)."""
     stmt = select(ErrorLog).where(
+        ErrorLog.subject == subject,
         ErrorLog.section_id == section_id,
         ErrorLog.exercise_idx == exercise_idx,
     )
@@ -392,11 +393,9 @@ async def record_error(
         existing.last_error_at = datetime.now(timezone.utc)
     else:
         new_error = ErrorLog(
-            section_id=section_id,
-            exercise_idx=exercise_idx,
-            question=question,
-            correct_answer=correct_answer,
-            error_count=1,
+            subject=subject, section_id=section_id,
+            exercise_idx=exercise_idx, question=question,
+            correct_answer=correct_answer, error_count=1,
         )
         db.add(new_error)
 
@@ -405,9 +404,9 @@ async def record_error(
 
 
 @router.get("/error-book", response_class=HTMLResponse)
-async def error_book(request: Request, db: AsyncSession = Depends(get_db)):
-    """Display all recorded errors with interactive answer mode."""
-    stmt = select(ErrorLog).order_by(ErrorLog.error_count.desc())
+async def error_book(request: Request, subject: str = "math", db: AsyncSession = Depends(get_db)):
+    """Display recorded errors for a specific subject."""
+    stmt = select(ErrorLog).where(ErrorLog.subject == subject).order_by(ErrorLog.error_count.desc())
     result = await db.execute(stmt)
     errors = result.scalars().all()
 
@@ -444,22 +443,28 @@ async def error_book(request: Request, db: AsyncSession = Depends(get_db)):
     return request.app.state.templates.TemplateResponse(
         "error_book.html",
         {"request": request, "errors": enriched, "total_errors": total_errors,
+         "subject": subject, "subject_name": NAMES.get(subject, subject),
          "nav_subjects": get_nav_subjects()},
     )
 
 
 @router.post("/reset-all", response_class=HTMLResponse)
-async def reset_all(db: AsyncSession = Depends(get_db)):
-    """Reset all study progress and error book data."""
+async def reset_all(subject: str = Form("math"), db: AsyncSession = Depends(get_db)):
+    """Reset study progress and error book for a specific subject."""
     from sqlalchemy import delete
     from db.models import StudySession, ExerciseAttempt, ChatMessage, ProgressSnapshot, ErrorLog
-    await db.execute(delete(ErrorLog))
-    await db.execute(delete(ExerciseAttempt))
-    await db.execute(delete(ChatMessage))
+    await db.execute(delete(ErrorLog).where(ErrorLog.subject == subject))
+    # Clear sessions related to this subject's topics
+    subj_sessions = (await db.execute(
+        select(StudySession).where(StudySession.topic_id.like(f"{subject}%")))).scalars().all()
+    for sess in subj_sessions:
+        await db.execute(delete(ExerciseAttempt).where(ExerciseAttempt.session_id == sess.id))
+        await db.execute(delete(ChatMessage).where(ChatMessage.session_id == sess.id))
+        await db.delete(sess)
     await db.execute(delete(ProgressSnapshot))
-    await db.execute(delete(StudySession))
     await db.commit()
-    return HTMLResponse('<script>alert("✅ 学习进度和错题本已重置");window.location.href="/subjects/math/7"</script>')
+    name = NAMES.get(subject, subject)
+    return HTMLResponse(f'<script>alert("✅ {name}的学习进度和错题本已重置");window.location.href="/subjects/{subject}/7"</script>')
 
 
 @router.get("/exercises/{section_id}", response_class=HTMLResponse)

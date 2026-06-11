@@ -21,10 +21,10 @@
             <a href="/exercises/all?subject={{ subject }}&grade={{ grade }}" class="btn-hero">
                 <span class="btn-hero-icon">📋</span> 全部练习
             </a>
-            <a href="/error-book" class="btn-hero btn-hero-err">
+            <a href="/error-book?subject={{ subject }}" class="btn-hero btn-hero-err">
                 <span class="btn-hero-icon">📝</span> 错题本
             </a>
-            <button class="btn-hero btn-hero-reset" onclick="if(confirm('确定要重置所有学习进度和错题记录吗？此操作不可恢复！')){fetch('/reset-all',{method:'POST'}).then(r=>r.text()).then(t=>document.write(t))}">
+            <button class="btn-hero btn-hero-reset" onclick="if(confirm('确定要重置{{ subject_name }}的学习进度和错题记录吗？')){fetch('/reset-all',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'subject={{ subject }}'}).then(r=>r.text()).then(t=>document.write(t))}">
                 🔄 重置
             </button>
         </div>

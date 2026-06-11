@@ -1,0 +1,858 @@
+{
+  "ch01_sec01": {
+    "label": "Section A: How do you greet people?",
+    "children": [
+      {
+        "label": "常用问候语",
+        "children": [
+          {
+            "label": "Hello!"
+          },
+          {
+            "label": "Hi!"
+          },
+          {
+            "label": "Good morning."
+          },
+          {
+            "label": "Good afternoon."
+          }
+        ]
+      },
+      {
+        "label": "回应问候",
+        "children": [
+          {
+            "label": "Hello! / Hi!"
+          },
+          {
+            "label": "Good morning."
+          },
+          {
+            "label": "I'm fine, thanks."
+          },
+          {
+            "label": "Nice to meet you."
+          }
+        ]
+      },
+      {
+        "label": "询问与介绍姓名",
+        "children": [
+          {
+            "label": "What's your name?"
+          },
+          {
+            "label": "My name is ..."
+          },
+          {
+            "label": "I'm ..."
+          },
+          {
+            "label": "Nice to meet you, too."
+          }
+        ]
+      },
+      {
+        "label": "礼貌用语",
+        "children": [
+          {
+            "label": "Please"
+          },
+          {
+            "label": "Thank you"
+          },
+          {
+            "label": "You're welcome"
+          },
+          {
+            "label": "Sorry / Excuse me"
+          }
+        ]
+      },
+      {
+        "label": "课堂场景练习",
+        "children": [
+          {
+            "label": "角色扮演问候"
+          },
+          {
+            "label": "小组对话练习"
+          },
+          {
+            "label": "听录音跟读"
+          },
+          {
+            "label": "完成课本配对题"
+          }
+        ]
+      }
+    ]
+  },
+  "ch01_sec02": {
+    "label": "Section B: How do we get to know each other?",
+    "children": [
+      {
+        "label": "核心问候用语",
+        "children": [
+          {
+            "label": "Hi, …"
+          },
+          {
+            "label": "Hello, …"
+          },
+          {
+            "label": "Good morning, …"
+          },
+          {
+            "label": "Nice to meet you"
+          }
+        ]
+      },
+      {
+        "label": "人物与名字匹配",
+        "children": [
+          {
+            "label": "Ella 和 Emma"
+          },
+          {
+            "label": "Yaming 和 Peter"
+          },
+          {
+            "label": "Teng Fei"
+          },
+          {
+            "label": "Helen 和 Fu Xing"
+          }
+        ]
+      },
+      {
+        "label": "问候场景对话",
+        "children": [
+          {
+            "label": "Greet your classmates"
+          },
+          {
+            "label": "Make up a conversation (2d)"
+          },
+          {
+            "label": "Ms Gao 与班级互动"
+          },
+          {
+            "label": "自我介绍：My name is …"
+          }
+        ]
+      },
+      {
+        "label": "听力与字母练习",
+        "children": [
+          {
+            "label": "Listen and say the letters (2a)"
+          },
+          {
+            "label": "Circle the letters you hear"
+          },
+          {
+            "label": "Fill in blanks with sentences (2c)"
+          },
+          {
+            "label": "Pronunc 练习"
+          }
+        ]
+      }
+    ]
+  },
+  "ch02_sec01": {
+    "label": "Section A: How do we make new friends?",
+    "children": [
+      {
+        "label": "核心句型",
+        "children": [
+          {
+            "label": "自我介绍：I'm... / My name is..."
+          },
+          {
+            "label": "询问姓名：What's your name?"
+          },
+          {
+            "label": "表达高兴：Nice to meet you."
+          },
+          {
+            "label": "回应问候：Nice to meet you too."
+          }
+        ]
+      },
+      {
+        "label": "关键词汇",
+        "children": [
+          {
+            "label": "人称代词：I, you, my, your"
+          },
+          {
+            "label": "问候语：hello, hi, good morning"
+          },
+          {
+            "label": "身份名词：friend, classmate"
+          },
+          {
+            "label": "礼貌用语：please, thank you"
+          }
+        ]
+      },
+      {
+        "label": "对话结构",
+        "children": [
+          {
+            "label": "开场问候：Hi / Hello"
+          },
+          {
+            "label": "询问信息：What's your name?"
+          },
+          {
+            "label": "交换名字：My name is..."
+          },
+          {
+            "label": "结束礼貌：Nice to meet you!"
+          }
+        ]
+      },
+      {
+        "label": "文化知识",
+        "children": [
+          {
+            "label": "握手与微笑"
+          },
+          {
+            "label": "自我介绍顺序"
+          },
+          {
+            "label": "记住对方名字"
+          },
+          {
+            "label": "礼貌打断与倾听"
+          }
+        ]
+      },
+      {
+        "label": "练习活动",
+        "children": [
+          {
+            "label": "角色扮演对话"
+          },
+          {
+            "label": "填写信息卡"
+          },
+          {
+            "label": "小组互相介绍"
+          },
+          {
+            "label": "听录音填空"
+          }
+        ]
+      }
+    ]
+  },
+  "ch02_sec02": {
+    "label": "Section B: What do we need to know about a new friend?",
+    "children": [
+      {
+        "label": "核心句型与对话",
+        "children": [
+          {
+            "label": "I have ... (表达拥有)"
+          },
+          {
+            "label": "What do you have in your schoolbag?"
+          },
+          {
+            "label": "What colour is it / are they?"
+          },
+          {
+            "label": "It's / They're + 颜色"
+          }
+        ]
+      },
+      {
+        "label": "词汇与物品",
+        "children": [
+          {
+            "label": "学习用品：ruler, cap, pencils, bottle, eraser, keys"
+          },
+          {
+            "label": "颜色词：red, green, blue, yellow, orange, black, white, brown"
+          },
+          {
+            "label": "其他：schoolbag, bicycle, shoes, trousers"
+          }
+        ]
+      },
+      {
+        "label": "听力与语音",
+        "children": [
+          {
+            "label": "2a 颜色词与图片匹配"
+          },
+          {
+            "label": "2b 听对话并给物品涂色"
+          },
+          {
+            "label": "2c 听录音完成句子"
+          },
+          {
+            "label": "语音练习：game/plane/lake 等元音组合"
+          }
+        ]
+      },
+      {
+        "label": "口语与活动",
+        "children": [
+          {
+            "label": "1a 看图匹配物品与人名"
+          },
+          {
+            "label": "1b 谈论书包里的物品"
+          },
+          {
+            "label": "2d 谈论颜色"
+          },
+          {
+            "label": "2e 谈论你拥有的新物品"
+          }
+        ]
+      },
+      {
+        "label": "主题与习惯用语",
+        "children": [
+          {
+            "label": "Keep Tidy! (保持整洁)"
+          },
+          {
+            "label": "Starter Unit 2 主题：What do you have?"
+          },
+          {
+            "label": "认识新朋友：询问与描述物品"
+          }
+        ]
+      }
+    ]
+  },
+  "ch03_sec01": {
+    "label": "Section A: What is your family like?",
+    "children": [
+      {
+        "label": "核心词汇",
+        "children": [
+          {
+            "label": "family 家庭"
+          },
+          {
+            "label": "parents 父母"
+          },
+          {
+            "label": "brother/sister 兄弟/姐妹"
+          },
+          {
+            "label": "grandparents 祖父母"
+          }
+        ]
+      },
+      {
+        "label": "重点句型",
+        "children": [
+          {
+            "label": "What is your family like?"
+          },
+          {
+            "label": "I have a big/small family."
+          },
+          {
+            "label": "There are ... people in my family."
+          },
+          {
+            "label": "This is my ..."
+          }
+        ]
+      },
+      {
+        "label": "语法点",
+        "children": [
+          {
+            "label": "be动词 (is/are) 的用法"
+          },
+          {
+            "label": "人称代词 (I, you, he, she, it, we, they)"
+          },
+          {
+            "label": "形容词性物主代词 (my, your, his, her)"
+          }
+        ]
+      },
+      {
+        "label": "交际功能",
+        "children": [
+          {
+            "label": "介绍家庭成员"
+          },
+          {
+            "label": "描述家庭规模"
+          },
+          {
+            "label": "询问他人家庭情况"
+          },
+          {
+            "label": "表达家庭情感"
+          }
+        ]
+      },
+      {
+        "label": "文化拓展",
+        "children": [
+          {
+            "label": "中西方家庭观念的差异"
+          },
+          {
+            "label": "常见家庭活动表达"
+          },
+          {
+            "label": "家庭成员的英文称呼"
+          }
+        ]
+      }
+    ]
+  },
+  "ch03_sec02": {
+    "label": "Section B: What do you like about your family?",
+    "children": [
+      {
+        "label": "核心句型",
+        "children": [
+          {
+            "label": "What’s this/that? — It’s …"
+          },
+          {
+            "label": "What are these/those? — They’re …"
+          },
+          {
+            "label": "How many … can you see? — I can see …"
+          }
+        ]
+      },
+      {
+        "label": "词汇与分类",
+        "children": [
+          {
+            "label": "动物：baby chickens, dog, rabbits, goose, duck"
+          },
+          {
+            "label": "植物：tomato plants, potato plants, carrot plants"
+          },
+          {
+            "label": "其他：flowers, apple trees, yard"
+          }
+        ]
+      },
+      {
+        "label": "数字表达",
+        "children": [
+          {
+            "label": "1-10: one, two, three … ten"
+          },
+          {
+            "label": "11-20: eleven, twelve, thirteen … twenty"
+          },
+          {
+            "label": "应用：回答数量问题（如 eight rabbits）"
+          }
+        ]
+      },
+      {
+        "label": "听力与对话理解",
+        "children": [
+          {
+            "label": "Conversation 1: Helen sees a duck"
+          },
+          {
+            "label": "Conversation 2: Peter sees tomato plants"
+          },
+          {
+            "label": "Conversation 3: 10 apple trees, 12 rabbits"
+          }
+        ]
+      },
+      {
+        "label": "活动与练习",
+        "children": [
+          {
+            "label": "1a: 图文配对（植物与动物名称）"
+          },
+          {
+            "label": "1b: 谈论图中的动植物"
+          },
+          {
+            "label": "2a-2c: 听数字、写数字、圈正确答案"
+          }
+        ]
+      }
+    ]
+  },
+  "ch04_sec01": {
+    "label": "Section A: Where do you put your things?",
+    "children": [
+      {
+        "label": "核心词汇",
+        "children": [
+          {
+            "label": "put (放置)"
+          },
+          {
+            "label": "where (哪里)"
+          },
+          {
+            "label": "things (物品)"
+          },
+          {
+            "label": "in/on/under (位置介词)"
+          }
+        ]
+      },
+      {
+        "label": "重点句型",
+        "children": [
+          {
+            "label": "Where do you put your...?"
+          },
+          {
+            "label": "I put my... in/on/under..."
+          },
+          {
+            "label": "一般现在时疑问句"
+          },
+          {
+            "label": "主谓宾结构"
+          }
+        ]
+      },
+      {
+        "label": "位置介词用法",
+        "children": [
+          {
+            "label": "in + 容器/空间"
+          },
+          {
+            "label": "on + 表面"
+          },
+          {
+            "label": "under + 下方"
+          },
+          {
+            "label": "例句对比练习"
+          }
+        ]
+      },
+      {
+        "label": "听力与对话",
+        "children": [
+          {
+            "label": "物品位置问答"
+          },
+          {
+            "label": "日常生活场景"
+          },
+          {
+            "label": "角色扮演练习"
+          },
+          {
+            "label": "听力填空训练"
+          }
+        ]
+      },
+      {
+        "label": "语法拓展",
+        "children": [
+          {
+            "label": "一般现在时动词变化"
+          },
+          {
+            "label": "疑问词where引导"
+          },
+          {
+            "label": "名词单复数"
+          },
+          {
+            "label": "介词短语作状语"
+          }
+        ]
+      }
+    ]
+  },
+  "ch04_sec02": {
+    "label": "Section B: What is fun on a farm?",
+    "children": [
+      {
+        "label": "词汇与表达",
+        "children": [
+          {
+            "label": "farm animal: cow, horse, sheep, chicken"
+          },
+          {
+            "label": "动作: feed, ride, pick, milk"
+          },
+          {
+            "label": "景物: field, barn, tractor, fence"
+          },
+          {
+            "label": "感叹句: What fun! / How nice!"
+          }
+        ]
+      },
+      {
+        "label": "句型结构",
+        "children": [
+          {
+            "label": "What is fun on a farm?"
+          },
+          {
+            "label": "I can see / feed / ride ..."
+          },
+          {
+            "label": "There is / are ... on the farm."
+          },
+          {
+            "label": "Do you like ...? 回答: Yes, I do. / No, I don't."
+          }
+        ]
+      },
+      {
+        "label": "听力与对话",
+        "children": [
+          {
+            "label": "听辨农场相关词汇"
+          },
+          {
+            "label": "理解对话中的活动描述"
+          },
+          {
+            "label": "模仿语调表达兴奋"
+          },
+          {
+            "label": "角色扮演农场对话"
+          }
+        ]
+      },
+      {
+        "label": "语法点",
+        "children": [
+          {
+            "label": "一般现在时 (be动词)"
+          },
+          {
+            "label": "一般现在时 (实义动词)"
+          },
+          {
+            "label": "There be 句型"
+          },
+          {
+            "label": "感叹句结构"
+          }
+        ]
+      },
+      {
+        "label": "文化拓展",
+        "children": [
+          {
+            "label": "中外农场生活对比"
+          },
+          {
+            "label": "农场动物与产品"
+          },
+          {
+            "label": "农场安全常识"
+          },
+          {
+            "label": "农场活动体验分享"
+          }
+        ]
+      }
+    ]
+  },
+  "ch05_sec01": {
+    "label": "Section A: What is your school like?",
+    "children": [
+      {
+        "label": "核心句型",
+        "children": [
+          {
+            "label": "What is your school like?"
+          },
+          {
+            "label": "It is big / small / modern."
+          },
+          {
+            "label": "There is / are ... in my school."
+          },
+          {
+            "label": "Where is the library?"
+          }
+        ]
+      },
+      {
+        "label": "学校场所词汇",
+        "children": [
+          {
+            "label": "classroom building"
+          },
+          {
+            "label": "library"
+          },
+          {
+            "label": "playground"
+          },
+          {
+            "label": "dining hall / gym"
+          }
+        ]
+      },
+      {
+        "label": "描述性形容词",
+        "children": [
+          {
+            "label": "big / small"
+          },
+          {
+            "label": "beautiful / clean"
+          },
+          {
+            "label": "new / old"
+          },
+          {
+            "label": "quiet / noisy"
+          }
+        ]
+      },
+      {
+        "label": "方位介词与表达",
+        "children": [
+          {
+            "label": "next to / in front of"
+          },
+          {
+            "label": "behind / between"
+          },
+          {
+            "label": "on the left / on the right"
+          },
+          {
+            "label": "across from"
+          }
+        ]
+      },
+      {
+        "label": "对话与交际功能",
+        "children": [
+          {
+            "label": "询问学校外观"
+          },
+          {
+            "label": "描述学校设施"
+          },
+          {
+            "label": "询问及回答场所位置"
+          },
+          {
+            "label": "表达对学校的感受"
+          }
+        ]
+      }
+    ]
+  },
+  "ch05_sec02": {
+    "label": "Section B: What do you like about your school?",
+    "children": [
+      {
+        "label": "单元背景与目标",
+        "children": [
+          {
+            "label": "单元主题：We’re Family!"
+          },
+          {
+            "label": "大问题：What does family mean to you?"
+          },
+          {
+            "label": "学习目标：谈论家庭、使用's所有格、描述家人"
+          },
+          {
+            "label": "探索家庭的意义"
+          }
+        ]
+      },
+      {
+        "label": "词汇与定义匹配",
+        "children": [
+          {
+            "label": "grandmother: mum's or dad's mother"
+          },
+          {
+            "label": "grandfather: grandmother's husband"
+          },
+          {
+            "label": "aunt: mum's or dad's sister"
+          },
+          {
+            "label": "uncle: mum's or dad's brother"
+          },
+          {
+            "label": "cousin: aunt and uncle's child"
+          }
+        ]
+      },
+      {
+        "label": "听力与对话练习",
+        "children": [
+          {
+            "label": "1b: 听对话排序图片"
+          },
+          {
+            "label": "1c: 听录音补全句子（Emma, Yaqi, Helen等）"
+          },
+          {
+            "label": "1d: 带家庭照片谈论人物"
+          },
+          {
+            "label": "常用句型：Is this...? Who's...? He's/She's..."
+          }
+        ]
+      },
+      {
+        "label": "语法与发音",
+        "children": [
+          {
+            "label": "一般现在时（do）谈论家庭"
+          },
+          {
+            "label": "所有格 -'s 表示所属关系"
+          },
+          {
+            "label": "发音：听对话并圈出连读/重音"
+          }
+        ]
+      },
+      {
+        "label": "课堂活动与分享",
+        "children": [
+          {
+            "label": "Look and share: 照片中人物关系"
+          },
+          {
+            "label": "描述自己的家庭成员"
+          },
+          {
+            "label": "讨论：What is your family like?"
+          },
+          {
+            "label": "小组对话：介绍家庭照片"
+          }
+        ]
+      }
+    ]
+  }
+}

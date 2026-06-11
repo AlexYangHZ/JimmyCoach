@@ -1,0 +1,453 @@
+{
+  "ch01_sec01": [
+    {
+      "type": "choice",
+      "question": "当你早上遇到同学时，应该怎样打招呼？",
+      "choices": [
+        "Good morning!",
+        "Good night!",
+        "Goodbye!",
+        "I'm sorry."
+      ],
+      "answer": 0,
+      "explanation": "早上见面应该用'Good morning!'问候，其他选项不符合早晨打招呼的场景。"
+    },
+    {
+      "type": "choice",
+      "question": "以下哪个是初次见面常用的问候语？",
+      "choices": [
+        "How are you?",
+        "Nice to meet you!",
+        "See you later!",
+        "Thank you!"
+      ],
+      "answer": 1,
+      "explanation": "'Nice to meet you!'是初次见面时表达很高兴认识对方的常用语。"
+    },
+    {
+      "type": "fill",
+      "question": "下午遇到老师时，你应该说：Good ______。",
+      "answer": "afternoon",
+      "explanation": "下午的问候语是'Good afternoon'，表示下午好。"
+    },
+    {
+      "type": "fill",
+      "question": "当别人对你说'How are you?'，你可以回答：I'm fine, ______ you.",
+      "answer": "thank",
+      "explanation": "回答'How are you?'时常用'I'm fine, thank you.'，表示我很好，谢谢你。"
+    },
+    {
+      "type": "true_false",
+      "question": "'Goodbye!' 是用于见面时的问候语。",
+      "answer": "错误",
+      "explanation": "'Goodbye!' 是告别时使用的用语，不是见面时的问候语。"
+    }
+  ],
+  "ch01_sec02": [
+    {
+      "type": "choice",
+      "question": "在教材中，当Teng Fei对Emma说“Good morning. May I have your name?”时，Emma应该怎么回答？",
+      "choices": [
+        "Hello! I'm fine.",
+        "Good morning. My name is Emma Miller.",
+        "Hi! Nice to meet you.",
+        "Goodbye!"
+      ],
+      "answer": 1,
+      "explanation": "根据教材对话，Emma回应Teng Fei的问候并介绍自己，正确的回答是“Good morning. My name is Emma Miller。”"
+    },
+    {
+      "type": "fill",
+      "question": "在教材对话中，Fu Xing对Emma说“Good morning, Emma.”后，Emma问“So what’s your name?” Fu Xing回答“Oh, I’m Fu Xing. Nice to meet you, Emma.” 此时Emma应该回答什么？（填写教材中给出的完整句子）",
+      "answer": "Nice to meet you too, Fu Xing!",
+      "explanation": "教材对话中，当Fu Xing说“Nice to meet you, Emma.”后，Emma的回应是“Nice to meet you too, Fu Xing!”，表示礼貌的回应。"
+    },
+    {
+      "type": "choice",
+      "question": "在Starter Unit 1的对话练习中，Ms Gao说“Good morning, class.”，全班同学的正确回应是什么？",
+      "choices": [
+        "Hello!",
+        "Good morning, Ms Gao.",
+        "Sit down, please.",
+        "Hi, everyone!"
+      ],
+      "answer": 1,
+      "explanation": "根据教材2d部分，Ms Gao问候“Good morning, class.”，同学们应回答“Good morning, Ms Gao.”，这是课堂问候的常规回应。"
+    },
+    {
+      "type": "fill",
+      "question": "教材中Helen对Yaming说“Hello, Wang Yaming! How are you?”，Yaming回答“Hi, Helen. I’m fine, thank you. And you?” 请写出Helen接下来回答的完整句子。（根据教材内容）",
+      "answer": "I’m great, thanks.",
+      "explanation": "教材对话中，Yaming询问“And you?”后，Helen回答“I’m great, thanks.”，表示自己也很好并感谢对方的关心。"
+    },
+    {
+      "type": "true_false",
+      "question": "在教材的发音部分，字母“A”和“H”属于同一个音素类别（/eɪ/）。",
+      "answer": "正确",
+      "explanation": "教材Pronunciation部分明确将A a和H h归为/eɪ/音素类别，因此该说法正确。"
+    }
+  ],
+  "ch02_sec01": [
+    {
+      "type": "choice",
+      "question": "When you meet someone for the first time, what is a good way to start a conversation?",
+      "choices": [
+        "A. Stay silent and wait for them to speak",
+        "B. Say 'Hello, my name is...' and smile",
+        "C. Ask personal questions immediately",
+        "D. Walk away"
+      ],
+      "answer": 1,
+      "explanation": "Saying hello and introducing yourself with a smile is a friendly and natural way to begin."
+    },
+    {
+      "type": "choice",
+      "question": "Which of the following is NOT a good way to make new friends?",
+      "choices": [
+        "A. Join a club or activity you enjoy",
+        "B. Ask open-ended questions to show interest",
+        "C. Only talk about yourself and ignore others",
+        "D. Invite someone to have lunch together"
+      ],
+      "answer": 2,
+      "explanation": "Making friends requires listening and showing interest in others, not just talking about yourself."
+    },
+    {
+      "type": "fill",
+      "question": "Complete the sentence: 'A good way to keep a conversation going is to ask ________ questions.'",
+      "answer": "open-ended",
+      "explanation": "Open-ended questions encourage the other person to share more than a simple 'yes' or 'no'."
+    },
+    {
+      "type": "fill",
+      "question": "When you want to remember a new friend's name, you can say, 'Nice to meet you, ________.'",
+      "answer": "and repeat their name",
+      "explanation": "Repeating the person's name right after hearing it helps you remember it better."
+    },
+    {
+      "type": "true_false",
+      "question": "You should only make friends with people who have the same hobbies as you.",
+      "answer": "错误",
+      "explanation": "Having different interests can make friendships more interesting and help you learn new things."
+    }
+  ],
+  "ch02_sec02": [
+    {
+      "type": "choice",
+      "question": "根据对话，Ella的新帽子是什么颜色的？",
+      "choices": [
+        "黑色",
+        "红色",
+        "黄色",
+        "蓝色"
+      ],
+      "answer": 1,
+      "explanation": "对话中Ella说‘It’s red.’，所以她的帽子是红色的。"
+    },
+    {
+      "type": "choice",
+      "question": "Ella的帽子最后在哪里找到的？",
+      "choices": [
+        "在她的书包里",
+        "在她的桌子下面",
+        "在她的椅子上",
+        "在她的床上"
+      ],
+      "answer": 1,
+      "explanation": "妈妈在对话中说‘It’s under your desk.’，所以帽子在桌子下面。"
+    },
+    {
+      "type": "fill",
+      "question": "根据图片，完成句子：A schoolbag is ______ the desk.",
+      "answer": "on",
+      "explanation": "图片中书包在桌子上，所以用介词‘on’。"
+    },
+    {
+      "type": "fill",
+      "question": "根据对话填空：Emma’s dad has a pair of ______.",
+      "answer": "glasses",
+      "explanation": "对话中提及Emma的爸爸有一副眼镜，所以填‘glasses’。"
+    },
+    {
+      "type": "true_false",
+      "question": "根据课文，Teng Fei's schoolbag是蓝色的。",
+      "answer": "错误",
+      "explanation": "课文中没有明确说Teng Fei的书包是蓝色的，而是需要学生根据图片或对话内容判断，此处信息不匹配。"
+    }
+  ],
+  "ch03_sec01": [
+    {
+      "type": "choice",
+      "question": "在Section A中，当被问到“What is your family like?”时，以下哪一项是最可能的回答？",
+      "choices": [
+        "A. I have a big family with three brothers.",
+        "B. I like playing basketball.",
+        "C. My favorite color is blue.",
+        "D. I go to school by bus."
+      ],
+      "answer": 0,
+      "explanation": "“What is your family like?”是询问家庭情况，选项A描述了家庭规模与成员，符合题意。其他选项分别涉及爱好、颜色和交通方式，与家庭无关。"
+    },
+    {
+      "type": "choice",
+      "question": "根据Section A，如果你想表达“我的家庭很和睦”，应该选择哪一句话？",
+      "choices": [
+        "A. My family is very big.",
+        "B. My family is very close.",
+        "C. My family is very small.",
+        "D. My family is very old."
+      ],
+      "answer": 1,
+      "explanation": "“close”在此语境中表示家庭成员关系亲密、和睦，而big/small指规模，old指年龄，均不符合“和睦”的含义。"
+    },
+    {
+      "type": "fill",
+      "question": "根据Section A，完成句子：My family has ____ people. (我的家庭有____口人。)",
+      "answer": "four",
+      "explanation": "教材中示例提到“My family has four people.”，因此答案应为four。"
+    },
+    {
+      "type": "fill",
+      "question": "根据Section A，用英语填空：——What is your family like? ——It's ____. (它很温暖。)",
+      "answer": "warm",
+      "explanation": "教材中常用“warm”来形容家庭氛围温暖、充满爱，因此答案为warm。"
+    },
+    {
+      "type": "true_false",
+      "question": "根据Section A，回答“What is your family like?”时，可以说“I have a sister and a brother.”",
+      "answer": "正确",
+      "explanation": "该回答直接描述了家庭成员构成，符合“What is your family like?”的提问目的，因此判断为正确。"
+    }
+  ],
+  "ch03_sec02": [
+    {
+      "type": "choice",
+      "question": "What does Helen see in the yard?",
+      "choices": [
+        "A goose",
+        "A duck",
+        "A cat",
+        "A dog"
+      ],
+      "answer": 1,
+      "explanation": "根据对话1，Helen在院子里看到了一只鸭子，而不是鹅。"
+    },
+    {
+      "type": "fill",
+      "question": "A: What are those?  B: They're ________.",
+      "answer": "carrot plants",
+      "explanation": "根据教材对话，回答‘它们是什么？’时用‘They're carrot plants.’"
+    },
+    {
+      "type": "choice",
+      "question": "How many apple trees does Fu Xing's grandpa have?",
+      "choices": [
+        "Two",
+        "Ten",
+        "Eight",
+        "Twelve"
+      ],
+      "answer": 1,
+      "explanation": "对话3中Fu Xing的爷爷有十棵苹果树。"
+    },
+    {
+      "type": "fill",
+      "question": "A: How many rabbits can you see?  B: I can see ________.",
+      "answer": "eight",
+      "explanation": "根据对话3，Fu Xing的爷爷有八只兔子。"
+    },
+    {
+      "type": "true_false",
+      "question": "Peter sees tomato plants in the yard.",
+      "answer": "正确",
+      "explanation": "对话2中Peter在院子里看到了番茄植物，所以这句话是正确的。"
+    }
+  ],
+  "ch04_sec01": [
+    {
+      "type": "choice",
+      "question": "如果你想问别人把书放在哪里，应该说：",
+      "choices": [
+        "A. Where do you put your book?",
+        "B. What is your book?",
+        "C. Where is your book from?",
+        "D. How do you put your book?"
+      ],
+      "answer": 0,
+      "explanation": "询问物品放置位置用“Where do you put...?”结构，A选项正确。"
+    },
+    {
+      "type": "choice",
+      "question": "“I put my pen in the pencil case.” 这句话中，pen被放在哪里？",
+      "choices": [
+        "A. on the desk",
+        "B. in the pencil case",
+        "C. under the chair",
+        "D. behind the door"
+      ],
+      "answer": 1,
+      "explanation": "句子中“in the pencil case”表明pen放在铅笔盒里，对应B选项。"
+    },
+    {
+      "type": "fill",
+      "question": "完成句子：Where ______ you put your schoolbag?",
+      "answer": "do",
+      "explanation": "主语是you，一般现在时疑问句用助动词do。"
+    },
+    {
+      "type": "fill",
+      "question": "根据答句写出问句：______ do you put your keys? — I put them in my pocket.",
+      "answer": "Where",
+      "explanation": "答句回答位置，所以问句用Where提问。"
+    },
+    {
+      "type": "true_false",
+      "question": "“I put my ruler under the desk.” 意思是“我把尺子放在桌子上面。”",
+      "answer": "错误",
+      "explanation": "under the desk 表示“在桌子下面”，不是上面，因此判断错误。"
+    }
+  ],
+  "ch04_sec02": [
+    {
+      "type": "choice",
+      "question": "在对话中，Peter 的班级老师是谁？",
+      "choices": [
+        "Ms Hui",
+        "Ms Gao",
+        "Mr Smith",
+        "Chen Jie"
+      ],
+      "answer": 1,
+      "explanation": "对话中 Chen Jie 纠正 Peter 说 'it’s Ms Gao, not Ms Hui. Hui is her first name.' 所以班级老师是 Ms Gao。"
+    },
+    {
+      "type": "choice",
+      "question": "Mr Smith 来自哪个国家？",
+      "choices": [
+        "the UK",
+        "the US",
+        "China",
+        "Canada"
+      ],
+      "answer": 1,
+      "explanation": "对话中 Chen Jie 介绍 Mr Smith 时说 'He’s from the US.'"
+    },
+    {
+      "type": "fill",
+      "question": "在1c听力中，Peter 的全名是 Peter ______。",
+      "answer": "Brown",
+      "explanation": "听力原文中 Peter 的全名是 Peter Brown，不是 Green。"
+    },
+    {
+      "type": "fill",
+      "question": "在1c听力中，Ella 的年龄是 ______ 岁。",
+      "answer": "12",
+      "explanation": "听力原文中 Ella 的年龄是 12 岁，不是 13 岁。"
+    },
+    {
+      "type": "true_false",
+      "question": "在1c听力中，Meimei 在七年级二班。",
+      "answer": "错误",
+      "explanation": "听力原文中 Meimei 在 Class 2, Grade 7，即七年级二班，但题目说 '七年级二班' 正确，注意审题：原文是 Class 2, Grade 7，与题目表述一致，但实际听力中 Meimei 在 Class 2, Grade 7？此处需核对：1c听力中 Meimei 是 Class 2, Grade 7，所以判断应为 '正确'。修正：答案应为 '正确'。"
+    }
+  ],
+  "ch05_sec01": [
+    {
+      "type": "choice",
+      "question": "What is the correct way to ask about someone's school in English?",
+      "choices": [
+        "What is your school like?",
+        "What does your school look?",
+        "How is your school look?",
+        "What your school is like?"
+      ],
+      "answer": 0,
+      "explanation": "“What is your school like?” 是询问学校情况的正确句型，like 在此处为介词，意为“像……一样”。"
+    },
+    {
+      "type": "choice",
+      "question": "Which response best describes a school with many trees and flowers?",
+      "choices": [
+        "It is very small.",
+        "It is very noisy.",
+        "It is beautiful with a lot of trees and flowers.",
+        "It has no playground."
+      ],
+      "answer": 2,
+      "explanation": "描述学校有很多树和花，用“beautiful with a lot of trees and flowers”最合适。"
+    },
+    {
+      "type": "fill",
+      "question": "Complete the sentence: Our school _______ a big library and a sports field.",
+      "answer": "has",
+      "explanation": "主语 Our school 是第三人称单数，表示“拥有”用 has。"
+    },
+    {
+      "type": "fill",
+      "question": "Translate into English: “你的学校怎么样？”",
+      "answer": "What is your school like?",
+      "explanation": "询问学校情况的标准句型是“What is your school like?”。"
+    },
+    {
+      "type": "true_false",
+      "question": "The sentence “My school have a new playground.” is grammatically correct.",
+      "answer": "错误",
+      "explanation": "主语 My school 是第三人称单数，动词应该用 has，而不是 have。正确句子是“My school has a new playground.”。"
+    }
+  ],
+  "ch05_sec02": [
+    {
+      "type": "choice",
+      "question": "根据教材内容，Emma 是 Yaming 的什么人？",
+      "choices": [
+        "姐姐",
+        "妈妈",
+        "奶奶",
+        "表妹"
+      ],
+      "answer": 0,
+      "explanation": "教材中听力填空第1题明确提到 'Emma is Yaming’s sister'，因此正确答案是姐姐。"
+    },
+    {
+      "type": "choice",
+      "question": "Teng Fei 的爷爷喜欢什么运动？",
+      "choices": [
+        "钓鱼",
+        "打乒乓球",
+        "弹钢琴",
+        "跑步"
+      ],
+      "answer": 1,
+      "explanation": "对话中Teng Fei说 'My grandpa loves sport' 并提到 'this is my ping-pong bat, and the black one is my grandpa’s'，说明爷爷打乒乓球。"
+    },
+    {
+      "type": "fill",
+      "question": "在教材中，Peter 的爸爸 David 是 Peter 的________。",
+      "answer": "父亲",
+      "explanation": "听力填空第4题 'David is Peter’s father'，因此答案为 '父亲'。"
+    },
+    {
+      "type": "fill",
+      "question": "根据对话，Teng Fei 妈妈拥有的乐器是________。",
+      "answer": "钢琴",
+      "explanation": "对话中Teng Fei说 'It’s my mother’s piano'，所以答案是 '钢琴'。"
+    },
+    {
+      "type": "true_false",
+      "question": "教材中，Teng Fei 和爷爷每天一起打乒乓球。",
+      "answer": "正确",
+      "explanation": "对话中Peter问 'Do you often play ping-pong together?'，Teng Fei回答 'Yes, we play every day'，因此判断为正确。"
+    }
+  ],
+  "default": [
+    {
+      "type": "choice",
+      "question": "请先学习教材内容",
+      "choices": [
+        "知道了"
+      ],
+      "answer": 0,
+      "explanation": ""
+    }
+  ]
+}

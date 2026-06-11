@@ -61,8 +61,9 @@ class ErrorLog(Base):
     __tablename__ = "error_logs"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    subject = Column(String(50), nullable=False, default="math")
     section_id = Column(String(100), nullable=False)
-    exercise_idx = Column(Integer, nullable=False)  # index in the section's exercise list
+    exercise_idx = Column(Integer, nullable=False)
     question = Column(Text, nullable=False)
     correct_answer = Column(Text, nullable=False)
     error_count = Column(Integer, default=1)

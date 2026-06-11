@@ -1,0 +1,82 @@
+[
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "Section A: How do you greet people?",
+    "chapter": "第1章 Starter Unit",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "Section B: How do we get to know each other?",
+    "chapter": "第1章 Starter Unit",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch02_sec01",
+    "code": "2.1",
+    "title": "Section A: How do we make new friends?",
+    "chapter": "第2章 Unit 1 You and Me",
+    "pdf": "ch02_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch02_sec02",
+    "code": "2.2",
+    "title": "Section B: What do we need to know about a new friend?",
+    "chapter": "第2章 Unit 1 You and Me",
+    "pdf": "ch02_sec02.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch03_sec01",
+    "code": "3.1",
+    "title": "Section A: What is your family like?",
+    "chapter": "第3章 Unit 2 We're Family!",
+    "pdf": "ch03_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch03_sec02",
+    "code": "3.2",
+    "title": "Section B: What do you like about your family?",
+    "chapter": "第3章 Unit 2 We're Family!",
+    "pdf": "ch03_sec02.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch04_sec01",
+    "code": "4.1",
+    "title": "Section A: Where do you put your things?",
+    "chapter": "第4章 Unit 3 Welcome!",
+    "pdf": "ch04_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch04_sec02",
+    "code": "4.2",
+    "title": "Section B: What is fun on a farm?",
+    "chapter": "第4章 Unit 3 Welcome!",
+    "pdf": "ch04_sec02.pdf",
+    "pages": 8
+  },
+  {
+    "id": "ch05_sec01",
+    "code": "5.1",
+    "title": "Section A: What is your school like?",
+    "chapter": "第5章 Unit 4 My School",
+    "pdf": "ch05_sec01.pdf",
+    "pages": 1
+  },
+  {
+    "id": "ch05_sec02",
+    "code": "5.2",
+    "title": "Section B: What do you like about your school?",
+    "chapter": "第5章 Unit 4 My School",
+    "pdf": "ch05_sec02.pdf",
+    "pages": 10
+  }
+]

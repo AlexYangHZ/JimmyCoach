@@ -75,5 +75,13 @@ function aeCheck(qid, selected, correct, el) {
     document.getElementById(qid + '-ans').classList.add('ae-show');
 }
 function aeFill(qid, answer) { document.getElementById(qid + '-ans').classList.add('ae-show'); }
+function aeErr(sid, idx, q, ans) {
+    var p = new URLSearchParams(window.location.search);
+    fetch('/exercise/error', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'section_id='+encodeURIComponent(sid)+'&exercise_idx='+idx+'&question='+encodeURIComponent(q)+'&correct_answer='+encodeURIComponent(ans)+'&subject='+encodeURIComponent(p.get('subject')||'math')
+    }).then(function(r){return r.text()}).then(function(t){event.target.textContent='✅ 已记录';event.target.disabled=true});
+}
 </script>
 {% endblock %}

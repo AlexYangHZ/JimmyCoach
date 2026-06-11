@@ -4,10 +4,10 @@
 {% block content %}
 <div class="err-page">
     <div class="err-top">
-        <a href="/subjects/math/7" class="all-ex-back">← 返回知识点</a>
-        <h1>📝 错题本</h1>
+        <a href="/subjects/{{ subject }}/7" class="all-ex-back">← 返回知识点</a>
+        <h1>📝 错题本 · {{ subject_name }}</h1>
         <p class="all-ex-summary">{{ errors|length }} 道错题 · 累计 {{ total_errors }} 次错误</p>
-        <button class="btn-reset" onclick="if(confirm('确定要重置所有学习进度和错题记录吗？此操作不可恢复！')){fetch('/reset-all',{method:'POST'}).then(r=>r.text()).then(t=>document.write(t))}">🔄 重置</button>
+        <button class="btn-reset" onclick="if(confirm('确定要重置{{ subject_name }}的学习进度和错题记录吗？')){fetch('/reset-all',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'subject={{ subject }}'}).then(r=>r.text()).then(t=>document.write(t))}">🔄 重置</button>
     </div>
 
     {% if not errors %}
