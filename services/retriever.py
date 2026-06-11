@@ -129,7 +129,7 @@ class MathRetriever:
               f"{self.doc_vectors.shape[1]} features")
 
     def search(self, query: str, top_k: int = 5) -> list[dict]:
-        """Search for most relevant chunks. Returns list with text + metadata + score."""
+        """Search for most relevant chunks. Falls back to keyword match if TF-IDF fails."""
         if self.vectorizer is None:
             self.build_index()
 
@@ -138,22 +138,40 @@ class MathRetriever:
         query_vec = self.vectorizer.transform([query_tok])
         scores = _cosine_similarity(query_vec, self.doc_vectors)[0]
 
-        # Get top-k indices
         top_indices = _np.argsort(scores)[::-1][:top_k]
 
         results = []
         for idx in top_indices:
-            if scores[idx] > 0.01:  # Minimum relevance threshold
+            if scores[idx] > 0.01:
                 doc = self.documents[idx]
                 results.append({
-                    "text": doc["text"],
-                    "chapter": doc["chapter"],
-                    "section": doc["section"],
-                    "source": doc["source"],
+                    "text": doc["text"], "chapter": doc["chapter"],
+                    "section": doc["section"], "source": doc["source"],
                     "score": float(scores[idx]),
                 })
 
+        # Fallback: if TF-IDF fails (e.g., cross-language query), try keyword match
+        if not results:
+            results = self._keyword_search(query, top_k)
+
         return results
+
+    def _keyword_search(self, query: str, top_k: int = 5) -> list[dict]:
+        """Simple keyword/substring match fallback for cross-language queries."""
+        keywords = query.lower().split()
+        # Also try character-level for Chinese queries against English docs
+        if any('一' <= c <= '鿿' for c in query):
+            keywords = list(query)  # character-level for Chinese
+
+        scored = []
+        for doc in self.documents:
+            text_lower = doc["text"].lower()
+            score = sum(text_lower.count(kw.lower()) for kw in keywords if len(kw) >= 1)
+            if score > 0:
+                scored.append({**doc, "score": float(score) / max(1, len(text_lower)) * 100})
+
+        scored.sort(key=lambda x: x["score"], reverse=True)
+        return scored[:top_k]
 
     def save(self):
         """Cache the built index to disk."""
