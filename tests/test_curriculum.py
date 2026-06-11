@@ -39,6 +39,7 @@ def test_section_codes_ordered():
 
 def test_subjects_config():
     from routes.pages import SUBJECT_CATALOG
-    assert len(SUBJECT_CATALOG) == 1
-    assert SUBJECT_CATALOG[0]["id"] == "math"
-    assert SUBJECT_CATALOG[0]["grades"][0]["ready"] is True
+    assert len(SUBJECT_CATALOG) >= 1
+    assert any(s["id"] == "math" for s in SUBJECT_CATALOG)
+    math = next(s for s in SUBJECT_CATALOG if s["id"] == "math")
+    assert math["grades"][0]["ready"] is True

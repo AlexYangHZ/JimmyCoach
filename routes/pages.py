@@ -1,6 +1,6 @@
 """Page routes — serve HTML pages."""
 
-import json
+import json, re
 from pathlib import Path
 
 from fastapi import APIRouter, Request, Depends
@@ -71,15 +71,73 @@ def _ctx(request: Request, **extra) -> dict:
 
 # Subject catalog — each subject can have multiple grade/semester entries
 # ready=True means content is available, ready=False means coming soon
-SUBJECT_CATALOG = [
-    {
-        "id": "math", "name": "数学", "icon": "📐",
-        "description": "涵盖数与代数、图形与几何、统计与概率等核心领域",
-        "grades": [
-            {"grade": 7, "semester": "上册", "ready": True, "pdf_url": "/textbook/math/grade7/pages/full.pdf"},
-        ],
-    },
-]
+def _discover_subjects():
+    """Auto-discover processed subjects from filesystem."""
+    subjects = {}
+    textbooks_dir = Path("data/textbooks")
+    if not textbooks_dir.exists():
+        return subjects
+
+    for subject_dir in textbooks_dir.iterdir():
+        if not subject_dir.is_dir():
+            continue
+        subject_id = subject_dir.name
+        for grade_dir in subject_dir.iterdir():
+            if not grade_dir.is_dir():
+                continue
+            match = re.match(r"grade(\d+)", grade_dir.name)
+            if not match:
+                continue
+            grade = int(match.group(1))
+            sections_file = grade_dir / "sections.json"
+            pdf_file = grade_dir / "pages" / "full.pdf"
+            if sections_file.exists():
+                with open(sections_file) as f:
+                    sections = json.load(f)
+                if subject_id not in subjects:
+                    subjects[subject_id] = {
+                        "id": subject_id,
+                        "name": NAMES.get(subject_id, subject_id),
+                        "icon": ICONS.get(subject_id, "📚"),
+                        "description": DESCRIPTIONS.get(subject_id, f"{NAMES.get(subject_id, subject_id)}教材"),
+                        "grades": [],
+                    }
+                subjects[subject_id]["grades"].append({
+                    "grade": grade,
+                    "semester": "上册",
+                    "ready": True,
+                    "pdf_url": f"/textbook/{subject_id}/grade{grade}/pages/full.pdf" if pdf_file.exists() else None,
+                    "topic_count": len(sections),
+                })
+    return subjects
+
+NAMES = {"math": "数学", "english": "英语", "chinese": "语文", "science": "科学"}
+ICONS = {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}
+DESCRIPTIONS = {
+    "math": "涵盖数与代数、图形与几何等核心领域",
+    "english": "人教版七年级英语，听说读写全面发展",
+    "chinese": "统编版七年级语文，经典篇目与写作训练",
+    "science": "科学探索，物理化学生物基础入门",
+}
+
+# Build catalog from filesystem + hardcoded math
+SUBJECT_CATALOG = list(_discover_subjects().values())
+
+# Always ensure math 七年级上册 is present (manually created, no sections.json)
+has_math = any(s["id"] == "math" for s in SUBJECT_CATALOG)
+if not has_math:
+    SUBJECT_CATALOG.append({
+        "id": "math", "name": "数学", "icon": "📐", "description": DESCRIPTIONS["math"],
+        "grades": [{"grade": 7, "semester": "上册", "ready": True,
+                     "pdf_url": "/textbook/math/grade7/pages/full.pdf", "topic_count": 17}],
+    })
+
+if not SUBJECT_CATALOG:
+    SUBJECT_CATALOG = [
+        {"id": "math", "name": "数学", "icon": "📐", "description": DESCRIPTIONS["math"],
+         "grades": [{"grade": 7, "semester": "上册", "ready": True,
+                      "pdf_url": "/textbook/math/grade7/pages/full.pdf"}]},
+    ]
 
 # Build nav items (for header) and home display
 def get_nav_subjects():

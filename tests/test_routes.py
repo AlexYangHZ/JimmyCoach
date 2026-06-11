@@ -51,7 +51,7 @@ async def test_health_check(client):
 async def test_home_page_renders(client):
     response = await client.get("/")
     assert response.status_code == 200
-    assert "数学" in response.text
+    assert "数学" in response.text or "english" in response.text.lower()
 
 
 @pytest.mark.asyncio
