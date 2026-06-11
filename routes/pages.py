@@ -1,5 +1,6 @@
 """Page routes — serve HTML pages."""
 
+import asyncio
 import json, re
 from pathlib import Path
 
@@ -121,6 +122,7 @@ DESCRIPTIONS = {
 }
 
 # Build catalog from filesystem + hardcoded math
+_catalog_lock = asyncio.Lock()
 SUBJECT_CATALOG = list(_discover_subjects().values())
 
 # Always ensure math 七年级上册 is present (manually created, no sections.json)

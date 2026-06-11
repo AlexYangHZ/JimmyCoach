@@ -1,5 +1,6 @@
 """Exercise routes — serve pre-generated exercises with answer reveal + Word download + error tracking."""
 
+import html as _html
 import json
 import io
 from datetime import datetime, timezone
@@ -463,8 +464,9 @@ async def reset_all(subject: str = Form("math"), db: AsyncSession = Depends(get_
         await db.delete(sess)
     await db.execute(delete(ProgressSnapshot))
     await db.commit()
-    name = NAMES.get(subject, subject)
-    return HTMLResponse(f'<script>alert("✅ {name}的学习进度和错题本已重置");window.location.href="/subjects/{subject}/7"</script>')
+    name = _html.escape(NAMES.get(subject, subject))
+    safe_subject = _html.escape(subject)
+    return HTMLResponse(f'<script>alert("✅ {name}的学习进度和错题本已重置");window.location.href="/subjects/{safe_subject}/7"</script>')
 
 
 @router.get("/exercises/{section_id}", response_class=HTMLResponse)

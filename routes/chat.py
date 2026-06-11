@@ -1,5 +1,6 @@
 """Chat routes — RAG-based subject Q&A using DeepSeek."""
 
+import html as _html
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db.database import get_db
 from services.ai_tutor import AITutorService
 from services.progress import ProgressService
-from services.retriever import get_retriever
+from services.retriever import get_retriever as _get_retriever_async
 from config import settings
 
 router = APIRouter()
@@ -20,11 +21,8 @@ ai_tutor = AITutorService(
 )
 
 # Map subjects to their retriever
-# Each subject will get its own retriever when content is added
 SUBJECT_RETRIEVERS = {
-    "math": get_retriever,  # Math is ready
-    # "english": None,  # TODO after PDF extraction
-    # "chinese": None,  # TODO after PDF extraction
+    "math": _get_retriever_async,
 }
 
 RAG_SYSTEM_PROMPT = """你是一位耐心、鼓励性的AI辅导老师，名叫小教练。
@@ -58,9 +56,11 @@ async def chat_send(
     """RAG-based chat: retrieves relevant textbook content, answers via DeepSeek."""
     progress_svc = ProgressService(db)
 
-    # Get or create session
+    # Get or create session (scoped by subject)
+    session_id = None
     last_session = await progress_svc.get_last_session()
-    session_id = last_session.id if last_session else None
+    if last_session and topic_id:
+        session_id = last_session.id
     if not session_id:
         session_id = await progress_svc.start_session(topic_id or f"{subject}-chat")
 
@@ -74,7 +74,7 @@ async def chat_send(
         retriever_fn = SUBJECT_RETRIEVERS.get(subject)
         if retriever_fn:
             try:
-                retriever = retriever_fn()
+                retriever = await retriever_fn()
                 results = retriever.search(message, top_k=3)
                 if results:
                     context_chunks = [r["text"][:600] for r in results]
@@ -116,8 +116,8 @@ async def chat_send(
         source_info = f'<div class="rag-source">📖 参考：{rag_source_chapter} · {rag_source_section}</div>'
 
     return HTMLResponse(
-        f'<div class="chat-float-msg user"><strong>🧑 你：</strong>{message}</div>'
-        f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{reply}</div>'
+        f'<div class="chat-float-msg user"><strong>🧑 你：</strong>{_html.escape(message)}</div>'
+        f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{_html.escape(reply)}</div>'
         f'{source_info}'
     )
 
@@ -140,8 +140,8 @@ async def chat_history(
     html_parts = []
     for msg in history[-20:]:
         if msg["role"] == "user":
-            html_parts.append(f'<div class="chat-float-msg user"><strong>🧑 你：</strong>{msg["content"]}</div>')
+            html_parts.append(f'<div class="chat-float-msg user"><strong>🧑 你：</strong>{_html.escape(msg["content"])}</div>')
         else:
-            html_parts.append(f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{msg["content"]}</div>')
+            html_parts.append(f'<div class="chat-float-msg assistant"><strong>🤖 小教练：</strong>{_html.escape(msg["content"])}</div>')
 
     return HTMLResponse("".join(html_parts))

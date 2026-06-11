@@ -158,6 +158,7 @@ async def delete_task(task_id: int, db: AsyncSession = Depends(get_db)):
 
 @router.post("/delete/{subject}/{grade}")
 async def delete_content(subject: str, grade: int, db: AsyncSession = Depends(get_db)):
+    from routes.pages import _catalog_lock
     base = Path(f"data/textbooks/{subject}/grade{grade}")
     if base.exists():
         shutil.rmtree(base)
@@ -172,11 +173,11 @@ async def delete_content(subject: str, grade: int, db: AsyncSession = Depends(ge
     if vec_dir.exists():
         shutil.rmtree(vec_dir)
 
-    for subj in SUBJECT_CATALOG:
-        subj["grades"] = [g for g in subj["grades"]
-                          if not (g["grade"] == grade)]
-    # Remove subjects with no remaining grades
-    SUBJECT_CATALOG[:] = [s for s in SUBJECT_CATALOG if s["grades"]]
+    async with _catalog_lock:
+        for subj in SUBJECT_CATALOG:
+            subj["grades"] = [g for g in subj["grades"]
+                              if not (g["grade"] == grade)]
+        SUBJECT_CATALOG[:] = [s for s in SUBJECT_CATALOG if s["grades"]]
 
     # Also clean up tasks
     await db.execute(delete(PipelineTask).where(

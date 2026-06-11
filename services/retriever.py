@@ -5,6 +5,7 @@ No GPU or model download needed. Works immediately.
 
 import re
 import pickle
+import asyncio
 from pathlib import Path
 
 import jieba
@@ -176,12 +177,28 @@ class MathRetriever:
         return False
 
 
-# Global singleton
+# Global singleton with init lock
 _retriever: MathRetriever | None = None
+_retriever_lock = asyncio.Lock()
 
 
-def get_retriever() -> MathRetriever:
-    """Get or create the global retriever instance."""
+async def get_retriever() -> MathRetriever:
+    """Get or create the global retriever instance (thread-safe)."""
+    global _retriever
+    if _retriever is not None:
+        return _retriever
+    async with _retriever_lock:
+        if _retriever is not None:
+            return _retriever
+        _retriever = MathRetriever()
+        if not _retriever.load():
+            _retriever.build_index()
+            _retriever.save()
+        return _retriever
+
+
+def get_retriever_sync() -> MathRetriever:
+    """Synchronous fallback for non-async contexts."""
     global _retriever
     if _retriever is None:
         _retriever = MathRetriever()

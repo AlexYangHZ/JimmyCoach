@@ -235,7 +235,7 @@ class PipelineService:
         r.CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
         r.build_index()
 
-        self._register_in_catalog(subject, task.subject_name, grade, task.semester, len(sections_config))
+        await self._register_in_catalog(subject, task.subject_name, grade, task.semester, len(sections_config))
         await self.update_task(task_id, status="done", progress=100)
 
     def _save_json(self, path: Path, data):
@@ -243,30 +243,31 @@ class PipelineService:
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-    def _register_in_catalog(self, subject, subject_name, grade, semester, topic_count):
-        """Update SUBJECT_CATALOG to mark this subject as ready."""
-        from routes.pages import SUBJECT_CATALOG
-        for subj in SUBJECT_CATALOG:
-            if subj["id"] == subject:
-                for g in subj["grades"]:
-                    if g["grade"] == grade and g["semester"] == semester:
-                        g["ready"] = True
-                        g["topic_count"] = topic_count
-                        return
-                # Add new grade entry
-                subj["grades"].append({
-                    "grade": grade, "semester": semester, "ready": True,
-                    "pdf_url": f"/textbook/{subject}/grade{grade}/pages/full.pdf",
-                    "topic_count": topic_count,
-                })
-                return
-        # Add new subject
-        SUBJECT_CATALOG.append({
-            "id": subject, "name": subject_name, "icon": {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}.get(subject, "📚"),
-            "description": f"{subject_name} {grade}年级{semester}",
-            "grades": [{"grade": grade, "semester": semester, "ready": True,
-                        "pdf_url": f"/textbook/{subject}/grade{grade}/pages/full.pdf", "topic_count": topic_count}],
-        })
+    async def _register_in_catalog(self, subject, subject_name, grade, semester, topic_count):
+        """Update SUBJECT_CATALOG to mark this subject as ready (thread-safe)."""
+        from routes.pages import SUBJECT_CATALOG, _catalog_lock
+        async with _catalog_lock:
+            for subj in SUBJECT_CATALOG:
+                if subj["id"] == subject:
+                    for g in subj["grades"]:
+                        if g["grade"] == grade and g["semester"] == semester:
+                            g["ready"] = True
+                            g["topic_count"] = topic_count
+                            return
+                    subj["grades"].append({
+                        "grade": grade, "semester": semester, "ready": True,
+                        "pdf_url": f"/textbook/{subject}/grade{grade}/pages/full.pdf",
+                        "topic_count": topic_count,
+                    })
+                    return
+            SUBJECT_CATALOG.append({
+                "id": subject, "name": subject_name,
+                "icon": {"math": "📐", "english": "🌐", "chinese": "📖", "science": "🔬"}.get(subject, "📚"),
+                "description": f"{subject_name} {grade}年级{semester}",
+                "grades": [{"grade": grade, "semester": semester, "ready": True,
+                            "pdf_url": f"/textbook/{subject}/grade{grade}/pages/full.pdf",
+                            "topic_count": topic_count}],
+            })
 
 
 def get_pipeline(db: AsyncSession) -> PipelineService:
