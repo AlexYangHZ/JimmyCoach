@@ -41,12 +41,54 @@
       "question": "'Goodbye!' 是用于见面时的问候语。",
       "answer": "错误",
       "explanation": "'Goodbye!' 是告别时使用的用语，不是见面时的问候语。"
+    },
+    {
+      "type": "choice",
+      "question": "In the textbook, what does Ms Gao say to the class first in the morning?",
+      "choices": [
+        "A. Hello, class.",
+        "B. Good morning, class.",
+        "C. Good afternoon, class.",
+        "D. Hi, everyone."
+      ],
+      "answer": 1,
+      "explanation": "课本中Ms Gao对全班说的第一句话是'Good morning, class.'，因为这是早上的问候。其他选项虽然也是问候语，但不是课本中Ms Gao说的原话。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence pattern is CORRECT for greeting someone in the afternoon?",
+      "choices": [
+        "A. Good morning!",
+        "B. Good evening!",
+        "C. Good afternoon!",
+        "D. Good night!"
+      ],
+      "answer": 2,
+      "explanation": "下午见面时应该用'Good afternoon!'。'Good morning'是早上用，'Good evening'是晚上用，'Good night'是睡觉前说的，不是问候语。"
+    },
+    {
+      "type": "fill",
+      "question": "In the textbook conversation, Emma says \"Nice to meet you, Emma.\" Fu Xing answers: \"Nice to meet you ______, Fu Xing!\"",
+      "answer": "too",
+      "explanation": "当别人说'Nice to meet you'时，回答要用'Nice to meet you, too'，表示'我也很高兴认识你'。too在这里表示'也'的意思。"
+    },
+    {
+      "type": "fill",
+      "question": "In the textbook, when Ms Gao says \"Good morning, class.\" the class should answer: \"Good morning, ______ ______.\"",
+      "answer": "Ms Gao",
+      "explanation": "课本中Ms Gao向全班问好，全班应该回答'Good morning, Ms Gao.'。这是对老师表示礼貌的回应的标准方式。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, when Peter says \"Hello, Ms Gao\" at the beginning, Ms Gao says \"Sit down, please.\"",
+      "answer": "错误",
+      "explanation": "课本中Ms Gao先说'Good morning, class.'，全班回答后Ms Gao才说'Sit down, please.'。Peter是在后面才被Ms Gao叫到前面做自我介绍，所以这个顺序描述是错误的。"
     }
   ],
   "ch01_sec02": [
     {
       "type": "choice",
-      "question": "在教材中，当Teng Fei对Emma说“Good morning. May I have your name?”时，Emma应该怎么回答？",
+      "question": "在教材中，当Teng Fei对Emma说'Good morning. May I have your name?'时，Emma应该怎么回答？",
       "choices": [
         "Hello! I'm fine.",
         "Good morning. My name is Emma Miller.",
@@ -54,17 +96,17 @@
         "Goodbye!"
       ],
       "answer": 1,
-      "explanation": "根据教材对话，Emma回应Teng Fei的问候并介绍自己，正确的回答是“Good morning. My name is Emma Miller。”"
+      "explanation": "根据教材对话，Emma回应Teng Fei的问候并介绍自己，正确的回答是'Good morning. My name is Emma Miller.'"
     },
     {
       "type": "fill",
-      "question": "在教材对话中，Fu Xing对Emma说“Good morning, Emma.”后，Emma问“So what’s your name?” Fu Xing回答“Oh, I’m Fu Xing. Nice to meet you, Emma.” 此时Emma应该回答什么？（填写教材中给出的完整句子）",
+      "question": "在教材对话中，Fu Xing对Emma说'Good morning, Emma.'后，Emma问'So what's your name?' Fu Xing回答'Oh, I'm Fu Xing. Nice to meet you, Emma.' 此时Emma应该回答什么？（填写教材中给出的完整句子）",
       "answer": "Nice to meet you too, Fu Xing!",
-      "explanation": "教材对话中，当Fu Xing说“Nice to meet you, Emma.”后，Emma的回应是“Nice to meet you too, Fu Xing!”，表示礼貌的回应。"
+      "explanation": "教材对话中，当Fu Xing说'Nice to meet you, Emma.'后，Emma的回应是'Nice to meet you too, Fu Xing!'，表示礼貌的回应。"
     },
     {
       "type": "choice",
-      "question": "在Starter Unit 1的对话练习中，Ms Gao说“Good morning, class.”，全班同学的正确回应是什么？",
+      "question": "在Starter Unit 1的对话练习中，Ms Gao说'Good morning, class.'，全班同学的正确回应是什么？",
       "choices": [
         "Hello!",
         "Good morning, Ms Gao.",
@@ -72,19 +114,61 @@
         "Hi, everyone!"
       ],
       "answer": 1,
-      "explanation": "根据教材2d部分，Ms Gao问候“Good morning, class.”，同学们应回答“Good morning, Ms Gao.”，这是课堂问候的常规回应。"
+      "explanation": "根据教材2d部分，Ms Gao问候'Good morning, class.'，同学们应回答'Good morning, Ms Gao.'，这是课堂问候的常规回应。"
     },
     {
       "type": "fill",
-      "question": "教材中Helen对Yaming说“Hello, Wang Yaming! How are you?”，Yaming回答“Hi, Helen. I’m fine, thank you. And you?” 请写出Helen接下来回答的完整句子。（根据教材内容）",
-      "answer": "I’m great, thanks.",
-      "explanation": "教材对话中，Yaming询问“And you?”后，Helen回答“I’m great, thanks.”，表示自己也很好并感谢对方的关心。"
+      "question": "教材中Helen对Yaming说'Hello, Wang Yaming! How are you?'，Yaming回答'Hi, Helen. I'm fine, thank you. And you?' 请写出Helen接下来回答的完整句子。（根据教材内容）",
+      "answer": "I'm great, thanks.",
+      "explanation": "教材对话中，Yaming询问'And you?'后，Helen回答'I'm great, thanks.'，表示自己也很好并感谢对方的关心。"
     },
     {
       "type": "true_false",
-      "question": "在教材的发音部分，字母“A”和“H”属于同一个音素类别（/eɪ/）。",
+      "question": "在教材的发音部分，字母'A'和'H'属于同一个音素类别（/eɪ/）。",
       "answer": "正确",
       "explanation": "教材Pronunciation部分明确将A a和H h归为/eɪ/音素类别，因此该说法正确。"
+    },
+    {
+      "type": "choice",
+      "question": "Which letter has the same vowel sound as 'A' in the word 'name'?",
+      "choices": [
+        "A. B",
+        "B. H",
+        "C. F",
+        "D. I"
+      ],
+      "answer": 1,
+      "explanation": "字母A的发音是/eɪ/，在课本中，H、J、K和A属于同一组，都发/eɪ/音。B发/iː/音，F发/e/音，I发/aɪ/音。"
+    },
+    {
+      "type": "choice",
+      "question": "In the conversation 'Ms Gao: Good morning, class. Class: ______', which sentence is correct?",
+      "choices": [
+        "A. Sit down, please.",
+        "B. Good morning, Ms Gao.",
+        "C. Nice to meet you.",
+        "D. I'm fine, thank you."
+      ],
+      "answer": 1,
+      "explanation": "在课本对话2d中，Ms Gao说'Good morning, class.'后，全班同学应该回应'Good morning, Ms Gao.'，这是礼貌的问候回应。"
+    },
+    {
+      "type": "fill",
+      "question": "In the textbook, Emma says 'Good morning. My name is Emma.' Fu Xing replies 'Good morning, Emma.' Then Emma asks 'So what's your ______?'",
+      "answer": "name",
+      "explanation": "在课本对话2d中，Emma先自我介绍，然后问Fu Xing的名字，所以空白处应填'name'，构成问句'So what's your name?'"
+    },
+    {
+      "type": "fill",
+      "question": "The letter 'Z' is in two pronunciation groups: /e/ and /______/.",
+      "answer": "iː",
+      "explanation": "课本发音部分显示，字母Z既出现在/e/组（F, L, M, N, S, X, Z），也出现在/iː/组（B, C, D, E, G, P, T, V, Z），所以第二个发音是/iː/。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, the expression 'Sit down, please.' is used to start a conversation.",
+      "answer": "错误",
+      "explanation": "课本中'Sit down, please.'是Ms Gao在问候之后说的指令，意思是'请坐下'，它不是用来开始对话的问候语。开始对话的常用表达是'Hi', 'Hello', 'Good morning'等。"
     }
   ],
   "ch02_sec01": [
@@ -92,10 +176,10 @@
       "type": "choice",
       "question": "When you meet someone for the first time, what is a good way to start a conversation?",
       "choices": [
-        "A. Stay silent and wait for them to speak",
-        "B. Say 'Hello, my name is...' and smile",
-        "C. Ask personal questions immediately",
-        "D. Walk away"
+        "Stay silent and wait for them to speak",
+        "Say 'Hello, my name is...' and smile",
+        "Ask personal questions immediately",
+        "Walk away"
       ],
       "answer": 1,
       "explanation": "Saying hello and introducing yourself with a smile is a friendly and natural way to begin."
@@ -104,17 +188,17 @@
       "type": "choice",
       "question": "Which of the following is NOT a good way to make new friends?",
       "choices": [
-        "A. Join a club or activity you enjoy",
-        "B. Ask open-ended questions to show interest",
-        "C. Only talk about yourself and ignore others",
-        "D. Invite someone to have lunch together"
+        "Join a club or activity you enjoy",
+        "Ask open-ended questions to show interest",
+        "Only talk about yourself and ignore others",
+        "Invite someone to have lunch together"
       ],
       "answer": 2,
       "explanation": "Making friends requires listening and showing interest in others, not just talking about yourself."
     },
     {
       "type": "fill",
-      "question": "Complete the sentence: 'A good way to keep a conversation going is to ask ________ questions.'",
+      "question": "Complete the sentence: A good way to keep a conversation going is to ask ________ questions.",
       "answer": "open-ended",
       "explanation": "Open-ended questions encourage the other person to share more than a simple 'yes' or 'no'."
     },
@@ -129,94 +213,220 @@
       "question": "You should only make friends with people who have the same hobbies as you.",
       "answer": "错误",
       "explanation": "Having different interests can make friendships more interesting and help you learn new things."
+    },
+    {
+      "type": "choice",
+      "question": "What does 'a bottle' mean in Chinese?",
+      "choices": [
+        "A. 一本书",
+        "B. 一个瓶子",
+        "C. 一支笔",
+        "D. 一把尺子"
+      ],
+      "answer": 1,
+      "explanation": "根据课文内容，'a bottle' 是 '一个瓶子' 的意思。其他选项：一本书是 'a book'，一支笔是 'a pen'，一把尺子是 'a ruler'。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct to ask about the colour of a cap?",
+      "choices": [
+        "A. What colour is the cap?",
+        "B. What colour are the cap?",
+        "C. What is colour the cap?",
+        "D. What colour the cap is?"
+      ],
+      "answer": 0,
+      "explanation": "询问单数物品的颜色要用 'What colour is...' 结构。课文中有例句：'What colour is the cap?' 其他选项语法错误。"
+    },
+    {
+      "type": "fill",
+      "question": "I have a cap. What do you have ______ your schoolbag?",
+      "answer": "in",
+      "explanation": "课文对话中反复出现 'in your schoolbag' 这个短语，表示'在你的书包里'，所以这里填介词 'in'。"
+    },
+    {
+      "type": "fill",
+      "question": "The colour of the sky is ______.",
+      "answer": "blue",
+      "explanation": "课文第8页列出了颜色单词，包括 red, green, blue, yellow, orange, black, white, brown。天空的颜色通常是蓝色 (blue)。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, Peter's shoes are brown.",
+      "answer": "错误",
+      "explanation": "课文第8页的填空练习中，只提到了 Teng Fei's schoolbag, Yaming's bicycle 和 Peter's shoes，但并没有说明 Peter's shoes 是什么颜色，所以这个说法不正确。"
     }
   ],
   "ch02_sec02": [
     {
       "type": "choice",
-      "question": "根据对话，Ella的新帽子是什么颜色的？",
+      "question": "According to the dialogue, what colour is Ella's new cap?",
       "choices": [
-        "黑色",
-        "红色",
-        "黄色",
-        "蓝色"
+        "Black",
+        "Red",
+        "Yellow",
+        "Blue"
       ],
       "answer": 1,
-      "explanation": "对话中Ella说‘It’s red.’，所以她的帽子是红色的。"
+      "explanation": "对话中Ella说'It's red.'，所以她的帽子是红色的。"
     },
     {
       "type": "choice",
-      "question": "Ella的帽子最后在哪里找到的？",
+      "question": "Where did Ella finally find her cap?",
       "choices": [
-        "在她的书包里",
-        "在她的桌子下面",
-        "在她的椅子上",
-        "在她的床上"
+        "In her schoolbag",
+        "Under her desk",
+        "On her chair",
+        "On her bed"
       ],
       "answer": 1,
-      "explanation": "妈妈在对话中说‘It’s under your desk.’，所以帽子在桌子下面。"
+      "explanation": "妈妈在对话中说'It's under your desk.'，所以帽子在桌子下面。"
     },
     {
       "type": "fill",
-      "question": "根据图片，完成句子：A schoolbag is ______ the desk.",
+      "question": "Look at the picture. Complete the sentence: A schoolbag is ______ the desk.",
       "answer": "on",
-      "explanation": "图片中书包在桌子上，所以用介词‘on’。"
+      "explanation": "图片中书包在桌子上，所以用介词'on'。"
     },
     {
       "type": "fill",
-      "question": "根据对话填空：Emma’s dad has a pair of ______.",
+      "question": "Complete the sentence from the dialogue: Emma's dad has a pair of ______.",
       "answer": "glasses",
-      "explanation": "对话中提及Emma的爸爸有一副眼镜，所以填‘glasses’。"
+      "explanation": "对话中提及Emma的爸爸有一副眼镜，所以填'glasses'。"
     },
     {
       "type": "true_false",
-      "question": "根据课文，Teng Fei's schoolbag是蓝色的。",
+      "question": "The phrase 'Keep Tidy!' in the textbook means you should put your things in order.",
+      "answer": "正确",
+      "explanation": "'Keep Tidy!'是教材中的主题标题，意思是保持整洁、把东西整理好。"
+    },
+    {
+      "type": "choice",
+      "question": "What does 'Keep tidy!' mean?",
+      "choices": [
+        "A. 保持安静",
+        "B. 保持整洁",
+        "C. 保持快乐",
+        "D. 保持健康"
+      ],
+      "answer": 1,
+      "explanation": "Keep tidy! 意思是'保持整洁'，这是课本Section B中关于物品归位的重要表达。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct?",
+      "choices": [
+        "A. I have a cap. What colour is it?",
+        "B. I have a cap. What colour are it?",
+        "C. I have a cap. What colour is they?",
+        "D. I have a cap. What colour are they?"
+      ],
+      "answer": 0,
+      "explanation": "cap是单数名词，所以用is提问。正确句型是'What colour is it?'，对应课本中询问物品颜色的句型。"
+    },
+    {
+      "type": "fill",
+      "question": "A: What do you have in your schoolbag? B: I have a ______.",
+      "answer": "bottle",
+      "explanation": "根据课本对话内容，回答'I have a bottle.'，bottle是课本中出现的物品词汇。"
+    },
+    {
+      "type": "fill",
+      "question": "The ruler is ______ the desk. (用方位介词填空)",
+      "answer": "on",
+      "explanation": "on表示'在...上面'，是课本中学习的方位介词之一。这里说尺子在桌子上，所以用on。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, Yaming's bicycle is blue.",
       "answer": "错误",
-      "explanation": "课文中没有明确说Teng Fei的书包是蓝色的，而是需要学生根据图片或对话内容判断，此处信息不匹配。"
+      "explanation": "课本中只提到Yaming's bicycle，但没有说它是蓝色的。我们不能自己编造课本中没有的信息。"
     }
   ],
   "ch03_sec01": [
     {
       "type": "choice",
-      "question": "在Section A中，当被问到“What is your family like?”时，以下哪一项是最可能的回答？",
+      "question": "What is the best answer to the question 'What is your family like?'",
       "choices": [
-        "A. I have a big family with three brothers.",
-        "B. I like playing basketball.",
-        "C. My favorite color is blue.",
-        "D. I go to school by bus."
+        "I have a big family with three brothers.",
+        "I like playing basketball.",
+        "My favorite color is blue.",
+        "I go to school by bus."
       ],
       "answer": 0,
-      "explanation": "“What is your family like?”是询问家庭情况，选项A描述了家庭规模与成员，符合题意。其他选项分别涉及爱好、颜色和交通方式，与家庭无关。"
+      "explanation": "'What is your family like?'询问家庭情况，选项A描述了家庭规模与成员，符合题意。其他选项分别涉及爱好、颜色和交通方式，与家庭无关。"
     },
     {
       "type": "choice",
-      "question": "根据Section A，如果你想表达“我的家庭很和睦”，应该选择哪一句话？",
+      "question": "Which sentence means 'My family is very close' (我的家庭很和睦)?",
       "choices": [
-        "A. My family is very big.",
-        "B. My family is very close.",
-        "C. My family is very small.",
-        "D. My family is very old."
+        "My family is very big.",
+        "My family is very close.",
+        "My family is very small.",
+        "My family is very old."
       ],
       "answer": 1,
-      "explanation": "“close”在此语境中表示家庭成员关系亲密、和睦，而big/small指规模，old指年龄，均不符合“和睦”的含义。"
+      "explanation": "'close'在此语境中表示家庭成员关系亲密、和睦，而big/small指规模，old指年龄，均不符合'和睦'的含义。"
     },
     {
       "type": "fill",
-      "question": "根据Section A，完成句子：My family has ____ people. (我的家庭有____口人。)",
+      "question": "Complete the sentence from the textbook: My family has ______ people.",
       "answer": "four",
-      "explanation": "教材中示例提到“My family has four people.”，因此答案应为four。"
+      "explanation": "教材中示例提到'My family has four people.'，因此答案为four。"
     },
     {
       "type": "fill",
-      "question": "根据Section A，用英语填空：——What is your family like? ——It's ____. (它很温暖。)",
+      "question": "Fill in the blank: — What is your family like? — It's ______. (warm and loving)",
       "answer": "warm",
-      "explanation": "教材中常用“warm”来形容家庭氛围温暖、充满爱，因此答案为warm。"
+      "explanation": "教材中常用'warm'来形容家庭氛围温暖、充满爱，因此答案为warm。"
     },
     {
       "type": "true_false",
-      "question": "根据Section A，回答“What is your family like?”时，可以说“I have a sister and a brother.”",
+      "question": "You can answer 'What is your family like?' by saying 'I have a sister and a brother.'",
       "answer": "正确",
-      "explanation": "该回答直接描述了家庭成员构成，符合“What is your family like?”的提问目的，因此判断为正确。"
+      "explanation": "该回答直接描述了家庭成员构成，符合'What is your family like?'的提问目的，因此判断为正确。"
+    },
+    {
+      "type": "choice",
+      "question": "What does the word 'rabbits' mean in Chinese?",
+      "choices": [
+        "A. 兔子",
+        "B. 猫",
+        "C. 狗",
+        "D. 鸟"
+      ],
+      "answer": 0,
+      "explanation": "课文中提到了rabbits（兔子），这是宠物或农场动物的一种。选项A是兔子的中文意思。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct to describe a family?",
+      "choices": [
+        "A. My family are big.",
+        "B. My family is big and warm.",
+        "C. My family is big and warm.",
+        "D. My family is bigs."
+      ],
+      "answer": 1,
+      "explanation": "描述家庭时，用'My family is + 形容词'，并且可以用and连接两个形容词。选项B'My family is big and warm.'语法正确。"
+    },
+    {
+      "type": "fill",
+      "question": "In the conversation, Peter sees ______ plants in the yard.",
+      "answer": "tomato",
+      "explanation": "对话2中，Peter在院子里看到了tomato plants（番茄植物）。所以空格应填tomato。"
+    },
+    {
+      "type": "fill",
+      "question": "Fu Xing's grandpa has ten ______ trees.",
+      "answer": "apple",
+      "explanation": "对话3中，Fu Xing的爷爷有十棵苹果树（apple trees）。所以空格应填apple。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the picture, there are baby chickens and dogs.",
+      "answer": "正确",
+      "explanation": "课文1a的图片中列出了baby chickens（小鸡）和dogs（狗），所以这个说法是正确的。"
     }
   ],
   "ch03_sec02": [
@@ -230,13 +440,13 @@
         "A dog"
       ],
       "answer": 1,
-      "explanation": "根据对话1，Helen在院子里看到了一只鸭子，而不是鹅。"
+      "explanation": "根据对话1，Helen在院子里看到了一只鸭子(duck)，而不是鹅(goose)。"
     },
     {
       "type": "fill",
       "question": "A: What are those?  B: They're ________.",
       "answer": "carrot plants",
-      "explanation": "根据教材对话，回答‘它们是什么？’时用‘They're carrot plants.’"
+      "explanation": "根据教材对话，回答'它们是什么？'时用'They're carrot plants.'"
     },
     {
       "type": "choice",
@@ -261,56 +471,140 @@
       "question": "Peter sees tomato plants in the yard.",
       "answer": "正确",
       "explanation": "对话2中Peter在院子里看到了番茄植物，所以这句话是正确的。"
+    },
+    {
+      "type": "choice",
+      "question": "What does the word 'rabbits' mean in Chinese?",
+      "choices": [
+        "A. 鸡",
+        "B. 兔子",
+        "C. 狗",
+        "D. 花"
+      ],
+      "answer": 1,
+      "explanation": "rabbits 的意思是‘兔子’，这是本单元学习的农场动物词汇之一。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct when you ask about one thing?",
+      "choices": [
+        "A. What are these?",
+        "B. What’s that?",
+        "C. What are those?",
+        "D. How many rabbits?"
+      ],
+      "answer": 1,
+      "explanation": "问单个物品要用 What’s this/that?，What’s 是 What is 的缩写。"
+    },
+    {
+      "type": "fill",
+      "question": "A: What are those? B: They’re ______ plants. (根据课文内容填空)",
+      "answer": "tomato",
+      "explanation": "课文中Peter看到的是tomato plants（番茄植物），所以填tomato。"
+    },
+    {
+      "type": "fill",
+      "question": "A: How many apple trees can you see? B: I can see ______. (根据课文内容填空)",
+      "answer": "ten",
+      "explanation": "课文中Fu Xing的爷爷有十棵苹果树，所以答案是ten。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, Fu Xing's grandpa has eight rabbits.",
+      "answer": "错误",
+      "explanation": "课文中Fu Xing的爷爷有twelve（十二）只兔子，不是八只。"
     }
   ],
   "ch04_sec01": [
     {
       "type": "choice",
-      "question": "如果你想问别人把书放在哪里，应该说：",
+      "question": "How do you ask someone where they put their book?",
       "choices": [
-        "A. Where do you put your book?",
-        "B. What is your book?",
-        "C. Where is your book from?",
-        "D. How do you put your book?"
+        "Where do you put your book?",
+        "What is your book?",
+        "Where is your book from?",
+        "How do you put your book?"
       ],
       "answer": 0,
-      "explanation": "询问物品放置位置用“Where do you put...?”结构，A选项正确。"
+      "explanation": "询问物品放置位置用'Where do you put...?'结构，A选项正确。"
     },
     {
       "type": "choice",
-      "question": "“I put my pen in the pencil case.” 这句话中，pen被放在哪里？",
+      "question": "'I put my pen in the pencil case.' Where is the pen?",
       "choices": [
-        "A. on the desk",
-        "B. in the pencil case",
-        "C. under the chair",
-        "D. behind the door"
+        "On the desk",
+        "In the pencil case",
+        "Under the chair",
+        "Behind the door"
       ],
       "answer": 1,
-      "explanation": "句子中“in the pencil case”表明pen放在铅笔盒里，对应B选项。"
+      "explanation": "句子中'in the pencil case'表明pen放在铅笔盒里，对应B选项。"
     },
     {
       "type": "fill",
-      "question": "完成句子：Where ______ you put your schoolbag?",
+      "question": "Complete the question: Where ______ you put your schoolbag?",
       "answer": "do",
       "explanation": "主语是you，一般现在时疑问句用助动词do。"
     },
     {
       "type": "fill",
-      "question": "根据答句写出问句：______ do you put your keys? — I put them in my pocket.",
+      "question": "Write the question word: ______ do you put your keys? — I put them in my pocket.",
       "answer": "Where",
       "explanation": "答句回答位置，所以问句用Where提问。"
     },
     {
       "type": "true_false",
-      "question": "“I put my ruler under the desk.” 意思是“我把尺子放在桌子上面。”",
+      "question": "'I put my ruler under the desk.' means '我把尺子放在桌子上面。'",
       "answer": "错误",
-      "explanation": "under the desk 表示“在桌子下面”，不是上面，因此判断错误。"
+      "explanation": "under the desk表示'在桌子下面'，不是上面，因此判断错误。"
+    },
+    {
+      "type": "choice",
+      "question": "What does the word 'under' mean in Chinese?",
+      "choices": [
+        "A. 在……上",
+        "B. 在……里",
+        "C. 在……下",
+        "D. 在……旁边"
+      ],
+      "answer": 2,
+      "explanation": "'under' 的意思是 '在……下'，例如 'under the desk' 表示 '在书桌下'。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct to ask where someone puts their things?",
+      "choices": [
+        "A. Where do you put your things?",
+        "B. What do you put your things?",
+        "C. How do you put your things?",
+        "D. When do you put your things?"
+      ],
+      "answer": 0,
+      "explanation": "询问物品放置位置要用 'Where'（哪里），所以 'Where do you put your things?' 是正确的。"
+    },
+    {
+      "type": "fill",
+      "question": "I put my book ______ the desk. (在书桌上)",
+      "answer": "on",
+      "explanation": "'on' 表示 '在……上'，所以 'on the desk' 意思是 '在书桌上'。"
+    },
+    {
+      "type": "fill",
+      "question": "The cat is ______ the chair. (在椅子下)",
+      "answer": "under",
+      "explanation": "'under' 表示 '在……下'，所以 'under the chair' 意思是 '在椅子下'。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the sentence 'I put my pen in the pencil box', 'in' means '在……上'.",
+      "answer": "错误",
+      "explanation": "'in' 的意思是 '在……里'，不是 '在……上'。'在……上' 应该用 'on'。"
     }
   ],
   "ch04_sec02": [
     {
       "type": "choice",
-      "question": "在对话中，Peter 的班级老师是谁？",
+      "question": "Who is Peter's class teacher in the dialogue?",
       "choices": [
         "Ms Hui",
         "Ms Gao",
@@ -318,37 +612,79 @@
         "Chen Jie"
       ],
       "answer": 1,
-      "explanation": "对话中 Chen Jie 纠正 Peter 说 'it’s Ms Gao, not Ms Hui. Hui is her first name.' 所以班级老师是 Ms Gao。"
+      "explanation": "对话中Chen Jie纠正Peter说'it's Ms Gao, not Ms Hui. Hui is her first name.'，所以班级老师是Ms Gao。"
     },
     {
       "type": "choice",
-      "question": "Mr Smith 来自哪个国家？",
+      "question": "Where is Mr Smith from?",
       "choices": [
-        "the UK",
-        "the US",
+        "The UK",
+        "The US",
         "China",
         "Canada"
       ],
       "answer": 1,
-      "explanation": "对话中 Chen Jie 介绍 Mr Smith 时说 'He’s from the US.'"
+      "explanation": "对话中Chen Jie介绍Mr Smith时说'He's from the US.'"
     },
     {
       "type": "fill",
-      "question": "在1c听力中，Peter 的全名是 Peter ______。",
+      "question": "In the listening, Peter's full name is Peter ______.",
       "answer": "Brown",
-      "explanation": "听力原文中 Peter 的全名是 Peter Brown，不是 Green。"
+      "explanation": "听力原文中Peter的全名是Peter Brown，不是Green。"
     },
     {
       "type": "fill",
-      "question": "在1c听力中，Ella 的年龄是 ______ 岁。",
+      "question": "In the listening, Ella is ______ years old.",
       "answer": "12",
-      "explanation": "听力原文中 Ella 的年龄是 12 岁，不是 13 岁。"
+      "explanation": "听力原文中Ella的年龄是12岁，不是13岁。"
     },
     {
       "type": "true_false",
-      "question": "在1c听力中，Meimei 在七年级二班。",
+      "question": "In the listening, Meimei is in Class 2, Grade 7.",
+      "answer": "正确",
+      "explanation": "听力原文中Meimei在Class 2, Grade 7，即七年级二班，所以判断为正确。"
+    },
+    {
+      "type": "choice",
+      "question": "In the textbook, what does 'personal profile' mean?",
+      "choices": [
+        "A. A photo of yourself",
+        "B. A short introduction about yourself",
+        "C. A story about your family",
+        "D. A letter to a friend"
+      ],
+      "answer": 1,
+      "explanation": "Personal profile 意思是“个人简介”，就是关于你自己的简短介绍，包括姓名、年龄、班级等信息。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct about Peter Brown from the listening?",
+      "choices": [
+        "A. Peter is from the US.",
+        "B. Peter's full name is Peter Green.",
+        "C. Peter is from the UK.",
+        "D. Peter is 13 years old."
+      ],
+      "answer": 2,
+      "explanation": "课文中听力部分提到 Peter is from the UK（英国），所以正确答案是 C。"
+    },
+    {
+      "type": "fill",
+      "question": "In the textbook, Ella's last name is ______.",
+      "answer": "Smith",
+      "explanation": "课文中听力部分说 Ella's last name is Smith（史密斯的姓是史密斯），所以答案是 Smith。"
+    },
+    {
+      "type": "fill",
+      "question": "The textbook says: 'We're in the same ______.'",
+      "answer": "class",
+      "explanation": "课文中的句子是 'We're in the same class'（我们在同一个班），所以空白处填 class。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, Meimei is in Class 2, Grade 7.",
       "answer": "错误",
-      "explanation": "听力原文中 Meimei 在 Class 2, Grade 7，即七年级二班，但题目说 '七年级二班' 正确，注意审题：原文是 Class 2, Grade 7，与题目表述一致，但实际听力中 Meimei 在 Class 2, Grade 7？此处需核对：1c听力中 Meimei 是 Class 2, Grade 7，所以判断应为 '正确'。修正：答案应为 '正确'。"
+      "explanation": "课文中听力部分说 Meimei is in Class 1, Grade 7（美美在七年级一班），不是二班，所以这句话是错误的。"
     }
   ],
   "ch05_sec01": [
@@ -362,7 +698,7 @@
         "What your school is like?"
       ],
       "answer": 0,
-      "explanation": "“What is your school like?” 是询问学校情况的正确句型，like 在此处为介词，意为“像……一样”。"
+      "explanation": "'What is your school like?'是询问学校情况的正确句型，like在此处为介词，意为'像……一样'。"
     },
     {
       "type": "choice",
@@ -374,69 +710,153 @@
         "It has no playground."
       ],
       "answer": 2,
-      "explanation": "描述学校有很多树和花，用“beautiful with a lot of trees and flowers”最合适。"
+      "explanation": "描述学校有很多树和花，用'beautiful with a lot of trees and flowers'最合适。"
     },
     {
       "type": "fill",
       "question": "Complete the sentence: Our school _______ a big library and a sports field.",
       "answer": "has",
-      "explanation": "主语 Our school 是第三人称单数，表示“拥有”用 has。"
+      "explanation": "主语Our school是第三人称单数，表示'拥有'用has。"
     },
     {
       "type": "fill",
-      "question": "Translate into English: “你的学校怎么样？”",
+      "question": "Translate into English: '你的学校怎么样？'",
       "answer": "What is your school like?",
-      "explanation": "询问学校情况的标准句型是“What is your school like?”。"
+      "explanation": "询问学校情况的标准句型是'What is your school like?'。"
     },
     {
       "type": "true_false",
-      "question": "The sentence “My school have a new playground.” is grammatically correct.",
+      "question": "The sentence 'My school have a new playground.' is grammatically correct.",
       "answer": "错误",
-      "explanation": "主语 My school 是第三人称单数，动词应该用 has，而不是 have。正确句子是“My school has a new playground.”。"
+      "explanation": "主语My school是第三人称单数，动词应该用has，而不是have。正确句子是'My school has a new playground.'。"
+    },
+    {
+      "type": "choice",
+      "question": "What does the word 'grandmother' mean?",
+      "choices": [
+        "A. your mum's or dad's mother",
+        "B. your aunt and uncle's child",
+        "C. your mum's or dad's sister",
+        "D. your grandmother's husband"
+      ],
+      "answer": 0,
+      "explanation": "grandmother的意思是“祖母”，即你妈妈或爸爸的妈妈。其他选项分别对应cousin（表/堂兄弟姐妹）、aunt（姑姑/姨妈）和grandfather（祖父）。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct to ask about someone's family?",
+      "choices": [
+        "A. What is your family like?",
+        "B. What does your family like?",
+        "C. What are your family like?",
+        "D. What do your family like?"
+      ],
+      "answer": 0,
+      "explanation": "询问家庭特征的正确句型是'What is your family like?'，意思是“你的家庭是什么样的？”其他选项的动词形式或结构不正确。"
+    },
+    {
+      "type": "fill",
+      "question": "Emma is Yaming's ______.",
+      "answer": "sister",
+      "explanation": "根据课文1c听力内容，Emma是Yaming的妹妹。这里需要用名词所有格形式，表示“Yaming的妹妹”。"
+    },
+    {
+      "type": "fill",
+      "question": "Your mum's or dad's brother is your ______.",
+      "answer": "uncle",
+      "explanation": "根据1a的词汇匹配，你妈妈或爸爸的兄弟是uncle（叔叔/舅舅）。这是家庭成员的词汇。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, 'cousin' means your grandmother's husband.",
+      "answer": "错误",
+      "explanation": "cousin的意思是“表/堂兄弟姐妹”，而不是“祖母的丈夫”。祖母的丈夫是grandfather。所以这个说法是错误的。"
     }
   ],
   "ch05_sec02": [
     {
       "type": "choice",
-      "question": "根据教材内容，Emma 是 Yaming 的什么人？",
+      "question": "According to the textbook, who is Emma to Yaming?",
       "choices": [
-        "姐姐",
-        "妈妈",
-        "奶奶",
-        "表妹"
+        "Sister",
+        "Mother",
+        "Grandmother",
+        "Cousin"
       ],
       "answer": 0,
-      "explanation": "教材中听力填空第1题明确提到 'Emma is Yaming’s sister'，因此正确答案是姐姐。"
+      "explanation": "教材听力填空明确提到'Emma is Yaming's sister'，因此Emma是Yaming的姐姐。"
     },
     {
       "type": "choice",
-      "question": "Teng Fei 的爷爷喜欢什么运动？",
+      "question": "What sport does Teng Fei's grandpa like?",
       "choices": [
-        "钓鱼",
-        "打乒乓球",
-        "弹钢琴",
-        "跑步"
+        "Fishing",
+        "Playing ping-pong",
+        "Playing the piano",
+        "Running"
       ],
       "answer": 1,
-      "explanation": "对话中Teng Fei说 'My grandpa loves sport' 并提到 'this is my ping-pong bat, and the black one is my grandpa’s'，说明爷爷打乒乓球。"
+      "explanation": "对话中Teng Fei说'My grandpa loves sport'并提到乒乓球拍，爷爷喜欢打乒乓球。"
     },
     {
       "type": "fill",
-      "question": "在教材中，Peter 的爸爸 David 是 Peter 的________。",
-      "answer": "父亲",
-      "explanation": "听力填空第4题 'David is Peter’s father'，因此答案为 '父亲'。"
+      "question": "In the textbook, what is Peter's father's name? David is Peter's ______.",
+      "answer": "father",
+      "explanation": "听力填空'David is Peter's father'，因此答案为father。"
     },
     {
       "type": "fill",
-      "question": "根据对话，Teng Fei 妈妈拥有的乐器是________。",
-      "answer": "钢琴",
-      "explanation": "对话中Teng Fei说 'It’s my mother’s piano'，所以答案是 '钢琴'。"
+      "question": "According to the dialogue, Teng Fei's mother has a ______.",
+      "answer": "piano",
+      "explanation": "对话中Teng Fei说'It's my mother's piano.'，所以答案为piano。"
     },
     {
       "type": "true_false",
-      "question": "教材中，Teng Fei 和爷爷每天一起打乒乓球。",
+      "question": "Teng Fei and his grandpa play ping-pong together every day.",
       "answer": "正确",
-      "explanation": "对话中Peter问 'Do you often play ping-pong together?'，Teng Fei回答 'Yes, we play every day'，因此判断为正确。"
+      "explanation": "对话中Peter问'Do you often play ping-pong together?'，Teng Fei回答'Yes, we play every day.'，因此判断为正确。"
+    },
+    {
+      "type": "choice",
+      "question": "What does 'your mum's or dad's mother' mean?",
+      "choices": [
+        "A. cousin",
+        "B. aunt",
+        "C. grandmother",
+        "D. grandfather"
+      ],
+      "answer": 2,
+      "explanation": "题目问的是'你妈妈或爸爸的妈妈'，也就是你的奶奶或外婆，英文是grandmother。"
+    },
+    {
+      "type": "choice",
+      "question": "Which sentence is correct to ask about ownership?",
+      "choices": [
+        "A. Whose ping-pong bat is this?",
+        "B. Who ping-pong bat is this?",
+        "C. Whose is ping-pong bat this?",
+        "D. This is whose ping-pong bat?"
+      ],
+      "answer": 0,
+      "explanation": "询问物品归属的正确句型是'Whose + 名词 + is/are + 代词?'，所以选项A 'Whose ping-pong bat is this?' 是正确的。"
+    },
+    {
+      "type": "fill",
+      "question": "In the conversation, Teng Fei says: 'this is my ping-pong bat, and the black one is my ______.'",
+      "answer": "grandpa's",
+      "explanation": "对话中Teng Fei说黑色的乒乓球拍是他爷爷的，所以要用名词所有格grandpa's表示归属。"
+    },
+    {
+      "type": "fill",
+      "question": "Your aunt and uncle's child is your ______.",
+      "answer": "cousin",
+      "explanation": "根据1a的配对练习，aunt和uncle的孩子是cousin（表/堂兄弟姐妹）。"
+    },
+    {
+      "type": "true_false",
+      "question": "In the textbook, Emma is Yaming's grandmother.",
+      "answer": "错误",
+      "explanation": "根据1c的听力练习，Emma是Yaming的cousin（表姐妹），不是grandmother，所以这个说法是错误的。"
     }
   ],
   "default": [

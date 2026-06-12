@@ -280,7 +280,9 @@ async def download_exercises(section_id: str, subject: str = "math", grade: int 
     style.paragraph_format.line_spacing = 1.5
 
     # Title
-    title = doc.add_heading('数学七年级上册 · 练习题', level=1)
+    from config import SUBJECT_NAMES
+    subject_name = SUBJECT_NAMES.get(subject, subject)
+    title = doc.add_heading(f'{subject_name}七年级上册 · 练习题', level=1)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     # Subtitle
@@ -340,7 +342,7 @@ async def download_exercises(section_id: str, subject: str = "math", grade: int 
 
     # Safe ASCII filename for HTTP header
     from urllib.parse import quote
-    safe_name = f"math_grade7_exercises_{section_id}.docx"
+    safe_name = f"{subject}_grade7_exercises_{section_id}.docx"
 
     return StreamingResponse(
         buffer,
