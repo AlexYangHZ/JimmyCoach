@@ -173,6 +173,12 @@ class MathRetriever:
         scored.sort(key=lambda x: x["score"], reverse=True)
         return scored[:top_k]
 
+    def search_with_threshold(self, query: str, top_k: int = 5, min_score: float = 0.05) -> list[dict]:
+        """Search with score threshold filtering."""
+        results = self.search(query, top_k=top_k * 2)  # oversample
+        filtered = [r for r in results if r.get("score", 0) >= min_score]
+        return filtered[:top_k]
+
     def save(self):
         """Cache the built index to disk."""
         self.cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -231,6 +237,60 @@ def get_retriever_sync() -> MathRetriever:
 def search_textbook(query: str, top_k: int = 5) -> list[dict]:
     """Convenience function: search the math textbook."""
     return get_retriever().search(query, top_k)
+
+
+# ---- Multi-subject retrieval ----
+
+AVAILABLE_RETRIEVERS: dict[str, "MathRetriever"] = {}
+_retrievers_lock = asyncio.Lock()
+
+
+async def get_multi_retriever(subject: str | None = None) -> dict[str, "MathRetriever"]:
+    """Get retrievers for specified subject(s). If None, return all available."""
+    global AVAILABLE_RETRIEVERS
+
+    textbooks_dir = Path("data/textbooks")
+    available = []
+    if textbooks_dir.exists():
+        for d in textbooks_dir.iterdir():
+            if d.is_dir() and (d / "grade7").exists():
+                available.append(d.name)
+
+    async with _retrievers_lock:
+        targets = [subject] if subject else available
+        result = {}
+        for subj in targets:
+            if subj not in available:
+                continue
+            if subj not in AVAILABLE_RETRIEVERS:
+                md_dir = Path(f"data/textbooks/{subj}/grade7")
+                cache = Path(f"data/vectordb/{subj}/retriever.pkl")
+                cache.parent.mkdir(parents=True, exist_ok=True)
+                r = MathRetriever(markdown_dir=md_dir, cache_path=cache)
+                if not r.load():
+                    try:
+                        r.build_index()
+                        r.save()
+                    except Exception as e:
+                        print(f"[Retriever] Failed to build index for {subj}: {e}")
+                        continue
+                AVAILABLE_RETRIEVERS[subj] = r
+            result[subj] = AVAILABLE_RETRIEVERS[subj]
+        return result
+
+
+async def search_all(query: str, subject: str | None = None, top_k: int = 5, min_score: float = 0.05) -> list[dict]:
+    """Search across one or all retrievers, return merged ranked results."""
+    retrievers = await get_multi_retriever(subject)
+    all_results = []
+    for subj, retriever in retrievers.items():
+        results = retriever.search_with_threshold(query, top_k=top_k, min_score=min_score)
+        for r in results:
+            r["subject"] = subj
+        all_results.extend(results)
+
+    all_results.sort(key=lambda x: x.get("score", 0), reverse=True)
+    return all_results[:top_k]
 
 
 # Build on import

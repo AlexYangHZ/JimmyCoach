@@ -73,10 +73,21 @@ async def test_lesson_page_renders(client):
 
 
 @pytest.mark.asyncio
-async def test_chat_history_empty(client):
-    response = await client.get("/chat/history")
+async def test_chat_page_renders(client):
+    """New standalone chat page should render."""
+    response = await client.get("/chat")
     assert response.status_code == 200
-    assert "你好" in response.text
+    assert "课程问答" in response.text
+    assert "chat-subject-select" in response.text
+
+
+@pytest.mark.asyncio
+async def test_home_page_no_chat_modal(client):
+    """Home page should NOT have the old chat modal after redesign."""
+    response = await client.get("/")
+    assert response.status_code == 200
+    assert "chat-modal" not in response.text
+    assert "openChat" not in response.text
 
 
 @pytest.mark.asyncio
