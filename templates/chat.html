@@ -5,6 +5,21 @@
 <div class="chat-page">
     <div class="chat-main">
         <div class="chat-messages" id="chat-msgs">
+            {% if recent_msgs %}
+            {% for msg in recent_msgs %}
+            {% if msg.role == 'user' %}
+            <div class="chat-msg chat-msg-user">
+                <div class="chat-msg-avatar">🧑</div>
+                <div class="chat-msg-bubble">{{ msg.content }}</div>
+            </div>
+            {% else %}
+            <div class="chat-msg chat-msg-ai">
+                <div class="chat-msg-avatar">🤖</div>
+                <div class="chat-msg-bubble">{{ msg.content }}</div>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% else %}
             <div class="chat-msg chat-msg-ai">
                 <div class="chat-msg-avatar">🤖</div>
                 <div class="chat-msg-bubble">
@@ -17,6 +32,7 @@
                     <p>试试在下面输入你的问题吧！</p>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <form class="chat-input-bar" onsubmit="sendMsg(event)">

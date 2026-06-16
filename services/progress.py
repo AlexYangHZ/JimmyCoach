@@ -67,6 +67,52 @@ class ProgressService:
         self.db.add(attempt)
         await self.db.commit()
 
+    async def get_or_create_chat_session(self, subject: str) -> int:
+        """Find today's chat session for a subject, or create a new one.
+        Returns the session ID for persisting chat history."""
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        topic_id = f"chat-{subject or 'all'}"
+
+        stmt = (
+            select(StudySession)
+            .where(StudySession.topic_id == topic_id)
+            .where(StudySession.date == today)
+            .order_by(StudySession.id.desc())
+            .limit(1)
+        )
+        result = await self.db.execute(stmt)
+        session = result.scalar_one_or_none()
+
+        if session:
+            return session.id
+        return await self.start_session(topic_id)
+
+    async def get_recent_history(self, subject: str, limit: int = 30) -> list[dict]:
+        """Get recent chat messages across sessions for a subject."""
+        topic_id = f"chat-{subject or 'all'}"
+        stmt = (
+            select(StudySession)
+            .where(StudySession.topic_id == topic_id)
+            .order_by(StudySession.id.desc())
+            .limit(3)
+        )
+        result = await self.db.execute(stmt)
+        sessions = result.scalars().all()
+
+        if not sessions:
+            return []
+
+        session_ids = [s.id for s in sessions]
+        msg_stmt = (
+            select(ChatMessage)
+            .where(ChatMessage.session_id.in_(session_ids))
+            .order_by(ChatMessage.created_at.asc())
+            .limit(limit)
+        )
+        msg_result = await self.db.execute(msg_stmt)
+        messages = msg_result.scalars().all()
+        return [{"role": m.role, "content": m.content} for m in messages]
+
     async def add_chat_message(self, session_id: int, role: str, content: str):
         """Save a chat message to the session."""
         msg = ChatMessage(session_id=session_id, role=role, content=content)

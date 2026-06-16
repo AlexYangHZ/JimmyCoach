@@ -26,23 +26,7 @@ def _load_rag_prompt() -> str:
     return "你是小教练，一位耐心的AI辅导老师。基于教材内容回答学生问题。"
 
 RAG_SYSTEM_PROMPT = _load_rag_prompt()
-
-# In-memory conversation history (session_key -> list of {role, content})
-_chat_histories: dict[str, list[dict]] = {}
 MAX_HISTORY_TURNS = 6
-
-
-def _get_history(session_key: str) -> list[dict]:
-    return _chat_histories.get(session_key, [])
-
-
-def _add_to_history(session_key: str, role: str, content: str):
-    if session_key not in _chat_histories:
-        _chat_histories[session_key] = []
-    _chat_histories[session_key].append({"role": role, "content": content})
-    max_msgs = MAX_HISTORY_TURNS * 2
-    if len(_chat_histories[session_key]) > max_msgs:
-        _chat_histories[session_key] = _chat_histories[session_key][-max_msgs:]
 
 
 def _format_history(history: list[dict]) -> str:
@@ -56,10 +40,20 @@ def _format_history(history: list[dict]) -> str:
 
 
 @router.get("/chat", response_class=HTMLResponse)
-async def chat_page(request: Request):
-    """Render the standalone chat page."""
+async def chat_page(request: Request, db: AsyncSession = Depends(get_db)):
+    """Render the standalone chat page with recent history."""
     from routes.pages import _ctx
     ctx = _ctx(request)
+
+    # Load recent chat history from DB
+    recent_msgs = []
+    try:
+        progress_svc = ProgressService(db)
+        recent_msgs = await progress_svc.get_recent_history("all", limit=20)
+    except Exception:
+        pass
+
+    ctx["recent_msgs"] = recent_msgs
     return request.app.state.templates.TemplateResponse("chat.html", ctx)
 
 
@@ -70,20 +64,21 @@ async def chat_stream(
     subject: str = Form(""),
     db: AsyncSession = Depends(get_db),
 ):
-    """Streaming RAG chat with multi-subject retrieval and conversation history."""
+    """Streaming RAG chat with multi-subject retrieval and DB-persisted history."""
     progress_svc = ProgressService(db)
 
     retriever_subject = subject if subject else None
-    session_key = f"chat:{subject or 'all'}"
+    chat_subject = subject or "all"
 
-    # Save user message
-    _add_to_history(session_key, "user", message)
-
+    # Get or create today's chat session for this subject
     try:
-        session_id = await progress_svc.start_session(f"{subject or 'all'}-chat")
+        session_id = await progress_svc.get_or_create_chat_session(chat_subject)
         await progress_svc.add_chat_message(session_id, "user", message)
-    except Exception:
-        pass
+        history = await progress_svc.get_chat_history(session_id)
+    except Exception as e:
+        print(f"[Chat] DB error: {e}")
+        session_id = None
+        history = []
 
     # === RAG: Multi-subject retrieval ===
     context_text = ""
@@ -112,8 +107,8 @@ async def chat_stream(
     if not context_text:
         context_text = "（暂无相关教材内容，请基于你的知识回答）"
 
-    # Build prompt
-    history_text = _format_history(_get_history(session_key))
+    # Build prompt with DB history
+    history_text = _format_history(history)
     system_prompt = RAG_SYSTEM_PROMPT.format(context=context_text, history=history_text)
 
     async def event_stream():
@@ -137,14 +132,13 @@ async def chat_stream(
                     yield f"data: {json.dumps({'token': delta.content})}\n\n"
 
             full_reply = "".join(collected)
-            _add_to_history(session_key, "assistant", full_reply)
 
-            try:
-                last_session = await progress_svc.get_last_session()
-                if last_session:
-                    await progress_svc.add_chat_message(last_session.id, "assistant", full_reply)
-            except Exception:
-                pass
+            # Save assistant reply to DB
+            if session_id:
+                try:
+                    await progress_svc.add_chat_message(session_id, "assistant", full_reply)
+                except Exception as e:
+                    print(f"[Chat] Failed to save reply: {e}")
 
             done_data = {"done": True}
             if source_info:
