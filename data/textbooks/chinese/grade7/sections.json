@@ -1,0 +1,194 @@
+[
+  {
+    "id": "ch01_sec01",
+    "code": "1.1",
+    "title": "1 春",
+    "chapter": "第1章 第一单元",
+    "pdf": "ch01_sec01.pdf",
+    "pages": 5
+  },
+  {
+    "id": "ch01_sec02",
+    "code": "1.2",
+    "title": "2 济南的冬天",
+    "chapter": "第1章 第一单元",
+    "pdf": "ch01_sec02.pdf",
+    "pages": 4
+  },
+  {
+    "id": "ch01_sec03",
+    "code": "1.3",
+    "title": "3* 雨的四季",
+    "chapter": "第1章 第一单元",
+    "pdf": "ch01_sec03.pdf",
+    "pages": 5
+  },
+  {
+    "id": "ch01_sec04",
+    "code": "1.4",
+    "title": "4 古代诗歌四首",
+    "chapter": "第1章 第一单元",
+    "pdf": "ch01_sec04.pdf",
+    "pages": 9
+  },
+  {
+    "id": "ch02_sec05",
+    "code": "2.5",
+    "title": "5 秋天的怀念",
+    "chapter": "第2章 第二单元",
+    "pdf": "ch02_sec05.pdf",
+    "pages": 3
+  },
+  {
+    "id": "ch02_sec06",
+    "code": "2.6",
+    "title": "6 散步",
+    "chapter": "第2章 第二单元",
+    "pdf": "ch02_sec06.pdf",
+    "pages": 3
+  },
+  {
+    "id": "ch02_sec07",
+    "code": "2.7",
+    "title": "7* 散文诗二首",
+    "chapter": "第2章 第二单元",
+    "pdf": "ch02_sec07.pdf",
+    "pages": 4
+  },
+  {
+    "id": "ch02_sec08",
+    "code": "2.8",
+    "title": "8 《世说新语》二则",
+    "chapter": "第2章 第二单元",
+    "pdf": "ch02_sec08.pdf",
+    "pages": 12
+  },
+  {
+    "id": "ch03_sec09",
+    "code": "3.9",
+    "title": "9 从百草园到三味书屋",
+    "chapter": "第3章 第三单元",
+    "pdf": "ch03_sec09.pdf",
+    "pages": 7
+  },
+  {
+    "id": "ch03_sec10",
+    "code": "3.10",
+    "title": "10 往事依依",
+    "chapter": "第3章 第三单元",
+    "pdf": "ch03_sec10.pdf",
+    "pages": 4
+  },
+  {
+    "id": "ch03_sec11",
+    "code": "3.11",
+    "title": "11* 再塑生命的人",
+    "chapter": "第3章 第三单元",
+    "pdf": "ch03_sec11.pdf",
+    "pages": 5
+  },
+  {
+    "id": "ch03_sec12",
+    "code": "3.12",
+    "title": "12 《论语》十二章",
+    "chapter": "第3章 第三单元",
+    "pdf": "ch03_sec12.pdf",
+    "pages": 16
+  },
+  {
+    "id": "ch04_sec13",
+    "code": "4.13",
+    "title": "13 纪念白求恩",
+    "chapter": "第4章 第四单元",
+    "pdf": "ch04_sec13.pdf",
+    "pages": 4
+  },
+  {
+    "id": "ch04_sec14",
+    "code": "4.14",
+    "title": "14 回忆我的母亲",
+    "chapter": "第4章 第四单元",
+    "pdf": "ch04_sec14.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch04_sec15",
+    "code": "4.15",
+    "title": "15* 梅岭三章",
+    "chapter": "第4章 第四单元",
+    "pdf": "ch04_sec15.pdf",
+    "pages": 3
+  },
+  {
+    "id": "ch04_sec16",
+    "code": "4.16",
+    "title": "16 诫子书",
+    "chapter": "第4章 第四单元",
+    "pdf": "ch04_sec16.pdf",
+    "pages": 17
+  },
+  {
+    "id": "ch05_sec17",
+    "code": "5.17",
+    "title": "17 猫",
+    "chapter": "第5章 第五单元",
+    "pdf": "ch05_sec17.pdf",
+    "pages": 5
+  },
+  {
+    "id": "ch05_sec18",
+    "code": "5.18",
+    "title": "18 我的白鸽",
+    "chapter": "第5章 第五单元",
+    "pdf": "ch05_sec18.pdf",
+    "pages": 7
+  },
+  {
+    "id": "ch05_sec19",
+    "code": "5.19",
+    "title": "19 大雁归来",
+    "chapter": "第5章 第五单元",
+    "pdf": "ch05_sec19.pdf",
+    "pages": 5
+  },
+  {
+    "id": "ch05_sec20",
+    "code": "5.20",
+    "title": "20 狼",
+    "chapter": "第5章 第五单元",
+    "pdf": "ch05_sec20.pdf",
+    "pages": 7
+  },
+  {
+    "id": "ch06_sec21",
+    "code": "6.21",
+    "title": "21 小圣施威降大圣",
+    "chapter": "第6章 第六单元",
+    "pdf": "ch06_sec21.pdf",
+    "pages": 4
+  },
+  {
+    "id": "ch06_sec22",
+    "code": "6.22",
+    "title": "22 皇帝的新装",
+    "chapter": "第6章 第六单元",
+    "pdf": "ch06_sec22.pdf",
+    "pages": 6
+  },
+  {
+    "id": "ch06_sec23",
+    "code": "6.23",
+    "title": "23* 女娲造人",
+    "chapter": "第6章 第六单元",
+    "pdf": "ch06_sec23.pdf",
+    "pages": 4
+  },
+  {
+    "id": "ch06_sec24",
+    "code": "6.24",
+    "title": "24 寓言四则",
+    "chapter": "第6章 第六单元",
+    "pdf": "ch06_sec24.pdf",
+    "pages": 10
+  }
+]
