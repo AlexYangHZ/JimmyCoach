@@ -1,4 +1,4 @@
-# JimmyCoach — Current Status (2026-06-16)
+# JimmyCoach — Current Status (2026-06-17)
 
 ## What's Built
 
@@ -10,14 +10,27 @@
 - GitHub: `git@github.com:AlexYangHZ/JimmyCoach.git`
 
 ### Math 七年级上册 ✅
-- PDF split into 17 section PDFs, browser-native iframe viewer
+- 17 sections across 6 chapters, browser-native PDF viewer
 - Mind maps for all 17 sections (interactive tree, save as PNG)
-- Key formulas/concepts/tips displayed per knowledge point
-- 85 pre-built exercises (choice, fill-in, true/false)
-- All-exercises page with quick-jump nav, interactive answer checking
+- Key formulas/concepts/tips per knowledge point
+- **170 exercises** (10 per section: choice + fill + true_false)
 - Word (.docx) download for printable worksheets
 - RAG TF-IDF retrieval (253 docs)
 - Error book with per-subject tracking
+- Study progress tracking + per-subject reset
+
+### English 七年级上册 ✅
+- 10 sections across 5 chapters
+- **100 exercises** (10 per section)
+- Exercises reviewed, bugs fixed, language standardized
+- Keypoints, mindmaps auto-generated
+- RAG TF-IDF retriever (37 docs)
+
+### Chinese 七年级上册 ✅
+- **24 sections** across 6 chapters (春, 论语, 狼, etc.)
+- **120 exercises** (5 per section)
+- Full pipeline: keypoints, mindmaps, section PDFs, TF-IDF retriever
+- RAG chat supports Chinese subject
 - Study progress tracking + per-subject reset
 
 ### English 七年级上册 ✅
@@ -96,6 +109,6 @@ python3 -m uvicorn main:app --host 0.0.0.0 --port 8000
 
 ## Next Steps
 
-1. Chinese (语文) PDF processing — PDF uploaded, pipeline pending
+1. Chinese (语文) exercises: expand from 5 to 10 per section (like math/English)
 2. ONNX Chinese embedding model for better semantic search
 3. Mobile responsive refinements
